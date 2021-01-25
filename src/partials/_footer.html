@@ -1,0 +1,30 @@
+<footer class="container">
+  <div class="footer">
+    <div class="footer-logo">
+      <a href="https://thecity.nyc/"><%=  t.include("assets/logo-small.svg") %></a>
+    </div>
+    <div class="footer-icons">
+      <button class="twitter" onclick="window.location.href = 'https://twitter.com/intent/follow?screen_name=TheCityNY';">
+        <%=  t.include("assets/social-icons/twitter.svg") %>
+      </button>
+      <button class="instagram" onclick="window.location.href = 'https://www.instagram.com/thecityny';">
+        <%=  t.include("assets/social-icons/instagram.svg") %>
+      </button>
+      <button class="facebook" onclick="window.location.href = 'https://www.facebook.com/thecityny';">
+        <%=  t.include("assets/social-icons/facebook.svg") %>
+      </button>
+    </div>
+    <ul class="footer-links">
+      <li><a href="https://thecity.nyc/about/us.html">About</a></li>
+      <li><a href="https://thecity.nyc/about/membership.html">Donate</a></li>
+      <li><a href="https://thecity.nyc/about/team.html">Team</a></li>
+      <li><a href="https://thecity.nyc/about/supporters.html">Funders</a></li>
+      <li><a href="https://thecity.nyc/about/ethics.html">Ethics</a></li>
+      <li><a href="https://thecity.nyc/about/republish-our-work.html">Republishing</a></li>
+      <li><a href="https://thecity.nyc/about/contact-us.html">Contact</a></li>
+    </ul>
+    <div class="copyright">
+      &copy; <%= (new Date()).getFullYear() %>, THE CITY. All Rights Reserved
+    </div>
+  </div>
+</footer>

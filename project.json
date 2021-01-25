@@ -1,0 +1,27 @@
+{
+  "s3": {
+    "stage": {
+      "bucket": "qa-projects.thecity.nyc",
+      "path": "meet-your-mayor"
+    },
+    "live": {
+      "bucket": "projects.thecity.nyc",
+      "path": "meet-your-mayor"
+    }
+  },
+  "styles": {
+    "src/css/seed.less": "build/style.css"
+  },
+  "scripts": {
+    "src/js/main.js": "build/app.js"
+  },
+  "title": "",
+  "description": "",
+  "url": "",
+  "image": "assets/logo.png",
+  "author": "",
+  "sheets": [],
+  "docs": ["1HXR-HDmLroK-KjKmRzdjW6aAiB18u-ro1j8xkvddlUk"],
+  "embedded": true,
+  "production": false
+}

@@ -1,0 +1,44 @@
+{
+  "criminal-justice": {
+    "closing-rikers": {
+      "as-planned": [
+        {
+          "name": "Candidate A"
+        },
+        {
+          "name": "Candidate B"
+        },
+        {
+          "name": "Candidate C"
+        },
+        {
+          "name": "Candidate D"
+        }
+      ],
+      "explore-rebuilding": [
+        {
+          "name": "Candidate E"
+        },
+        {
+          "name": "Candidate F"
+        },
+        {
+          "name": "Candidate G"
+        }
+      ],
+      "no-new-jails": [
+        {
+          "name": "Candidate H"
+        },
+        {
+          "name": "Candidate I"
+        }
+      ],
+      "unsure": [
+        {
+          "name": "Candidate J"
+        }
+      ]
+    }
+  }
+}

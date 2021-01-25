@@ -1,0 +1,92 @@
+<% const docSlug = "criminal-justice-test"; %>
+
+<%
+  const items = archieml[docSlug].story.reduce((items, item) => {
+    if (item.type == 'text') {
+      const previous = items[items.length - 1];
+
+      if (previous && previous.type == 'markdown') {
+        return items.slice(0, items.length - 1).concat({
+          type: "markdown",
+          value: `${previous.value}\n\n${item.value}`
+        });
+      } else {
+        return items.slice(0, items.length).concat({
+          type: "markdown",
+          value: item.value
+        });
+      }
+    } else {
+      return items.concat(item);
+    }
+  }, []);
+%>
+
+<article>
+  <% items.forEach(function(item){ %>
+
+  <%/* pulls in body text */%>
+  <% if (item.type == 'markdown') { %>
+    <div class="copy copy-container">
+      <%= t.renderMarkdown(item.value) %>
+    </div>
+  <% } %>
+
+  <% if (item.type == 'text') { %>
+    <p class="copy copy-container"><%= item.value %></p>
+  <% } %>
+
+  <%/* pulls in subheads */%>
+  <% if (item.type == 'subhead') { %>
+  <h3 class='subhead copy-container'><%= item.value.text %></h3>
+  <% } %>
+
+  <%/* pulls in photos */%>
+  <% if (item.type == 'image') { %>
+  <figure class='photo photo-container'>
+    <img src='<%= item.value.src %>' alt='<%= item.value.alt %>' />
+    <figcaption><%= item.value.caption %> <em>Photo: <%= item.value.credit %></em></figcaption>
+  </figure>
+  <% } %>
+
+  <%/* pulls in custom elements */%>
+  <% if (item.type == 'custom') { %>
+  <% let custom = item.value.src %>
+  <%= t.include(custom, json) %>
+  <% } %>
+
+  <%/* pulls in quotes */%>
+  <% if (item.type == 'quote') { %>
+  <div class='quote-container'>
+    <p class='quote'><%= item.value.text %></p>
+    <p class='quote-attr'>
+      <span class='quote-name'><%= item.value.name %></span>
+      <span class='quote-title'><%= item.value.title %></span>
+    </p>
+  </div>
+  <% } %>
+
+  <% if (item.type == 'question') { %>
+  <div id="question-<%= item.value.slug %>" class="photo-container question">
+    <h3><%= item.value.text %></h3>
+    <form>
+      <% item.value.answers.forEach(function(answer) { %>
+        <div class="input-group">
+          <input type="radio" id="question-<%= item.value.slug %>-<%= answer.slug %>" name="<%= item.value.slug %>" value="<%= answer.slug %>" />
+          <label for="question-<%= item.value.slug %>-<%= answer.slug %>"><%= answer.text %></label>
+        </div>
+      <% }); %>
+    </form>
+  </div>
+  <div id="answers-<%= item.value.slug %>"  class="container answers">
+    <% item.value.answers.forEach(function(answer) { %>
+    <div class="answer" id="answer-<%= item.value.slug %>-<%= answer.slug %>">
+      <h4><%= answer.text %></h4>
+      <div class="chart"></div>
+    </div>
+    <% }); %>
+  </div>
+  <% } %>
+
+<% }); %>
+</article>

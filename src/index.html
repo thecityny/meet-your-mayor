@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <%= t.include("partials/_head.html", grunt.data.json) %>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<% 
+  const guideData = grunt.data.json.positions["criminal-justice"];
+  const archieml = grunt.data.archieml["criminal-justice-test"];
+%>
+
+
+<body>
+  <%= t.include("partials/_header.html") %>
+  <main>
+    <div class="container">
+      <p class="eyebrow">Meet Your Mayor</p>
+      <h1 class="headline"><%= archieml.hed %></h1>
+      <p class="deck"><%= archieml.dek %></p>
+      <% const updated = new Date(); %>
+      <p class="article-date"><time datetime="<%= updated.toISOString() %>"><%= updated.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        }) %> at <%= updated.toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "numeric"
+        }) %></time>
+      </p>
+      <div class="copy-container">
+        <div class="divider"></div>
+      </div>
+    </div>
+    
+    <%= t.include("partials/_archie.ejs", grunt.data) %>
+  </main>
+  <%= t.include("partials/_footer.html") %>
+  <script src="app.js" async></script>
+  <%/*  t.include("partials/_analytics.html") */%>
+</body>
+
+</html>

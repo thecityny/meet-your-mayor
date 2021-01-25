@@ -1,0 +1,55 @@
+@import "values";
+
+//defensive / accessible coding
+*,
+*::before,
+*::after {
+  //border-box, you're the best
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+
+  //Safari, you're the worst
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus:not(:focus-visible),
+*::before:focus:not(:focus-visible),
+*::after:focus:not(:focus-visible) {
+  outline: none;
+}
+
+img:not([alt]) {
+  outline: 3px solid @city-orange;
+}
+
+a, a:visited {
+  color: @city-blue;
+}
+
+a:hover, a:active, a:focus {
+  color: @city-grey;
+}
+
+// prettier-ignore
+@media(prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+//elements
+body {
+  padding: 0;
+  margin: 0;
+  //remove 300ms click delay in Safari, AKA still the worst
+  touch-action: manipulation;
+  font-family: @sans;
+  line-height: 1.3;
+  background-color: @city-white;
+}
