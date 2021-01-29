@@ -26,7 +26,7 @@ function forceBounds(width, height) {
 
 function forceGrowth() {
   var nodes;
-  const ticks = 15;
+  const ticks = 10;
   const easeFunction = easeQuadIn;
 
   function force() {
@@ -109,6 +109,10 @@ module.exports = function (target) {
         context.clearRect(0, 0, width, height);
         context.save();
         context.translate(width / 2, height / 2);
+
+        context.font = "600 20px 'Sharp Grotesk', sans-serif";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
         candidates.forEach((d) => {
           const r = d.r;
           const x = d.x;
@@ -117,8 +121,12 @@ module.exports = function (target) {
           context.beginPath();
           context.moveTo(x, y);
           context.arc(x, y, r, 0, 2 * Math.PI);
-          context.fillStyle = d.name === "YOU" ? "#000" : "#666";
+          context.fillStyle = d.name === "YOU" ? "#A9328A" : "#666";
           context.fill();
+          if (r === d.maxRadius) {
+            context.fillStyle = "#fff";
+            context.fillText(d.label, x, y);
+          }
         });
         context.restore();
       }

@@ -3,40 +3,50 @@
     "closing-rikers": {
       "as-planned": [
         {
-          "name": "Candidate A"
+          "name": "Candidate A",
+          "label": "CA"
         },
         {
-          "name": "Candidate B"
+          "name": "Candidate B",
+          "label": "CB"
         },
         {
-          "name": "Candidate C"
+          "name": "Candidate C",
+          "label": "CC"
         },
         {
-          "name": "Candidate D"
+          "name": "Candidate D",
+          "label": "CD"
         }
       ],
       "explore-rebuilding": [
         {
-          "name": "Candidate E"
+          "name": "Candidate E",
+          "label": "CE"
         },
         {
-          "name": "Candidate F"
+          "name": "Candidate F",
+          "label": "CF"
         },
         {
-          "name": "Candidate G"
+          "name": "Candidate G",
+          "label": "CG"
         }
       ],
       "no-new-jails": [
         {
-          "name": "Candidate H"
+          "name": "Candidate H",
+          "label": "CH"
         },
         {
-          "name": "Candidate I"
+          "name": "Candidate I",
+          "label": "CI"
         }
       ],
       "unsure": [
         {
-          "name": "Candidate J"
+          "name": "Candidate J",
+          "label": "CJ"
         }
       ]
     }

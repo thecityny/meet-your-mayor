@@ -37,7 +37,7 @@ questions.forEach(question => {
   inputs.forEach(input => {
     input.addEventListener("change", e => {
       const slug = e.target.value;
-      const you = {name: "YOU", maxRadius: 40};
+      const you = {name: "YOU", label: "YOU", maxRadius: 40};
 
       // Add YOU to the selected answer, reset the other answers
       Object.entries(answers).forEach(([key, chart]) => {
