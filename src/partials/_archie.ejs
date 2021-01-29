@@ -67,7 +67,7 @@
   <% } %>
 
   <% if (item.type == 'question') { %>
-  <div id="question-<%= item.value.slug %>" class="photo-container question">
+  <div class="photo-container question" data-slug="<%= item.value.slug %>">
     <h3><%= item.value.text %></h3>
     <form>
       <% item.value.answers.forEach(function(answer) { %>
@@ -78,11 +78,11 @@
       <% }); %>
     </form>
   </div>
-  <div id="answers-<%= item.value.slug %>"  class="container answers">
+  <div class="container answers">
     <% item.value.answers.forEach(function(answer) { %>
-    <div class="answer" id="answer-<%= item.value.slug %>-<%= answer.slug %>">
+    <div class="answer">
       <h4><%= answer.text %></h4>
-      <div class="chart"></div>
+      <div id="answer-<%= item.value.slug %>-<%= answer.slug %>" class="chart"></div>
     </div>
     <% }); %>
   </div>

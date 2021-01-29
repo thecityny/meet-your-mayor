@@ -1,8 +1,55 @@
 const {select} = require("d3-selection");
 const {forceSimulation, forceX, forceY, forceCollide, forceManyBody} = require("d3-force");
 const {drag} = require("d3-drag");
-// const {scaleLinear} = require("d3-scale");
-// const {range} = require("d3-array");
+const {easeQuadIn} = require("d3-ease");
+
+function forceBounds(width, height) {
+  var nodes;
+
+  function force() {
+    for (i = nodes.length - 1; i >= 0; i--) {
+      const node = nodes[i];
+      const xExtent = width / 2 - node.r * 2;
+      const yExtent = height / 2 - node.r * 2;
+      
+      node.x = Math.max(-xExtent, Math.min(xExtent, node.x));
+      node.y = Math.max(-yExtent, Math.min(yExtent, node.y));
+    }
+  }
+
+  force.initialize = function(_) {
+    nodes = _;
+  }
+
+  return force;
+}
+
+function forceGrowth() {
+  var nodes;
+  const ticks = 15;
+  const easeFunction = easeQuadIn;
+
+  function force() {
+    for (i = nodes.length - 1; i >= 0; i--) {
+      const node = nodes[i];
+
+      if (node._timer <= ticks) {
+        const growth = easeFunction(node._timer / ticks);        
+        node.r = growth * (node.maxRadius || 0);
+        node._timer += 1;
+      }
+    }
+  }
+
+  force.initialize = function(_) {
+    nodes = _;
+    nodes.forEach(node => {
+      node._timer = node._timer || 0;
+    });
+  }
+
+  return force;
+}
 
 module.exports = function (target) {
   var updateFunction;
@@ -17,8 +64,11 @@ module.exports = function (target) {
   const simulation = forceSimulation()
     .alphaTarget(0.3)
     .velocityDecay(0.1)
-    .force("x", forceX().strength(0.01))
-    .force("y", forceY().strength(0.01));
+    .force("x", forceX().strength(d => d.name === "YOU" ? 0.1 : 0.01))
+    .force("y", forceY().strength(d => d.name === "YOU" ? 0.1 : 0.01))
+    .force("growth", forceGrowth());
+  
+  const collide = forceCollide().iterations(3);
 
   function join(candidates) {
     simulation.nodes(candidates);
@@ -26,19 +76,26 @@ module.exports = function (target) {
     function update() {
       const width = target.offsetWidth;
       const height = target.offsetHeight;
-      // const radius = (width / candidates.length) / 2;
-      const radius = 20;
 
       const dragHandler = drag()
         .subject(e => {
           const x = e.x - width / 2;
           const y = e.y - height / 2;
 
-          return simulation.find(x, y, radius);
+          for (i = candidates.length - 1; i >= 0; --i) {
+            const node = candidates[i];
+            const r = node.r;
+            const dx = x - node.x;
+            const dy = y - node.y;
+      
+            if (dx * dx + dy * dy < r * r) {
+              return node;
+            }
+          }
         })
         .on("drag", e => {
-          const xExtent = width / 2 - radius;
-          const yExtent = height / 2 - radius;
+          const xExtent = width / 2 - e.subject.r;
+          const yExtent = height / 2 - e.subject.r;
           
           e.subject.fx = Math.max(-xExtent, Math.min(xExtent, e.x));
           e.subject.fy = Math.max(-yExtent, Math.min(yExtent, e.y));
@@ -53,14 +110,14 @@ module.exports = function (target) {
         context.save();
         context.translate(width / 2, height / 2);
         candidates.forEach((d) => {
-          const r = radius;
+          const r = d.r;
           const x = d.x;
           const y = d.y;
           
           context.beginPath();
           context.moveTo(x, y);
           context.arc(x, y, r, 0, 2 * Math.PI);
-          context.fillStyle = "#000";
+          context.fillStyle = d.name === "YOU" ? "#000" : "#666";
           context.fill();
         });
         context.restore();
@@ -72,9 +129,13 @@ module.exports = function (target) {
         .call(dragHandler);
 
       simulation
-        .force("collide", forceCollide().radius(d => radius + 1).iterations(3))
+        .force("collide", collide)
         .force("charge", forceManyBody().strength((d, i) => 0))
-        .on("tick", draw);
+        .force("bounds", forceBounds(width, height))
+        .on("tick", () => {
+          collide.radius(d => d.r + 1);
+          draw();
+        });
     }
 
     window.removeEventListener("resize", updateFunction);

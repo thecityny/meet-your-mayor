@@ -1,34 +1,54 @@
 // const pym = require("./lib/pym");
 // const ai2html = require("./lib/ai2html-resizer");
 const visual = require("./visual");
-
-const positions = require("../../data/positions.json");
+const guides = require("../../data/positions.json");
 const guideSlug = "criminal-justice";
-const answers = Array.from(document.querySelectorAll(".answers"));
+const questions = Array.from(document.querySelectorAll(".question"));
 
-answers.forEach(answers => {
-  const id = answers.getAttribute("id");
-  const questionSlugMatches = id.match(/^answers-([a-zA-Z0-9\-]+)$/);
-  const questionSlug = questionSlugMatches && questionSlugMatches[1];
 
-  const answer = Array.from(answers.querySelectorAll(".answer"));
-  answer.forEach(answer => {
-    const id = answer.getAttribute("id");
-    const slugMatches = id.match(new RegExp(`^answer-${questionSlug}-([a-zA-Z0-9\-]+)$`));
-    const slug = slugMatches && slugMatches[1];
-    const candidates = positions[guideSlug][questionSlug][slug];
-    console.log(questionSlug, slug, candidates);
-    
-    const chartTarget = answer.querySelector(".chart");
-    const updateVisual = visual(chartTarget);
-    updateVisual(candidates);
-  });
-});
+// Set up each question
+questions.forEach(question => {
+  const questionSlug = question.getAttribute("data-slug");
+  const inputs = Array.from(question.querySelectorAll(`input[name=${questionSlug}]`));
 
-const inputs = document.querySelectorAll(".question input[type=radio]");
+  const questionData = guides[guideSlug][questionSlug];
+  const positions = Object.fromEntries(Object.entries(questionData).map(([key, answer]) => {
+    return [key, answer.map(candidate => {
+      return {...candidate, maxRadius: 20};
+    })];
+  }));
 
-Array.from(inputs).forEach(input => {
-  input.addEventListener("change", e => {
-    // console.log(input.value);
+  // Initialize answer charts based on available options
+  const answers = inputs.reduce((answers, input) => {
+    const slug = input.getAttribute("value");
+
+    const target = document.querySelector(`#answer-${questionSlug}-${slug}`);
+    const chart = visual(target);
+    const data = positions[slug];
+    chart(data);
+
+    return {
+      [slug]: chart,
+      ...answers
+    };
+  }, {});
+
+  // Add input listeners
+  inputs.forEach(input => {
+    input.addEventListener("change", e => {
+      const slug = e.target.value;
+      const you = {name: "YOU", maxRadius: 40};
+
+      // Add YOU to the selected answer, reset the other answers
+      Object.entries(answers).forEach(([key, chart]) => {
+        const data = positions[key];
+  
+        if (key === slug) {
+          chart([...data, you]);
+        } else {
+          chart(data);
+        }
+      });
+    });
   });
 });
