@@ -62,13 +62,13 @@ module.exports = function (target) {
   target.appendChild(canvas.node());
 
   const simulation = forceSimulation()
-    .alphaTarget(0.3)
     .velocityDecay(0.1)
     .force("x", forceX().strength(d => d.name === "YOU" ? 0.1 : 0.01))
     .force("y", forceY().strength(d => d.name === "YOU" ? 0.1 : 0.01))
     .force("growth", forceGrowth());
   
   const collide = forceCollide().iterations(3);
+  const refresh = () => simulation.alpha(1).restart();
 
   function join(candidates) {
     simulation.nodes(candidates);
@@ -99,6 +99,7 @@ module.exports = function (target) {
           
           e.subject.fx = Math.max(-xExtent, Math.min(xExtent, e.x));
           e.subject.fy = Math.max(-yExtent, Math.min(yExtent, e.y));
+          refresh();
         })
         .on("end", e => {
           e.subject.fx = null;
@@ -144,6 +145,8 @@ module.exports = function (target) {
           collide.radius(d => d.r + 1);
           draw();
         });
+      
+      refresh();
     }
 
     window.removeEventListener("resize", updateFunction);
