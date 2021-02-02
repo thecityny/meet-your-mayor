@@ -155,8 +155,10 @@ module.exports = function (target, tooltip) {
       canvas
         .attr("width", width)
         .attr("height", height)
+        .on("mousemove", mouseoverHandler)
         .call(dragHandler)
-        .on("mousemove", mouseoverHandler);
+        // Undoes default d3-drag behavior 
+        .style("touch-action", "auto");
 
       simulation
         .force("collide", collide)
