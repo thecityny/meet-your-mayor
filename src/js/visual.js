@@ -141,12 +141,21 @@ module.exports = function (target, tooltip) {
           
           context.beginPath();
           context.moveTo(x, y);
-          context.arc(x, y, r, 0, 2 * Math.PI);
-          context.fillStyle = d.name === "YOU" ? "#A9328A" : "#666";
-          context.fill();
-          if (r === d.maxRadius) {
-            context.fillStyle = "#fff";
-            context.fillText(d.label, x, y);
+
+          if (d.image) {
+            context.save();
+            context.arc(x, y, r, 0, 2 * Math.PI);
+            context.clip();
+            context.drawImage(d.image, x - r, y - r, r * 2, r * 2);
+            context.restore();
+          } else {
+            context.arc(x, y, r, 0, 2 * Math.PI);
+            context.fillStyle = d.name === "YOU" ? "#A9328A" : "#666";
+            context.fill();
+            if (r === d.maxRadius) {
+              context.fillStyle = "#fff";
+              context.fillText(d.label, x, y);
+            }
           }
         });
         context.restore();

@@ -3,50 +3,109 @@
     "closing-rikers": {
       "as-planned": [
         {
-          "name": "Candidate A",
-          "label": "CA"
+          "name": "Eric Adams",
+          "label": "EA",
+          "image": "eric_adams.jpg"
         },
         {
-          "name": "Candidate B",
-          "label": "CB"
+          "name": "Art Chang",
+          "label": "AC",
+          "image": "art_chang.jpg"
         },
         {
-          "name": "Candidate C",
-          "label": "CC"
+          "name": "Eddie Cullen",
+          "label": "EC",
+          "image": "eddie_cullen.jpg"
         },
         {
-          "name": "Candidate D",
-          "label": "CD"
+          "name": "Shaun Donovan",
+          "label": "SD"
+        },
+        {
+          "name": "Aaron Foldenauer",
+          "label": "AF"
+        },
+        {
+          "name": "Quanda Francis",
+          "label": "QF",
+          "image": "quanda_francis.jpg"
         }
       ],
       "explore-rebuilding": [
         {
-          "name": "Candidate E",
-          "label": "CE"
+          "name": "Kathryn Garcia",
+          "label": "KG",
+          "image": "kathryn_garcia.jpg"
         },
         {
-          "name": "Candidate F",
-          "label": "CF"
+          "name": "Christopher S. Krietchman",
+          "label": "CK"
         },
         {
-          "name": "Candidate G",
-          "label": "CG"
+          "name": "Raymond McGuire",
+          "label": "RM",
+          "image": "ray_mcguire.jpg"
+        },
+        {
+          "name": "Garry Guerrier",
+          "label": "GG"
         }
       ],
       "no-new-jails": [
         {
-          "name": "Candidate H",
-          "label": "CH"
+          "name": "Barbara Kavovit",
+          "label": "BC"
         },
         {
-          "name": "Candidate I",
-          "label": "CI"
+          "name": "Carlos Menchaca",
+          "label": "CM"
         }
       ],
       "unsure": [
         {
-          "name": "Candidate J",
-          "label": "CJ"
+          "name": "Dianne Morales",
+          "label": "DM",
+          "image": "dianne_morales.jpg"
+        },
+        {
+          "name": "Bill Pepitone",
+          "label": "BP",
+          "image": "bill_pepitone.jpg"
+        },
+        {
+          "name": "Paperboy Love Prince",
+          "label": "PP"
+        },
+        {
+          "name": "Scott Stringer",
+          "label": "SS",
+          "image": "scott_stringer.jpg"
+        },
+        {
+          "name": "Loree Sutton",
+          "label": "LL"
+        },
+        {
+          "name": "Joycelyn Taylor",
+          "label": "JT"
+        },
+        {
+          "name": "Sara Tirschwell",
+          "label": "ST"
+        },
+        {
+          "name": "Maya Wiley",
+          "label": "MW",
+          "image": "maya_wiley.jpg"
+        },
+        {
+          "name": "Isaac Wright Jr.",
+          "label": "IW"
+        },
+        {
+          "name": "Andrew Yang",
+          "label": "AY",
+          "image": "andrew_yang.jpg"
         }
       ]
     }

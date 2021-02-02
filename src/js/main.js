@@ -14,7 +14,18 @@ questions.forEach(question => {
   const questionData = guides[guideSlug][questionSlug];
   const positions = Object.fromEntries(Object.entries(questionData).map(([key, answer]) => {
     return [key, answer.map(candidate => {
-      return {...candidate, maxRadius: 20};
+      const node = {
+        ...candidate,
+        maxRadius: 20
+      };
+
+      if (candidate.image) {
+        const image = new Image(100, 100);
+        image.src = `assets/images/${candidate.image}`;
+        node.image = image;
+      }
+
+      return node;
     })];
   }));
 
