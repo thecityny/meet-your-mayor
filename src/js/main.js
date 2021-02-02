@@ -1,6 +1,6 @@
-// const pym = require("./lib/pym");
-// const ai2html = require("./lib/ai2html-resizer");
 const visual = require("./visual");
+const tooltip = require("./tooltip.js");
+
 const guides = require("../../data/positions.json");
 const guideSlug = "criminal-justice";
 const questions = Array.from(document.querySelectorAll(".question"));
@@ -23,7 +23,7 @@ questions.forEach(question => {
     const slug = input.getAttribute("value");
 
     const target = document.querySelector(`#answer-${questionSlug}-${slug}`);
-    const chart = visual(target);
+    const chart = visual(target, tooltip);
     const data = positions[slug];
     chart(data);
 

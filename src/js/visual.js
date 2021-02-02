@@ -1,4 +1,4 @@
-const {select} = require("d3-selection");
+const {select, pointer} = require("d3-selection");
 const {forceSimulation, forceX, forceY, forceCollide, forceManyBody} = require("d3-force");
 const {drag} = require("d3-drag");
 const {easeQuadIn} = require("d3-ease");
@@ -51,7 +51,7 @@ function forceGrowth() {
   return force;
 }
 
-module.exports = function (target) {
+module.exports = function (target, tooltip) {
   var updateFunction;
 
   const canvas = select(document.createElement("canvas"))
@@ -77,21 +77,28 @@ module.exports = function (target) {
       const width = target.offsetWidth;
       const height = target.offsetHeight;
 
+      function findNode(pointerX, pointerY) {
+        const x = pointerX - width / 2;
+        const y = pointerY - height / 2;
+
+        for (i = candidates.length - 1; i >= 0; --i) {
+          const node = candidates[i];
+          const r = node.r;
+          const dx = x - node.x;
+          const dy = y - node.y;
+    
+          if (dx * dx + dy * dy < r * r) {
+            return node;
+          }
+        }
+      }
+
       const dragHandler = drag()
         .subject(e => {
-          const x = e.x - width / 2;
-          const y = e.y - height / 2;
-
-          for (i = candidates.length - 1; i >= 0; --i) {
-            const node = candidates[i];
-            const r = node.r;
-            const dx = x - node.x;
-            const dy = y - node.y;
-      
-            if (dx * dx + dy * dy < r * r) {
-              return node;
-            }
-          }
+          return findNode(e.x, e.y);
+        })
+        .on("start", e => {
+          tooltip.hide();
         })
         .on("drag", e => {
           const xExtent = width / 2 - e.subject.r;
@@ -105,6 +112,19 @@ module.exports = function (target) {
           e.subject.fx = null;
           e.subject.fy = null;
         });
+      
+      const mouseoverHandler = e => {
+        const [x, y] = pointer(e);
+        const node = findNode(x, y);
+
+        if (node) {
+          tooltip.show();
+          tooltip.setPosition(e.pageX, e.pageY);
+          tooltip.setHTML(`<p>${node.name}<p>`);
+        } else {
+          tooltip.hide();
+        }
+      }
 
       function draw() {
         context.clearRect(0, 0, width, height);
@@ -135,7 +155,8 @@ module.exports = function (target) {
       canvas
         .attr("width", width)
         .attr("height", height)
-        .call(dragHandler);
+        .call(dragHandler)
+        .on("mousemove", mouseoverHandler);
 
       simulation
         .force("collide", collide)
