@@ -70,7 +70,7 @@ module.exports = function (target, tooltip) {
   const collide = forceCollide().iterations(3);
   const refresh = () => simulation.alpha(1).restart();
 
-  function join(candidates) {
+  function join(candidates = []) {
     simulation.nodes(candidates);
 
     function update() {

@@ -1,6 +1,7 @@
 const visual = require("./visual");
 const tooltip = require("./tooltip.js");
 
+const candidates = require("../../data/candidates.json");
 const guides = require("../../data/positions.json");
 const guideSlug = "criminal-justice";
 const questions = Array.from(document.querySelectorAll(".question"));
@@ -13,15 +14,15 @@ questions.forEach(question => {
 
   const questionData = guides[guideSlug][questionSlug];
   const positions = Object.fromEntries(Object.entries(questionData).map(([key, answer]) => {
-    return [key, answer.map(candidate => {
+    return [key, answer.map(slug => {
       const node = {
-        ...candidate,
+        ...candidates[slug],
         maxRadius: 20
       };
 
-      if (candidate.image) {
+      if (node.image) {
         const image = new Image(100, 100);
-        image.src = `assets/images/${candidate.image}`;
+        image.src = `assets/images/${node.image}`;
         node.image = image;
       }
 
@@ -48,11 +49,11 @@ questions.forEach(question => {
   inputs.forEach(input => {
     input.addEventListener("change", e => {
       const slug = e.target.value;
-      const you = {name: "YOU", label: "YOU", maxRadius: 40};
+      const you = {name: "YOU", label: "YOU", maxRadius: 30};
 
       // Add YOU to the selected answer, reset the other answers
       Object.entries(answers).forEach(([key, chart]) => {
-        const data = positions[key];
+        const data = positions[key] || [];
   
         if (key === slug) {
           chart([...data, you]);
