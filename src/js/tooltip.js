@@ -1,26 +1,23 @@
-function Tooltip() {
-  const tooltip = document.createElement("div");
-  this.tooltip = tooltip;
-  this.hiddenClass = "tooltip-hidden";
-  
-  tooltip.classList.add("tooltip", this.hiddenClass);
-  document.body.appendChild(tooltip);
+const hiddenClass = "tooltip-hidden";
+
+const tooltip = document.createElement("div");
+tooltip.classList.add("tooltip", hiddenClass);
+document.body.appendChild(tooltip);
+
+function show() {
+  tooltip.classList.remove(hiddenClass);
 }
 
-Tooltip.prototype.show = function () {
-  this.tooltip.classList.remove(this.hiddenClass);
+function hide() {
+  tooltip.classList.add(hiddenClass);
 }
 
-Tooltip.prototype.hide = function () {
-  this.tooltip.classList.add(this.hiddenClass);
+function setHTML(html) {
+  tooltip.innerHTML = html;
 }
 
-Tooltip.prototype.setHTML = function (html) {
-  this.tooltip.innerHTML = html;
-}
-
-Tooltip.prototype.setPosition = function (mouseX, mouseY) {
-  const bounds = this.tooltip.getBoundingClientRect();
+function setPosition(mouseX, mouseY) {
+  const bounds = tooltip.getBoundingClientRect();
 
   // Offset above mouse
   const mouseOffset = 20;
@@ -55,7 +52,12 @@ Tooltip.prototype.setPosition = function (mouseX, mouseY) {
         // Otherwise, use pointer position
         : x;
 
-  this.tooltip.setAttribute("style", `top: ${top}px; left: ${left}px`);
+  tooltip.setAttribute("style", `top: ${top}px; left: ${left}px`);
 }
 
-module.exports = new Tooltip();
+module.exports = {
+  show,
+  hide,
+  setHTML,
+  setPosition
+};
