@@ -36,9 +36,9 @@
     
     <%= t.include("partials/_archie.ejs", grunt.data) %>
 
-    <div class="copy-container">
-      <h2 class="result-title">Your Matches</h2>
-      <ul id="result" class="result"></ul>
+    <div id="results-container" class="results-container">
+      <h2 class="result-title">Matching answers</h2>
+      <div id="results" class="results"></div>
     </div>
   </main>
   <%= t.include("partials/_footer.html") %>

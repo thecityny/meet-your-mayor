@@ -35,12 +35,58 @@
   height: 200px;
 }
 
-.result {
-  margin: 0 auto;
-  width: fit-content;
-  display: block;
+.results-container {
+  display: none;
+  padding: 5px 20px;
+  margin: 60px 0 20px 0;
+  background: #ddd;
+  text-align: center;
+
+  &.active {
+    display: block;
+  }
+}
+.results {
+  display: inline-block;
 }
 
+.result {
+  width: 100%;
+  padding: 20px 0;
+  text-align: left;
+
+  @media screen and (min-width: 420px) {
+    display: flex;
+  }
+}
 .result-title {
-  text-align: center;
+  .boldface();
+  font-size: 32px;
+}
+.candidate-image {
+  width: 40px;
+  vertical-align: middle;
+  border-radius: 50%;
+  margin-right: 15px;
+  background: #666;
+}
+
+.result-number {
+  margin: 0 40px 0 0;
+  padding: 0;
+  text-align: right;
+  font-size: 50px;
+  .boldface();
+}
+.result-list {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  font-size: 20px;
+  .bookface();
+
+  li {
+    padding: 10px 0;
+  }
 }

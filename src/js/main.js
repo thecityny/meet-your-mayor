@@ -1,16 +1,16 @@
 const {rollup} = require("d3-array");
+const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
 
 const visual = require("./visual");
 const tooltip = require("./tooltip.js");
 
 const candidates = require("../../data/candidates.json");
 const guides = require("../../data/positions.json");
-const { select } = require("d3-selection");
 const guideSlug = "criminal-justice";
 const questions = Array.from(document.querySelectorAll(".question"));
 
-const result = document.querySelector("#result");
-
+const result = document.querySelector("#results");
+const resultsContainer = document.querySelector("#results-container");
 const selected = {};
 
 // Set up each question
@@ -75,12 +75,19 @@ questions.forEach(question => {
 });
 
 function getMatches(selected) {
-  const candidates = Object.values(selected).reduce((candidates, question) => {
+  const selectedCandidates = Object.values(selected).reduce((candidates, question) => {
     return [].concat(candidates, question);
   }, []);
+
+  if (selectedCandidates.length > 0) {
+    resultsContainer.classList.add("active");
+  } else {
+    resultsContainer.classList.remove("active");
+  }
   
-  const entries = Array.from(rollup(candidates, v => v.length, d => d))
-    .sort((a, b) => {
+  const entries = Array.from(rollup(selectedCandidates, v => v.length, d => d));
+  const rankedEntries = Array.from(rollup(entries, v => {
+    return v.map(d => d[0]).sort((a, b) => {
       const aText = a[0].toLowerCase();
       const bText = b[0].toLowerCase();
       const aInt = a[1];
@@ -97,9 +104,14 @@ function getMatches(selected) {
       }
 
       return bInt - aInt;
-    })
-    .map((d) => `<li>${d[0]} (${d[1]})</li>`)
-    .join("");
+    });
+  }, d => d[1]))
+  .sort((a, b) => b[0] - a[0]);
 
-  result.innerHTML = entries;
+  const markup = rankedEntries.map((d) => `<div class="result">`
+    + `<span class="result-number">${d[0]}</span>`
+    + `<ul class="result-list">${d[1].map(d => 
+      `<li>${`<img class="candidate-image" alt="${candidates[d].name}" src="${candidates[d].image ? `assets/images/${candidates[d].image}` : emptyImage}" />`}${candidates[d].name}</li>`).join("")
+    }</ul></div>`).join("");
+  result.innerHTML = markup;
 }
