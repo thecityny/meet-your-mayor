@@ -126,6 +126,10 @@ module.exports = function (target, tooltip) {
         }
       }
 
+      const mouseleaveHandler = e => {
+        tooltip.hide();
+      }
+
       function draw() {
         context.clearRect(0, 0, width, height);
         context.save();
@@ -165,6 +169,7 @@ module.exports = function (target, tooltip) {
         .attr("width", width)
         .attr("height", height)
         .on("mousemove", mouseoverHandler)
+        .on("mouseleave", mouseleaveHandler)
         .call(dragHandler)
         // Undoes default d3-drag behavior 
         .style("touch-action", "auto");
