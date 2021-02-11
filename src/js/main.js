@@ -75,7 +75,8 @@ questions.forEach(question => {
 });
 
 function getMatches(selected) {
-  const selectedCandidates = Object.values(selected).reduce((candidates, question) => {
+  const questions = Object.values(selected);
+  const selectedCandidates = questions.reduce((candidates, question) => {
     return [].concat(candidates, question);
   }, []);
 
@@ -109,7 +110,7 @@ function getMatches(selected) {
   .sort((a, b) => b[0] - a[0]);
 
   const markup = rankedEntries.map((d) => `<div class="result">`
-    + `<span class="result-number">${d[0]}</span>`
+    + `<span class="result-number">Matched ${d[0]} of ${questions.length}</span>`
     + `<ul class="result-list">${d[1].map(d => 
       `<li>${`<img class="candidate-image" alt="${candidates[d].name}" src="${candidates[d].image ? `assets/images/${candidates[d].image}` : emptyImage}" />`}${candidates[d].name}</li>`).join("")
     }</ul></div>`).join("");
