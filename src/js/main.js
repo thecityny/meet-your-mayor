@@ -1,11 +1,17 @@
+const {rollup} = require("d3-array");
+
 const visual = require("./visual");
 const tooltip = require("./tooltip.js");
 
 const candidates = require("../../data/candidates.json");
 const guides = require("../../data/positions.json");
+const { select } = require("d3-selection");
 const guideSlug = "criminal-justice";
 const questions = Array.from(document.querySelectorAll(".question"));
 
+const result = document.querySelector("#result");
+
+const selected = {};
 
 // Set up each question
 questions.forEach(question => {
@@ -50,6 +56,9 @@ questions.forEach(question => {
     input.addEventListener("change", e => {
       const slug = e.target.value;
       const you = {name: "YOU", label: "YOU", maxRadius: 30};
+      selected[questionSlug] = questionData[slug];
+
+      getMatches(selected);
 
       // Add YOU to the selected answer, reset the other answers
       Object.entries(answers).forEach(([key, chart]) => {
@@ -64,3 +73,33 @@ questions.forEach(question => {
     });
   });
 });
+
+function getMatches(selected) {
+  const candidates = Object.values(selected).reduce((candidates, question) => {
+    return [].concat(candidates, question);
+  }, []);
+  
+  const entries = Array.from(rollup(candidates, v => v.length, d => d))
+    .sort((a, b) => {
+      const aText = a[0].toLowerCase();
+      const bText = b[0].toLowerCase();
+      const aInt = a[1];
+      const bInt = b[1];
+
+      if (aInt === bInt) {
+        if (aText < bText) {
+          return -1;
+        }
+        if (aText > bText) {
+          return 1;
+        }
+        return 0;
+      }
+
+      return bInt - aInt;
+    })
+    .map((d) => `<li>${d[0]} (${d[1]})</li>`)
+    .join("");
+
+  result.innerHTML = entries;
+}
