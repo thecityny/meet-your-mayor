@@ -50,41 +50,46 @@ module.exports = function(grunt) {
   });
 
   async function parse(path) {
+    const topicColumn = "topic";
+    const candidateColumn = "candidate-slug";
+    const questionColumn = "question-slug";
+    const answerColumn = "answer-slug";
+
     // Candidates
     const candidates = validate(candidateSheet, d => {
-      return d["candidate-slug"];
+      return d[candidateColumn];
     });
-    const candidateSlugs = candidates.map(d => d["candidate-slug"]);
+    const candidateSlugs = candidates.map(d => d[candidateColumn]);
     const candidateData = rollup(candidates, v => {
       const {name, label, image} = v[0];
       return {name, label, image};
-    }, d => d["candidate-slug"]);
+    }, d => d[candidateColumn]);
 
     // Answers
     const answers = validate(answerSheet, d => {
-      return d["topic"] && d["question"] && d["answer"];
+      return d[topicColumn] && d[questionColumn] && d[answerColumn];
     });
     const answerData = rollup(
       answers, 
-      v => v.map(d => d["answer"]), 
-      d => d["topic"], 
-      d => d["question"]
+      v => v.map(d => d[answerColumn]), 
+      d => d[topicColumn], 
+      d => d[questionColumn]
     );
     
     // Policies
     const policies = validate(policySheet, d => {
-      const questions = answerData.get(d["topic"]);
-      const answers = questions && questions.get(d["question"]);
+      const questions = answerData.get(d[topicColumn]);
+      const answers = questions && questions.get(d[questionColumn]);
 
-      return answers && answers.indexOf(d["answer"]) > -1 
-        && candidateSlugs.indexOf(d["candidate-slug"]);
+      return answers && answers.indexOf(d[answerColumn]) > -1 
+        && candidateSlugs.indexOf(d[candidateColumn]) > -1;
     });
     const policyData = rollup(
       policies, 
-      v => v.reduce((v, d) => d["candidate-slug"] ? v.concat(d["candidate-slug"]) : v, []), 
-      d => d["topic"], 
-      d => d["question"], 
-      d => d["answer"]
+      v => v.reduce((v, d) => d[candidateColumn] ? v.concat(d[candidateColumn]) : v, []), 
+      d => d[topicColumn], 
+      d => d[questionColumn], 
+      d => d[answerColumn]
     );
 
     console.log(`Saving data`);
