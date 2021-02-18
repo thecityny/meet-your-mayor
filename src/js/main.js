@@ -20,9 +20,10 @@ questions.forEach(question => {
 
   const questionData = guides[guideSlug][questionSlug];
   const positions = Object.fromEntries(Object.entries(questionData).map(([key, answer]) => {
-    return [key, answer.map(slug => {
+    return [key, answer.map(candidate => {
       const node = {
-        ...candidates[slug],
+        ...candidates[candidate.slug],
+        ...candidate,
         maxRadius: 20
       };
 
@@ -56,8 +57,7 @@ questions.forEach(question => {
     input.addEventListener("change", e => {
       const slug = e.target.value;
       const you = {name: "YOU", label: "YOU", maxRadius: 30};
-      selected[questionSlug] = questionData[slug];
-
+      selected[questionSlug] = questionData[slug].map(d => d.slug);
       getMatches(selected);
 
       // Add YOU to the selected answer, reset the other answers

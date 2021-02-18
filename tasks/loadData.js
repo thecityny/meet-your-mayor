@@ -86,7 +86,12 @@ module.exports = function(grunt) {
     });
     const policyData = rollup(
       policies, 
-      v => v.reduce((v, d) => d[candidateColumn] ? v.concat(d[candidateColumn]) : v, []), 
+      v => v.reduce((v, d) => d[candidateColumn] ? v.concat({
+        slug: d["candidate-slug"],
+        quote: d["quote"],
+        source: d["setting"],
+        url: d["source"]
+      }) : v, []), 
       d => d[topicColumn], 
       d => d[questionColumn], 
       d => d[answerColumn]

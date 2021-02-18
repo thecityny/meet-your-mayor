@@ -120,7 +120,7 @@ module.exports = function (target, tooltip) {
         if (node) {
           tooltip.show();
           tooltip.setPosition(e.pageX, e.pageY);
-          tooltip.setHTML(`<p>${node.name}<p>`);
+          tooltip.setHTML(`<p>${node.name}<p>${node.quote ? `<p>${node.quote}</p><p>from ${node.url ? `<a href="${node.url}">${node.source}</a>` : node.source}</p>` : ""}`);
         } else {
           tooltip.hide();
         }
