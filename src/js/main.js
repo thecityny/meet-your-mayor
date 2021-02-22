@@ -17,6 +17,7 @@ const selected = {};
 questions.forEach(question => {
   const questionSlug = question.getAttribute("data-slug");
   const inputs = Array.from(question.querySelectorAll(`input[name=${questionSlug}]`));
+  const answerContainer = question.querySelector(".answers");
 
   const questionData = guides[guideSlug][questionSlug];
   const positions = Object.fromEntries(Object.entries(questionData).map(([key, answer]) => {
@@ -24,7 +25,7 @@ questions.forEach(question => {
       const node = {
         ...candidates[candidate.slug],
         ...candidate,
-        maxRadius: 20
+        maxRadius: 25
       };
 
       if (node.image) {
@@ -56,10 +57,12 @@ questions.forEach(question => {
   inputs.forEach(input => {
     input.addEventListener("change", e => {
       const slug = e.target.value;
-      const you = {name: "YOU", label: "YOU", maxRadius: 30};
+      const you = {name: "YOU", label: "YOU", maxRadius: 35};
       selected[questionSlug] = questionData[slug].map(d => d.slug);
       getMatches(selected);
 
+      answerContainer.classList.add("active");
+      
       // Add YOU to the selected answer, reset the other answers
       Object.entries(answers).forEach(([key, chart]) => {
         const data = positions[key] || [];

@@ -13,27 +13,26 @@
 
 
 <body>
-  <%= t.include("partials/_header.html") %>
-  <main>
-    <div class="container">
-      <p class="eyebrow">Meet Your Mayor</p>
-      <h1 class="headline"><%= archieml.hed %></h1>
-      <p class="deck"><%= archieml.dek %></p>
+  <div class="splash-screen">
+    <div class="splash-screen-background">
+      <div class="background-circle"></div>
+    </div>
+    <div class="splash-screen-text">
+      <div class="watermark"><a href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a></div>
+      <p class="series-headline">Meet Your Mayor</p>
+      <h1 class="topic"><%= archieml.hed %></h1>
       <% const updated = new Date(); %>
-      <p class="article-date"><time datetime="<%= updated.toISOString() %>"><%= updated.toLocaleDateString("en-US", {
+      <p class="date"><time datetime="<%= updated.toISOString() %>"><%= updated.toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
           year: "numeric"
-        }) %> at <%= updated.toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "numeric"
         }) %></time>
       </p>
-      <div class="copy-container">
-        <div class="divider"></div>
-      </div>
+      <p class="deck"><%= archieml.dek %></p>
+      <i class="down-arrow"></i>
     </div>
-    
+  </div>
+  <main>
     <%= t.include("partials/_archie.ejs", grunt.data) %>
 
     <div id="results-container" class="results-container">

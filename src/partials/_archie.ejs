@@ -67,24 +67,23 @@
   <% } %>
 
   <% if (item.type == 'question') { %>
-  <div class="photo-container question" data-slug="<%= item.value.slug %>">
-    <h3><%= item.value.text %></h3>
-    <form>
-      <% item.value.answers.forEach(function(answer) { %>
-        <div class="input-group">
-          <input type="radio" id="question-<%= item.value.slug %>-<%= answer.slug %>" name="<%= item.value.slug %>" value="<%= answer.slug %>" />
-          <label for="question-<%= item.value.slug %>-<%= answer.slug %>"><%= answer.text %></label>
+  <div class="question-container">
+    <div class="question" data-slug="<%= item.value.slug %>">
+      <form>
+        <h3><%= item.value.text %></h3>
+        <% item.value.answers.forEach(function(answer) { %>
+          <label class="input-group" for="question-<%= item.value.slug %>-<%= answer.slug %>"><input type="radio" id="question-<%= item.value.slug %>-<%= answer.slug %>" name="<%= item.value.slug %>" value="<%= answer.slug %>" /> <%= answer.text %></label>
+        <% }); %>
+      </form>
+      <div class="answers">
+        <% item.value.answers.forEach(function(answer) { %>
+        <div class="answer">
+          <h4><%= answer.text %></h4>
+          <div id="answer-<%= item.value.slug %>-<%= answer.slug %>" class="chart"></div>
         </div>
-      <% }); %>
-    </form>
-  </div>
-  <div class="container answers">
-    <% item.value.answers.forEach(function(answer) { %>
-    <div class="answer">
-      <h4><%= answer.text %></h4>
-      <div id="answer-<%= item.value.slug %>-<%= answer.slug %>" class="chart"></div>
+        <% }); %>
+      </div>
     </div>
-    <% }); %>
   </div>
   <% } %>
 
