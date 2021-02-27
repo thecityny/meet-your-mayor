@@ -7,10 +7,18 @@
 </head>
 
 <% 
-  const guideData = grunt.data.json.positions["criminal-justice"];
-  const archieml = grunt.data.archieml["criminal-justice-test"];
-%>
+  const docSlug = "criminal-justice-test";
+  const archieml = grunt.data.archieml[docSlug];
+  const topic = archieml.topic;
+  const questions = archieml.questions;
 
+  const questionText = grunt.data.json.questionData[topic];
+  const questionAnswerText = grunt.data.json.answerData[topic];
+  const questionPositions = grunt.data.json.positionData[topic];
+
+  const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+  const candidateSlugs = Object.keys(grunt.data.json.candidateData);
+%>
 
 <body>
   <div class="splash-screen">
@@ -34,6 +42,73 @@
   </div>
   <main>
     <%= t.include("partials/_archie.ejs", grunt.data) %>
+
+    <% if (questions) { %>
+      <% questions.forEach(question => { %>
+      <% 
+        const answerText = questionAnswerText[question.slug];
+        const answerPositions = questionPositions[question.slug];
+        const answerCandidateSlugs = [].concat(...Object.values(answerPositions)).map(d => d.slug);
+        const naAnswerPositions = candidateSlugs.filter(slug => answerCandidateSlugs.indexOf(slug) < 0).map(d => ({slug: d}));
+        const positions = {...answerPositions, na: naAnswerPositions};
+      %>
+    
+      <div class="question" data-slug="<%= question.slug %>">
+        <div class="copy-container">
+          <h2 class="subhead"><%= question.subhead %></h2>
+          <div class="copy">
+            <%= t.renderMarkdown(question.intro) %>
+          </div>
+          <h3><%= questionText[question.slug] %></h3>
+          <form>
+            <% question.answers.forEach(function(answer) { %>
+              <label class="input-group" for="question-<%= question.slug %>-<%= answer %>"><input type="radio" id="question-<%= question.slug %>-<%= answer %>" name="<%= question.slug %>" value="<%= answer %>" /> <%= answerText[answer] %></label>
+            <% }); %>
+          </form>
+        </div>
+        <div class="answer photo-container">
+          <h4>Candidates who agree with you</h4>
+          <div class="chart"></div>
+        </div>
+        <div class="expand-link photo-container">
+          <a class="collapsed" href="#"><span class="open">Hide all responses</span><span class="closed">Show all responses</span></a>
+        </div>
+        <div class="responses photo-container">
+          <% question.answers.forEach(function(answer) { %>
+            <div class="response">
+              <h4><%= answerText[answer] %></h4>
+              <ul>
+                <% positions[answer].forEach(function(position) { %>
+                  <% const candidate = grunt.data.json.candidateData[position.slug]; %>
+                  <li>
+                    <figure class="response-image">
+                      <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
+                      <div class="response-image-label">
+                        <%= candidate.image ? "" : candidate.label %>
+                      </div>
+                    </figure>
+                    <div class="response-details">
+                      <p class="response-name"><%= candidate.name %></p>
+                      <% if (position.quote) { %>
+                        <p class="response-quote"><%= position.quote %></p>
+                        <p class="response-source">from <%= position.url ? `<a href="${answer.url}">${position.source}</a>` : position.source %></p>
+                      <% } %>
+                    </div>
+                  </li>
+                <% }); %>
+              </ul>
+            </div>
+          <% }); %>
+          <% if (naAnswerPositions.length) { %>
+            <div class="response">
+              <h4>Did not respond</h4>
+              <p class="no-response"><%= naAnswerPositions.map(d => grunt.data.json.candidateData[d.slug].name).join(", ") %></p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      <% }); %>
+    <% } %>
 
     <div id="results-container" class="results-container">
       <h2 class="result-title">Results</h2>

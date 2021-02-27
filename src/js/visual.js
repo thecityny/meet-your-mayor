@@ -154,7 +154,7 @@ module.exports = function (target, tooltip) {
             context.restore();
           } else {
             context.arc(x, y, r, 0, 2 * Math.PI);
-            context.fillStyle = d.name === "YOU" ? "#A9328A" : "#ffffff";
+            context.fillStyle = d.name === "YOU" ? "#FA7541" : "#ffffff";
             context.fill();
             if (r === d.maxRadius) {
               context.fillStyle = d.name === "YOU" ? "#ffffff" : "#404040";

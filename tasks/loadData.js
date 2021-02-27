@@ -7,7 +7,9 @@ Parses data
 const {rollup} = require("d3-array");
 
 const policySheet = require("../data/policy.sheet.json");
-const answerSheet = require("../data/q-and-a.sheet.json");
+const topicSheet = require("../data/topics.sheet.json");
+const questionSheet = require("../data/questions.sheet.json");
+const answerSheet = require("../data/answers.sheet.json");
 const candidateSheet = require("../data/candidates.sheet.json");
 
 function replacer(key, value) {
@@ -52,41 +54,78 @@ module.exports = function(grunt) {
   async function parse(path) {
     const topicColumn = "topic";
     const candidateColumn = "candidate-slug";
+    const candidateActiveColumn = "active";
     const questionColumn = "question-slug";
     const answerColumn = "answer-slug";
+    const questionTextColumn = "question-text";
+    const answerTextColumn = "answer-text";
 
     // Candidates
     const candidates = validate(candidateSheet, d => {
-      return d[candidateColumn];
+      return d[candidateColumn] && d[candidateActiveColumn] && d["name"] && d["label"] ;
     });
+    const activeCandidates = candidates.filter(d => d[candidateActiveColumn] === "yes");
     const candidateSlugs = candidates.map(d => d[candidateColumn]);
-    const candidateData = rollup(candidates, v => {
+    const activeCandidateSlugs = activeCandidates.map(d => d[candidateColumn]);
+    const candidateData = rollup(activeCandidates, v => {
       const {name, label, image} = v[0];
       return {name, label, image};
     }, d => d[candidateColumn]);
 
+    // Topics
+    const topics = validate(topicSheet, d => {
+      return d[topicColumn];
+    });
+    const topicSlugs = topics.map(d => d[topicColumn]);
+
+    // Questions
+    const questions = validate(questionSheet, d => {
+      return topicSlugs.indexOf(d[topicColumn]) > -1
+        && d[questionColumn] && d[questionTextColumn];
+    });
+    const questionSlugs = rollup(
+      questions,
+      v => v.map(d => d[questionColumn]),
+      d => d[topicColumn]
+    );
+    const questionData = rollup(
+      questions,
+      v => v[0][questionTextColumn],
+      d => d[topicColumn],
+      d => d[questionColumn]
+    );
+
     // Answers
     const answers = validate(answerSheet, d => {
-      return d[topicColumn] && d[questionColumn] && d[answerColumn];
+      const questions = questionSlugs.get(d[topicColumn]);
+      return questions && questions.indexOf(d[questionColumn]) > -1 
+        && d[answerColumn] && d[answerTextColumn];
     });
-    const answerData = rollup(
+    const answerSlugs = rollup(
       answers, 
       v => v.map(d => d[answerColumn]), 
       d => d[topicColumn], 
       d => d[questionColumn]
     );
+    const answerData = rollup(
+      answers,
+      v => v[0][answerTextColumn],
+      d => d[topicColumn],
+      d => d[questionColumn],
+      d => d[answerColumn]
+    );
     
-    // Policies
-    const policies = validate(policySheet, d => {
-      const questions = answerData.get(d[topicColumn]);
+    // Positions
+    const positions = validate(policySheet, d => {
+      const questions = answerSlugs.get(d[topicColumn]);
       const answers = questions && questions.get(d[questionColumn]);
 
       return answers && answers.indexOf(d[answerColumn]) > -1 
         && candidateSlugs.indexOf(d[candidateColumn]) > -1;
     });
-    const policyData = rollup(
-      policies, 
-      v => v.reduce((v, d) => d[candidateColumn] ? v.concat({
+    const positionData = rollup(
+      positions, 
+      v => v.reduce((v, d) => activeCandidateSlugs.indexOf(d[candidateColumn]) > -1 ? v.concat({
         slug: d["candidate-slug"],
         quote: d["quote"],
         source: d["setting"],
@@ -98,7 +137,9 @@ module.exports = function(grunt) {
     );
 
     console.log(`Saving data`);
-    grunt.file.write(`${path}/candidates.json`, JSON.stringify(candidateData, replacer, 2));
-    grunt.file.write(`${path}/positions.json`, JSON.stringify(policyData, replacer, 2));
+    grunt.file.write(`${path}/candidateData.json`, JSON.stringify(candidateData, replacer, 2));
+    grunt.file.write(`${path}/questionData.json`, JSON.stringify(questionData, replacer, 2));
+    grunt.file.write(`${path}/answerData.json`, JSON.stringify(answerData, replacer, 2));
+    grunt.file.write(`${path}/positionData.json`, JSON.stringify(positionData, replacer, 2));
   }
 }

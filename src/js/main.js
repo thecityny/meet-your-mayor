@@ -4,9 +4,9 @@ const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALA
 const visual = require("./visual");
 const tooltip = require("./tooltip.js");
 
-const candidates = require("../../data/candidates.json");
-const guides = require("../../data/positions.json");
-const guideSlug = "criminal-justice";
+const candidates = require("../../data/candidateData.json");
+const positions = require("../../data/positionData.json");
+const topic = "criminal-justice";
 const questions = Array.from(document.querySelectorAll(".question"));
 
 const result = document.querySelector("#results");
@@ -15,17 +15,23 @@ const selected = {};
 
 // Set up each question
 questions.forEach(question => {
+  const answer = question.querySelector(".answer");
+  const responses = question.querySelector(".responses");
+  const chartTarget = question.querySelector(".chart");
+  const expandLink = question.querySelector(".expand-link a");
+
   const questionSlug = question.getAttribute("data-slug");
   const inputs = Array.from(question.querySelectorAll(`input[name=${questionSlug}]`));
-  const answerContainer = question.querySelector(".answers");
-
-  const questionData = guides[guideSlug][questionSlug];
-  const positions = Object.fromEntries(Object.entries(questionData).map(([key, answer]) => {
+  const chart = visual(chartTarget, tooltip);
+  
+  const you = {name: "YOU", label: "YOU", maxRadius: 45};
+  const questionPositions = positions[topic][questionSlug];
+  const answerPositions = Object.fromEntries(Object.entries(questionPositions).map(([key, answer]) => {
     return [key, answer.map(candidate => {
       const node = {
         ...candidates[candidate.slug],
         ...candidate,
-        maxRadius: 25
+        maxRadius: 30
       };
 
       if (node.image) {
@@ -38,41 +44,31 @@ questions.forEach(question => {
     })];
   }));
 
-  // Initialize answer charts based on available options
-  const answers = inputs.reduce((answers, input) => {
-    const slug = input.getAttribute("value");
+  expandLink.addEventListener("click", e => {
+    e.preventDefault();
+    const activeClass = "active";
 
-    const target = document.querySelector(`#answer-${questionSlug}-${slug}`);
-    const chart = visual(target, tooltip);
-    const data = positions[slug];
-    chart(data);
-
-    return {
-      [slug]: chart,
-      ...answers
-    };
-  }, {});
+    if (responses.classList.contains(activeClass)) {
+      responses.classList.remove(activeClass);
+      expandLink.classList.remove("expanded");
+      expandLink.classList.add("collapsed");
+    } else {
+      responses.classList.add(activeClass);
+      expandLink.classList.remove("collapsed");
+      expandLink.classList.add("expanded");
+    }
+  });
 
   // Add input listeners
   inputs.forEach(input => {
     input.addEventListener("change", e => {
       const slug = e.target.value;
-      const you = {name: "YOU", label: "YOU", maxRadius: 35};
-      selected[questionSlug] = questionData[slug].map(d => d.slug);
+      selected[questionSlug] = questionPositions[slug].map(d => d.slug);
       getMatches(selected);
 
-      answerContainer.classList.add("active");
-      
-      // Add YOU to the selected answer, reset the other answers
-      Object.entries(answers).forEach(([key, chart]) => {
-        const data = positions[key] || [];
-  
-        if (key === slug) {
-          chart([...data, you]);
-        } else {
-          chart(data);
-        }
-      });
+      const data = answerPositions[slug] || [];
+      answer.classList.add("active");
+      chart([...data, you].map(node => ({...node, radius: 0})));
     });
   });
 });
