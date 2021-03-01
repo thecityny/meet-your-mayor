@@ -3,7 +3,7 @@
 @import "tooltip";
 
 body {
-  background-color: #fba685;
+  background-color: #ffb599;
   margin: 0;
   color: #333;
 }
@@ -132,6 +132,15 @@ body {
   font-size: 20px;
 }
 
+.question-container {
+  max-width: 740px;
+  padding: 0 20px 20px;
+  background: rgba(255,255,255,0.3);
+  overflow: auto;
+  margin: 40px auto 60px;
+  box-shadow: 2px 2px 4px 2px rgba(0,0,0,0.1);
+}
+
 .question {
   margin-bottom: 80px;
 
@@ -162,20 +171,61 @@ body {
   }
 }
 
-.expand-link {
-  text-align: center;
-  margin: 20px auto;
-
-  a, a:hover, a:active, a:focus, a:visited {
-    color: #404040;
-  }
+.expand-header {
+  margin: 30px auto 20px;
+  display: flex;
+  align-items: center;
 
   .open, .closed {
     display: none;
   }
 
-  .expanded .open, .collapsed .closed {
+  &.expanded .open, &.collapsed .closed {
     display: inline;
+  }
+
+  &.collapsed .button-group {
+    visibility: hidden;
+  }
+}
+
+.link-group {
+  flex-grow: 1;
+
+  a, a:hover, a:active, a:focus, a:visited {
+    color: #404040;
+  }
+}
+
+.button-group {
+  overflow: auto;
+
+  button {
+    .bookface();
+    font-size: 16px;
+    width: auto;
+    border: 1px solid #666;
+    padding: 5px 15px;
+    margin: 5px 0;
+    color: #333;
+    background: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    float: left;
+    border-width: 1px 1px 1px 0;
+    user-select: none;
+
+    &.active {
+      background: #eee;
+    }
+  
+    &:first-child {
+      border-radius: 5px 0 0 5px;
+      border-width: 1px;
+    }
+  
+    &:last-child {
+      border-radius: 0 5px 5px 0;
+    }
   }
 }
   
@@ -203,9 +253,7 @@ body {
 }
 
 .responses {
-  margin: 0 auto 20px;
-  max-width: 700px;
-  padding: 0;
+  margin-bottom: 20px;
   display: none;
   color: #333;
 
@@ -217,23 +265,36 @@ body {
   &.active {
     display: block;
   }
+
+  &.grid {
+    .response-details {
+      display: none;
+    }
+
+    .response ul li {
+      display: inline-block;
+      margin: 5px;
+    }
+
+    .response-image {
+      margin: 0;
+    }
+  }
 }
 
 .response {
-  margin: 30px auto;
-  background-color: rgba(255,255,255,0.5);
-  padding: 20px 40px;
   overflow: auto;
+  border-top: 1px solid rgba(0,0,0,0.2);
 
   h4 {
-    font-size: 20px;
-    margin: 10px 0 30px;
-    line-height: 30px;
+    font-size: 18px;
+    margin: 30px 0;
+    line-height: 28px;
     .bookface();
   }
 
   .no-response {
-    margin: 15px 0;
+    margin: 30px 0;
     font-size: 16px;
     line-height: 26px;
   }
@@ -241,6 +302,7 @@ body {
   ul {
     list-style-type: none;
     padding: 0;
+    margin: 30px 0;
 
     li {
       align-items: flex-start;
@@ -257,6 +319,7 @@ body {
   margin: 0 20px 0 0;
   position: relative;
   display: inline-block;
+  pointer-events: none;
 
   img {
     width: 50px;

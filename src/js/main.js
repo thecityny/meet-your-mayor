@@ -1,4 +1,5 @@
 const {rollup} = require("d3-array");
+const {pointer} = require("d3-selection");
 const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
 
 const visual = require("./visual");
@@ -15,10 +16,17 @@ const selected = {};
 
 // Set up each question
 questions.forEach(question => {
+  const gridView = "grid";
+  var view = gridView;
+
   const answer = question.querySelector(".answer");
-  const responses = question.querySelector(".responses");
+  const responseContainer = question.querySelector(".responses");
+  const responses = responseContainer.querySelectorAll(".response");
   const chartTarget = question.querySelector(".chart");
-  const expandLink = question.querySelector(".expand-link a");
+
+  const expandHeader = question.querySelector(".expand-header");
+  const expandLink = expandHeader.querySelector(".link-group a");
+  const viewButtons = expandHeader.querySelectorAll(".button-group button");
 
   const questionSlug = question.getAttribute("data-slug");
   const inputs = Array.from(question.querySelectorAll(`input[name=${questionSlug}]`));
@@ -44,18 +52,39 @@ questions.forEach(question => {
     })];
   }));
 
+  Array.from(viewButtons).forEach(button => {
+    button.addEventListener("click", e => {
+      view = e.target.value;
+
+      if (view === gridView) {
+        responseContainer.classList.add(gridView);
+      } else {
+        responseContainer.classList.remove(gridView);
+        tooltip.hide();
+      }
+
+      Array.from(viewButtons).forEach(button => {
+        if (button.value === view) {
+          button.classList.add("active");
+        } else {
+          button.classList.remove("active");
+        }
+      });
+    });
+  });
+
   expandLink.addEventListener("click", e => {
     e.preventDefault();
     const activeClass = "active";
 
-    if (responses.classList.contains(activeClass)) {
-      responses.classList.remove(activeClass);
-      expandLink.classList.remove("expanded");
-      expandLink.classList.add("collapsed");
+    if (responseContainer.classList.contains(activeClass)) {
+      responseContainer.classList.remove(activeClass);
+      expandHeader.classList.remove("expanded");
+      expandHeader.classList.add("collapsed");
     } else {
-      responses.classList.add(activeClass);
-      expandLink.classList.remove("collapsed");
-      expandLink.classList.add("expanded");
+      responseContainer.classList.add(activeClass);
+      expandHeader.classList.remove("collapsed");
+      expandHeader.classList.add("expanded");
     }
   });
 
@@ -70,6 +99,37 @@ questions.forEach(question => {
       answer.classList.add("active");
       chart([...data, you].map(node => ({...node, radius: 0})));
     });
+  });
+
+  Array.from(responses).forEach(response => {
+    const nodes = response.querySelectorAll("li");
+    const slug = response.getAttribute("data-slug");
+
+    if (slug) {
+      const positions = answerPositions[slug].reduce((positions, position) => {
+        return {
+          ...positions,
+          [position.slug]: position
+        };
+      }, {});
+  
+      Array.from(nodes).forEach(node => {
+        const slug = node.getAttribute("data-slug");
+        const position = positions[slug];
+
+        node.addEventListener("mousemove", e => {
+          if (view === gridView) {
+            tooltip.show();
+            tooltip.setPosition(e.pageX, e.pageY);
+            tooltip.setHTML(`<p>${position.name}<p>${position.quote ? `<p>${position.quote}</p><p>from ${position.url ? `<a href="${position.url}">${position.source}</a>` : position.source}</p>` : ""}`);
+          }
+        });
+
+        node.addEventListener("mouseleave", e => {
+          tooltip.hide();
+        });
+      });
+    }
   });
 });
 
