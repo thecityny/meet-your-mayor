@@ -29,7 +29,7 @@ questions.forEach(question => {
   const viewButtons = expandHeader.querySelectorAll(".button-group button");
 
   const questionSlug = question.getAttribute("data-slug");
-  const inputs = Array.from(question.querySelectorAll(`input[name=${questionSlug}]`));
+  const buttons = Array.from(question.querySelectorAll("form button"));
   const chart = visual(chartTarget, tooltip);
   
   const you = {name: "YOU", label: "YOU", maxRadius: 45};
@@ -89,11 +89,21 @@ questions.forEach(question => {
   });
 
   // Add input listeners
-  inputs.forEach(input => {
-    input.addEventListener("change", e => {
+  buttons.forEach(button => {
+    button.addEventListener("click", e => {
+      e.preventDefault();
+
       const slug = e.target.value;
       selected[questionSlug] = questionPositions[slug].map(d => d.slug);
       getMatches(selected);
+
+      buttons.forEach(button => {
+        if (button.value === slug) {
+          button.classList.add("active");
+        } else {
+          button.classList.remove("active");
+        }
+      });
 
       const data = answerPositions[slug] || [];
       answer.classList.add("active");

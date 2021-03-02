@@ -44,7 +44,7 @@
     <%= t.include("partials/_archie.ejs", grunt.data) %>
 
     <% if (questions) { %>
-      <% questions.forEach(question => { %>
+      <% questions.forEach((question, index) => { %>
       <% 
         const answerText = questionAnswerText[question.slug];
         const answerPositions = questionPositions[question.slug];
@@ -62,10 +62,11 @@
         </div>
         <div class="question-container">
           <div class="copy-container">
+            <p class="question-number">Question <%= index + 1 %> of <%= questions.length %></p>
             <h3><%= questionText[question.slug] %></h3>
             <form>
               <% question.answers.forEach(function(answer) { %>
-                <label class="input-group" for="question-<%= question.slug %>-<%= answer %>"><input type="radio" id="question-<%= question.slug %>-<%= answer %>" name="<%= question.slug %>" value="<%= answer %>" /> <%= answerText[answer] %></label>
+                <button class="input-group" value="<%= answer %>"><%= answerText[answer] %></button>
               <% }); %>
             </form>
           </div>
@@ -75,7 +76,7 @@
           </div>
           <div class="expand-header copy-container collapsed">
             <div class="link-group">
-              <a href="#"><span class="open">Hide all responses</span><span class="closed">Show all responses</span></a>
+              <a href="#"><span class="open">- Hide all responses</span><span class="closed">+ Show all responses</span></a>
             </div>
             <div class="button-group">
               <button class="active" type="button" value="grid">Grid</button>
