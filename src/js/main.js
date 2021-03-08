@@ -7,12 +7,31 @@ const tooltip = require("./tooltip.js");
 
 const candidates = require("../../data/candidateData.json");
 const positions = require("../../data/positionData.json");
+const questionData = require("../../data/questionData.json");
+const answerData = require("../../data/answerData.json");
 const topic = "criminal-justice";
+const questionText = questionData[topic];
+const questionAnswerText = answerData[topic];
 const questions = Array.from(document.querySelectorAll(".question"));
 
+const questionSlugs = questions.map(question => question.getAttribute("data-slug"));
 const result = document.querySelector("#results");
 const resultsContainer = document.querySelector("#results-container");
 const selected = {};
+
+const candidatePositionsMap = new Map();
+Object.entries(positions[topic]).forEach(([questionSlug, answers]) => {
+  Object.entries(answers).forEach(([answerSlug, candidates]) => {
+    candidates.forEach(({slug}) => {
+      const position = candidatePositionsMap.get(slug) || {};
+      candidatePositionsMap.set(slug, {
+        ...position,
+        [questionSlug]: answerSlug
+      });
+    });
+  })
+});
+const candidatePositions = Object.fromEntries(Array.from(candidatePositionsMap));
 
 // Set up each question
 questions.forEach(question => {
@@ -144,10 +163,11 @@ questions.forEach(question => {
 });
 
 function getMatches(selected) {
-  const questions = Object.values(selected);
-  const selectedCandidates = questions.reduce((candidates, question) => {
+  const selectedQuestions = Object.values(selected);
+  const selectedCandidates = selectedQuestions.reduce((candidates, question) => {
     return [].concat(candidates, question);
   }, []);
+  const selectedSlugs = questionSlugs.filter(d => Object.keys(selected).indexOf(d) > -1);
 
   if (selectedCandidates.length > 0) {
     resultsContainer.classList.add("active");
@@ -178,10 +198,39 @@ function getMatches(selected) {
   }, d => d[1]))
   .sort((a, b) => b[0] - a[0]);
 
-  const markup = rankedEntries.map((d) => `<div class="result">`
-    + `<span class="result-number">Matched ${d[0]} of ${questions.length}</span>`
+  const markup = rankedEntries.map((d, i) => `<div class="result collapsed">`
+    + `<h4 class="result-title">Matched ${d[0]} of ${selectedQuestions.length} <span class="open">-</span><span class="closed">+</span></h4>`
     + `<ul class="result-list">${d[1].map(d => 
-      `<li>${`<img class="candidate-image" alt="${candidates[d].name}" src="${candidates[d].image ? `assets/images/${candidates[d].image}` : emptyImage}" />`}${candidates[d].name}</li>`).join("")
+      `<li><img class="result-image" alt="${candidates[d].name}" src="${candidates[d].image ? `assets/images/${candidates[d].image}` : emptyImage}" /><div class="result-text">${
+        `<p class="result-name">${candidates[d].name}</p>`
+        + `<ul>${selectedSlugs.map(questionSlug => {
+            const answerSlug = candidatePositions[d][questionSlug];
+            return `<li class="result-position">`
+              + `<div class="result-position-agree ${selected[questionSlug].indexOf(d) > -1 ? "check" : "cross"}"></div>`
+              + `<div class="result-position-text">`
+                + `<p class="result-question">${questionText[questionSlug]}</p>`
+                + `<p class="result-answer">${answerSlug ? questionAnswerText[questionSlug][answerSlug] : "No response / no position"}</p>`
+              + `</div></li>`;
+          }).join("")}`     
+      }</ul></div></li>`).join("")
     }</ul></div>`).join("");
   result.innerHTML = markup;
+
+  const results = Array.from(result.querySelectorAll(".result"));
+  results.forEach(result => {
+    var expanded = false;
+    const header = result.querySelector(".result-title");
+
+    header.addEventListener("click", e => {
+      if (expanded) {
+        result.classList.remove("expanded");
+        result.classList.add("collapsed");
+      } else {
+        result.classList.add("expanded");
+        result.classList.remove("collapsed");
+      }
+
+      expanded = !expanded;
+    });
+  });
 }

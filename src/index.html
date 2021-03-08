@@ -53,7 +53,7 @@
         const positions = {...answerPositions, na: naAnswerPositions};
       %>
     
-      <div class="question" data-slug="<%= question.slug %>">
+      <div class="question section" data-slug="<%= question.slug %>">
         <div class="copy-container">
           <h2 class="subhead"><%= question.subhead %></h2>
           <div class="copy">
@@ -91,9 +91,9 @@
                   <% positions[answer].forEach(function(position) { %>
                     <% const candidate = grunt.data.json.candidateData[position.slug]; %>
                     <li data-slug="<%= position.slug %>">
-                      <figure class="response-image">
+                      <figure class="circle-image response-image">
                         <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
-                        <div class="response-image-label">
+                        <div class="circle-image-label response-image-label">
                           <%= candidate.image ? "" : candidate.label %>
                         </div>
                       </figure>
@@ -121,8 +121,8 @@
       <% }); %>
     <% } %>
 
-    <div id="results-container" class="results-container">
-      <h2 class="result-title">Results</h2>
+    <div id="results-container" class="results-container section">
+      <h2 class="results-title">Results</h2>
       <div id="results" class="results"></div>
     </div>
   </main>
