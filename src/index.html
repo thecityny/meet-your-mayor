@@ -70,51 +70,55 @@
               <% }); %>
             </form>
           </div>
-          <div class="answer photo-container">
+          <div class="answer copy-container">
             <h4>Candidates who agree with you</h4>
             <div class="chart"></div>
           </div>
-          <div class="expand-header copy-container collapsed">
-            <div class="link-group">
-              <a href="#"><span class="open">- Hide all responses</span><span class="closed">+ Show all responses</span></a>
+          <div class="expandable collapsed">
+            <div class="responses-header expandable-header copy-container">
+              <p class="expandable-link responses-link-group"><span class="display-open">- Hide all responses</span><span class="display-closed">+ Show all responses</span></p>
+              <div class="responses-button-group visible-open">
+                <button class="active" type="button" value="grid">Grid</button>
+                <button type="button" value="list">List</button>
+              </div>
             </div>
-            <div class="button-group">
-              <button class="active" type="button" value="grid">Grid</button>
-              <button type="button" value="list">List</button>
-            </div>
-          </div>
-          <div class="responses grid copy-container">
-            <% question.answers.forEach(function(answer) { %>
-              <div class="response" data-slug="<%= answer %>">
-                <h4><%= answerText[answer] %></h4>
-                <ul>
-                  <% positions[answer].forEach(function(position) { %>
-                    <% const candidate = grunt.data.json.candidateData[position.slug]; %>
-                    <li data-slug="<%= position.slug %>">
-                      <figure class="circle-image response-image">
-                        <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
-                        <div class="circle-image-label response-image-label">
-                          <%= candidate.image ? "" : candidate.label %>
+            <div class="responses expandable-body grid copy-container">
+              <% question.answers.forEach(function(answer) { %>
+                <div class="response" data-slug="<%= answer %>">
+                  <h4><%= answerText[answer] %></h4>
+                  <% if (positions[answer]) { %>
+                  <ul>
+                    <% positions[answer].forEach(function(position) { %>
+                      <% const candidate = grunt.data.json.candidateData[position.slug]; %>
+                      <li data-slug="<%= position.slug %>">
+                        <figure class="circle-image response-image">
+                          <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
+                          <div class="circle-image-label response-image-label">
+                            <%= candidate.image ? "" : candidate.label %>
+                          </div>
+                        </figure>
+                        <div class="response-details">
+                          <p class="response-name"><%= candidate.name %></p>
+                          <% if (position.quote) { %>
+                            <p class="response-quote"><%= position.quote %></p>
+                            <p class="response-source">from <%= position.url ? `<a href="${answer.url}">${position.source}</a>` : position.source %></p>
+                          <% } %>
                         </div>
-                      </figure>
-                      <div class="response-details">
-                        <p class="response-name"><%= candidate.name %></p>
-                        <% if (position.quote) { %>
-                          <p class="response-quote"><%= position.quote %></p>
-                          <p class="response-source">from <%= position.url ? `<a href="${answer.url}">${position.source}</a>` : position.source %></p>
-                        <% } %>
-                      </div>
-                    </li>
-                  <% }); %>
-                </ul>
-              </div>
-            <% }); %>
-            <% if (naAnswerPositions.length) { %>
-              <div class="response">
-                <h4>Did not respond</h4>
-                <p class="no-response"><%= naAnswerPositions.map(d => grunt.data.json.candidateData[d.slug].name).join(", ") %></p>
-              </div>
-            <% } %>
+                      </li>
+                    <% }); %>
+                  </ul>
+                  <% } else { %>
+                    <p class="no-response">No candidates selected this answer</p>
+                  <% } %>
+                </div>
+              <% }); %>
+              <% if (naAnswerPositions.length) { %>
+                <div class="response">
+                  <h4>No response / no position</h4>
+                  <p class="no-response"><%= naAnswerPositions.map(d => grunt.data.json.candidateData[d.slug].name).join(", ") %></p>
+                </div>
+              <% } %>
+            </div>
           </div>
         </div>
       </div>
@@ -122,7 +126,8 @@
     <% } %>
 
     <div id="results-container" class="results-container section">
-      <h2 class="results-title">Results</h2>
+      <h2 class="results-title">Your <%= archieml.hed %> Matches</h2>
+      <div id="results-chart" class="results-chart"></div>
       <div id="results" class="results"></div>
     </div>
   </main>

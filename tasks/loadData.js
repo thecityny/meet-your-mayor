@@ -62,14 +62,19 @@ module.exports = function(grunt) {
 
     // Candidates
     const candidates = validate(candidateSheet, d => {
-      return d[candidateColumn] && d[candidateActiveColumn] && d["name"] && d["label"] ;
+      return d[candidateColumn] && d[candidateActiveColumn] && d["first-name"] && d["last-name"] && d["label"] ;
     });
     const activeCandidates = candidates.filter(d => d[candidateActiveColumn] === "yes");
     const candidateSlugs = candidates.map(d => d[candidateColumn]);
     const activeCandidateSlugs = activeCandidates.map(d => d[candidateColumn]);
     const candidateData = rollup(activeCandidates, v => {
-      const {name, label, image} = v[0];
-      return {name, label, image};
+      const candidate = v[0];
+      return {
+        name: candidate["first-name"] + " " + candidate["last-name"],
+        lastName: candidate["last-name"], 
+        label: candidate["label"],
+        image: candidate["image"]
+      };
     }, d => d[candidateColumn]);
 
     // Topics
