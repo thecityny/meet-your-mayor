@@ -3,6 +3,8 @@ const {forceSimulation, forceX, forceY, forceCollide, forceManyBody} = require("
 const {drag} = require("d3-drag");
 const {easeQuadIn} = require("d3-ease");
 
+const youSlug = "YOU";
+
 function forceBounds(width, height) {
   var nodes;
 
@@ -63,8 +65,8 @@ module.exports = function (target, tooltip) {
 
   const simulation = forceSimulation()
     .velocityDecay(0.1)
-    .force("x", forceX().strength(d => d.name === "YOU" ? 0.1 : 0.01))
-    .force("y", forceY().strength(d => d.name === "YOU" ? 0.1 : 0.01))
+    .force("x", forceX().strength(d => d.name === youSlug ? 0.1 : 0.01))
+    .force("y", forceY().strength(d => d.name === youSlug ? 0.1 : 0.01))
     .force("growth", forceGrowth());
   
   const collide = forceCollide().iterations(3);
@@ -116,11 +118,20 @@ module.exports = function (target, tooltip) {
       const mouseoverHandler = e => {
         const [x, y] = pointer(e);
         const node = findNode(x, y);
+        const rect = target.getBoundingClientRect();
 
-        if (node) {
+        if (node && node.name !== youSlug) {
           tooltip.show();
-          tooltip.setPosition(e.pageX, e.pageY);
-          tooltip.setHTML(`<p>${node.name}<p>${node.quote ? `<p>${node.quote}</p><p>from ${node.url ? `<a href="${node.url}">${node.source}</a>` : node.source}</p>` : ""}`);
+          tooltip.setPosition(window.scrollX + rect.left + (node.x + width / 2),  window.scrollY + rect.top + (node.y + height / 2) + (node.r * 0.5));
+
+          const markup = `<p class="tooltip-name">${node.name}${node.party ? ` (${node.party})` : ""}</p>`
+            +`${node.quote 
+              ? `<p class="tooltip-quote">${node.quote}</p>`
+              + `<p class="tooltip-source">from ${node.url ? `<a href="${node.url}">${node.source}</a>` : node.source}`
+              + `${node.date ? `, <span class="tooltip-date">${node.date}</span>` : ""}</p>` 
+              : ""}`;
+              
+          tooltip.setHTML(markup);
         } else {
           tooltip.hide();
         }
@@ -146,20 +157,19 @@ module.exports = function (target, tooltip) {
           context.beginPath();
           context.moveTo(x, y);
 
+          context.arc(x, y, r, 0, 2 * Math.PI);
+          context.fillStyle = d.name === youSlug ? "#f78e65" : d.party === "D" ? "#C3CBDD" : d.party === "R" ? "#F6D5D8" : "#e6e6e6";
+          context.fill();
+
           if (d.image) {
             context.save();
             context.arc(x, y, r, 0, 2 * Math.PI);
             context.clip();
             context.drawImage(d.image, x - r, y - r, r * 2, r * 2);
             context.restore();
-          } else {
-            context.arc(x, y, r, 0, 2 * Math.PI);
-            context.fillStyle = d.name === "YOU" ? "#f78e65" : "#ffffff";
-            context.fill();
-            if (r === d.maxRadius) {
-              context.fillStyle = d.name === "YOU" ? "#ffffff" : "#404040";
-              context.fillText(d.label, x, y);
-            }
+          } else if (r === d.maxRadius) {
+            context.fillStyle = d.name === youSlug ? "#ffffff" : "#404040";
+            context.fillText(d.label, x, y);
           }
         });
         context.restore();

@@ -146,15 +146,24 @@ function main() {
           const position = positions[slug];
   
           node.addEventListener("mousemove", e => {
+            const rect = node.getBoundingClientRect();
+            const x = rect.left + (rect.width / 2) + window.scrollX;
+            const y = rect.top + (rect.height * 0.75) + window.scrollY;
+
             if (view === gridView) {
               tooltip.show();
-              tooltip.setPosition(e.pageX, e.pageY);
-              tooltip.setHTML(`<p>${position.name}<p>${position.quote ? `<p>${position.quote}</p><p>from ${position.url ? `<a href="${position.url}">${position.source}</a>` : position.source}</p>` : ""}`);
+              tooltip.setPosition(x, y);
+              tooltip.setHTML(`<p class="tooltip-name">${position.name}${position.party ? ` (${position.party})` : ""}</p>`
+                +`${position.quote 
+                  ? `<p class="tooltip-quote">${position.quote}</p>`
+                  + `<p class="tooltip-source">from ${position.url ? `<a href="${position.url}">${position.source}</a>` : position.source}`
+                  + `${position.date ? `, <span class="tooltip-date">${position.date}</span>` : ""}</p>` 
+                  : ""}`);
             }
-          });
-  
-          node.addEventListener("mouseleave", e => {
-            tooltip.hide();
+              
+            node.addEventListener("mouseleave", e => {
+              tooltip.hide();
+            });
           });
         });
       }
@@ -198,7 +207,7 @@ function getMatches(selected) {
   function candidateCard([d, i]) {
     return `<li class="match expandable collapsed">`
       + `<div class="match-header expandable-header expandable-link">`
-        + `<img class="match-image" alt="${candidates[d].name}" src="${candidates[d].image ? `assets/images/${candidates[d].image}` : emptyImage}" />`
+        + `<img class="match-image ${candidates[d].party === "D" ? "dem" : candidates[d].party === "R" ? "rep" : ""}" alt="${candidates[d].name}" src="${candidates[d].image ? `assets/images/${candidates[d].image}` : emptyImage}" />`
         + `<div>`
           + `<p class="match-name">${candidates[d].name}</p>`
           + `<p class="match-rank">Matched ${i} of ${selectedQuestions.length} questions</p>`

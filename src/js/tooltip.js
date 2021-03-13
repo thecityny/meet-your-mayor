@@ -3,13 +3,26 @@ const hiddenClass = "tooltip-hidden";
 const tooltip = document.createElement("div");
 tooltip.classList.add("tooltip", hiddenClass);
 document.body.appendChild(tooltip);
+var active = false;
+
+tooltip.addEventListener("mouseleave", e => {
+  active = false;
+  hide();
+});
+tooltip.addEventListener("mouseenter", e => {
+  active = true;
+});
 
 function show() {
   tooltip.classList.remove(hiddenClass);
 }
 
 function hide() {
-  tooltip.classList.add(hiddenClass);
+  setTimeout(e => {
+    if (!active) {
+      tooltip.classList.add(hiddenClass);
+    }
+  }, 1);
 }
 
 function setHTML(html) {
@@ -32,12 +45,12 @@ function setPosition(mouseX, mouseY) {
   const rightExtent = window.innerWidth - padding - bounds.width;
 
   // Distance above the mouse
-  const y = mouseY - bounds.height - mouseOffset;
+  const y = mouseY; //  - bounds.height - mouseOffset
   // distance from left - half the box
-  const x = mouseX - (bounds.width / 2);
+  const x = mouseX - 20;
 
   const top = y < 0 + padding
-    ? mouseY + mouseOffset
+    ? mouseY // + mouseOffset
     : y;
 
   const left = window.innerWidth < bounds.width

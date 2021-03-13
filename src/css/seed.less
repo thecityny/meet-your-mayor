@@ -45,6 +45,9 @@ body {
 
 @meta-color: #404040;
 @active-color: #f78e65;
+@default-background: #e6e6e6;
+@rep-background: #F6D5D8;
+@dem-background: #C3CBDD;
 
 .splash-screen {
   height: 100vh;
@@ -318,7 +321,7 @@ body {
       bottom: 0;
       left: 0;
       right: 0;
-      background-color: rgba(255,255,255,0.4);
+      // background-color: rgba(255,255,255,0.2);
       color: #404040;
       text-align: center;
       display: flex;
@@ -336,7 +339,15 @@ body {
   img {
     width: 50px;
     border-radius: 50%;
-    background-color: #ffffff;
+    background: @default-background;
+
+    &.rep {
+      background-color: @rep-background;
+    }
+
+    &.dem {
+      background-color: @dem-background;
+    }
   }
 }
 
@@ -390,6 +401,13 @@ body {
   }
 
   .no-response {
+    margin: 30px 0;
+    font-size: 16px;
+    line-height: 26px;
+    .ital();
+  }
+
+  .no-position {
     margin: 30px 0;
     font-size: 16px;
     line-height: 26px;
@@ -562,7 +580,15 @@ body {
   height: 50px;
   vertical-align: middle;
   border-radius: 50%;
-  background: #fff;
+  background: @default-background;
+
+  &.rep {
+    background-color: @rep-background;
+  }
+
+  &.dem {
+    background-color: @dem-background;
+  }
 
   @media screen and (min-width: 400px) {
     margin: 0 20px 0 0;
@@ -702,4 +728,21 @@ body {
       visibility: inherit;
     }
   }
+}
+
+.tooltip {
+  color: #404040;
+
+  a, a:hover, a:active, a:focus, a:visited {
+    color: inherit;
+  }
+}
+
+.tooltip-name {
+  font-size: 15px;
+  .medface();
+}
+
+.tooltip-source {
+  .ital();
 }

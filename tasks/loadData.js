@@ -12,6 +12,8 @@ const questionSheet = require("../data/questions.sheet.json");
 const answerSheet = require("../data/answers.sheet.json");
 const candidateSheet = require("../data/candidates.sheet.json");
 
+const apMonths = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
+
 function replacer(key, value) {
   if (value instanceof Map) {
     return Object.fromEntries(value.entries());
@@ -62,7 +64,7 @@ module.exports = function(grunt) {
 
     // Candidates
     const candidates = validate(candidateSheet, d => {
-      return d[candidateColumn] && d[candidateActiveColumn] && d["first-name"] && d["last-name"] && d["label"] ;
+      return d[candidateColumn] && d[candidateActiveColumn] && d["first-name"] && d["last-name"] && d["label"] && d["party"];
     });
     const activeCandidates = candidates.filter(d => d[candidateActiveColumn] === "yes");
     const candidateSlugs = candidates.map(d => d[candidateColumn]);
@@ -73,7 +75,8 @@ module.exports = function(grunt) {
         name: candidate["first-name"] + " " + candidate["last-name"],
         lastName: candidate["last-name"], 
         label: candidate["label"],
-        image: candidate["image"]
+        image: candidate["image"],
+        party: candidate["party"]
       };
     }, d => d[candidateColumn]);
 
@@ -130,12 +133,22 @@ module.exports = function(grunt) {
     });
     const positionData = rollup(
       positions, 
-      v => v.reduce((v, d) => activeCandidateSlugs.indexOf(d[candidateColumn]) > -1 ? v.concat({
-        slug: d["candidate-slug"],
-        quote: d["quote"],
-        source: d["setting"],
-        url: d["source"]
-      }) : v, []), 
+      v => v.reduce((v, d) => {
+        const date = d.date && new Date(d.date);
+        const dateString = date && `${apMonths[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}` || "";
+
+        if (activeCandidateSlugs.indexOf(d[candidateColumn]) > -1) {
+          return v.concat({
+            slug: d["candidate-slug"],
+            quote: d["quote"],
+            source: d["setting"],
+            date: dateString,
+            url: d["source"]
+          });
+        } else {
+          return v;
+        }
+      }, []), 
       d => d[topicColumn], 
       d => d[questionColumn], 
       d => d[answerColumn]

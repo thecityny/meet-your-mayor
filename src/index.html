@@ -86,22 +86,22 @@
               <% question.answers.forEach(function(answer) { %>
                 <div class="response" data-slug="<%= answer %>">
                   <h4><%= answerText[answer] %></h4>
-                  <% if (positions[answer]) { %>
+                  <% if (positions[answer] && positions[answer].length > 0) { %>
                   <ul>
                     <% positions[answer].forEach(function(position) { %>
                       <% const candidate = grunt.data.json.candidateData[position.slug]; %>
                       <li data-slug="<%= position.slug %>">
                         <figure class="circle-image response-image">
-                          <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
+                          <img class="<%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %>" src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
                           <div class="circle-image-label response-image-label">
                             <%= candidate.image ? "" : candidate.label %>
                           </div>
                         </figure>
                         <div class="response-details">
-                          <p class="response-name"><%= candidate.name %></p>
+                          <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)</p>
                           <% if (position.quote) { %>
                             <p class="response-quote"><%= position.quote %></p>
-                            <p class="response-source">from <%= position.url ? `<a href="${answer.url}">${position.source}</a>` : position.source %></p>
+                            <p class="response-source">from <%= position.url ? `<a href="${answer.url}">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>
                           <% } %>
                         </div>
                       </li>
@@ -115,7 +115,7 @@
               <% if (naAnswerPositions.length) { %>
                 <div class="response">
                   <h4>No response / no position</h4>
-                  <p class="no-response"><%= naAnswerPositions.map(d => grunt.data.json.candidateData[d.slug].name).join(", ") %></p>
+                  <p class="no-position"><%= naAnswerPositions.map(d => grunt.data.json.candidateData[d.slug].name).join(", ") %></p>
                 </div>
               <% } %>
             </div>
