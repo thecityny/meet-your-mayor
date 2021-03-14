@@ -153,7 +153,7 @@ body {
 
 .section {
   margin: 20px 0;
-  padding: 60px 20px;
+  padding: 60px 0;
   background-color: rgba(255,255,255,0.2);
   overflow: auto;
   position: relative;
@@ -217,11 +217,12 @@ body {
 }
 
 .responses-header {
-  margin: 25px auto;
+  margin: 30px auto;
   align-items: center;
   text-align: center;
 
   @media screen and (min-width: 480px) {
+    margin: 20px auto;
     display: flex;
     text-align: left;
   }
@@ -236,10 +237,25 @@ body {
   }
 }
 
+.collapsed .responses-button-group {
+  display: none;
+
+  @media screen and (min-width: 480px) {
+    display: inherit;
+  }
+}
+.expanded .responses-button-group {
+  display: inline-block;
+
+  @media screen and (min-width: 480px) {
+    display: inherit;
+  }
+}
+
 .responses-button-group {
   display: inline-block;
   overflow: auto;
-  margin: 30px 0 0;
+  margin: 10px 0 0;
 
   @media screen and (min-width: 480px) {
     margin: 0;

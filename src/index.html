@@ -40,6 +40,12 @@
     </div>
   </div>
   <main>
+    <% if (archieml.intro) { %>
+      <div class="section">
+        <%= t.include("partials/_archie.ejs", {story: archieml.intro}) %>
+      </div>
+    <% } %>
+
     <% if (questions) { %>
       <% questions.forEach((question, index) => { %>
       <% 
@@ -57,64 +63,66 @@
             <%= t.renderMarkdown(question.intro) %>
           </div>
         </div>
-        <div class="question-container">
-          <div class="copy-container">
-            <p class="question-number">Question <%= index + 1 %> of <%= questions.length %></p>
-            <h3><%= questionText[question.slug] %></h3>
-            <form>
-              <% question.answers.forEach(function(answer) { %>
-                <button class="input-group" value="<%= answer %>"><%= answerText[answer] %></button>
-              <% }); %>
-            </form>
-          </div>
-          <div class="answer copy-container">
-            <h4>Candidates who agree with you</h4>
-            <div class="chart"></div>
-          </div>
-          <div class="expandable collapsed">
-            <div class="responses-header expandable-header copy-container">
-              <p class="expandable-link responses-link-group"><span class="display-open">- Hide all responses</span><span class="display-closed">+ Show all responses</span></p>
-              <div class="responses-button-group visible-open">
-                <button class="active" type="button" value="grid">Grid</button>
-                <button type="button" value="list">List</button>
-              </div>
+        <div class="photo-container">
+          <div class="question-container">
+            <div class="copy-container">
+              <p class="question-number">Question <%= index + 1 %> of <%= questions.length %></p>
+              <h3><%= questionText[question.slug] %></h3>
+              <form>
+                <% question.answers.forEach(function(answer) { %>
+                  <button class="input-group" value="<%= answer %>"><%= answerText[answer] %></button>
+                <% }); %>
+              </form>
             </div>
-            <div class="responses expandable-body grid copy-container">
-              <% question.answers.forEach(function(answer) { %>
-                <div class="response" data-slug="<%= answer %>">
-                  <h4><%= answerText[answer] %></h4>
-                  <% if (positions[answer] && positions[answer].length > 0) { %>
-                  <ul>
-                    <% positions[answer].forEach(function(position) { %>
-                      <% const candidate = grunt.data.json.candidateData[position.slug]; %>
-                      <li data-slug="<%= position.slug %>">
-                        <figure class="circle-image response-image">
-                          <img class="<%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %>" src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
-                          <div class="circle-image-label response-image-label">
-                            <%= candidate.image ? "" : candidate.label %>
+            <div class="answer copy-container">
+              <h4>Candidates who agree with you</h4>
+              <div class="chart"></div>
+            </div>
+            <div class="expandable collapsed">
+              <div class="responses-header expandable-header copy-container">
+                <p class="expandable-link responses-link-group"><span class="display-open">- Hide all responses</span><span class="display-closed">+ Show all responses</span></p>
+                <div class="responses-button-group visible-open">
+                  <button class="active" type="button" value="grid">Grid</button>
+                  <button type="button" value="list">List</button>
+                </div>
+              </div>
+              <div class="responses expandable-body grid copy-container">
+                <% question.answers.forEach(function(answer) { %>
+                  <div class="response" data-slug="<%= answer %>">
+                    <h4><%= answerText[answer] %></h4>
+                    <% if (positions[answer] && positions[answer].length > 0) { %>
+                    <ul>
+                      <% positions[answer].forEach(function(position) { %>
+                        <% const candidate = grunt.data.json.candidateData[position.slug]; %>
+                        <li data-slug="<%= position.slug %>">
+                          <figure class="circle-image response-image">
+                            <img class="<%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %>" src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
+                            <div class="circle-image-label response-image-label">
+                              <%= candidate.image ? "" : candidate.label %>
+                            </div>
+                          </figure>
+                          <div class="response-details">
+                            <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)</p>
+                            <% if (position.quote) { %>
+                              <p class="response-quote"><%= position.quote %></p>
+                              <p class="response-source">from <%= position.url ? `<a href="${answer.url}">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>
+                            <% } %>
                           </div>
-                        </figure>
-                        <div class="response-details">
-                          <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)</p>
-                          <% if (position.quote) { %>
-                            <p class="response-quote"><%= position.quote %></p>
-                            <p class="response-source">from <%= position.url ? `<a href="${answer.url}">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>
-                          <% } %>
-                        </div>
-                      </li>
-                    <% }); %>
-                  </ul>
-                  <% } else { %>
-                    <p class="no-response">No candidates selected this answer</p>
-                  <% } %>
-                </div>
-              <% }); %>
-              <% if (naAnswerPositions.length) { %>
-                <div class="response">
-                  <h4>No response / no position</h4>
-                  <p class="no-position"><%= naAnswerPositions.map(d => grunt.data.json.candidateData[d.slug].name).join(", ") %></p>
-                </div>
-              <% } %>
+                        </li>
+                      <% }); %>
+                    </ul>
+                    <% } else { %>
+                      <p class="no-response">No candidates selected this answer</p>
+                    <% } %>
+                  </div>
+                <% }); %>
+                <% if (naAnswerPositions.length) { %>
+                  <div class="response">
+                    <h4>No response / no position</h4>
+                    <p class="no-position"><%= naAnswerPositions.map(d => grunt.data.json.candidateData[d.slug].name).join(", ") %></p>
+                  </div>
+                <% } %>
+              </div>
             </div>
           </div>
         </div>

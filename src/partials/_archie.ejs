@@ -1,7 +1,4 @@
-<% const docSlug = "criminal-justice-test"; %>
-
 <%
-  const story = archieml[docSlug].story || [];
   const items = story.reduce((items, item) => {
     if (item.type == 'text') {
       const previous = items[items.length - 1];
