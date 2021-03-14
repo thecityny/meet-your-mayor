@@ -10,7 +10,7 @@ const positions = require("../../data/positionData.json");
 const questionData = require("../../data/questionData.json");
 const answerData = require("../../data/answerData.json");
 
-const topic = "criminal-justice";
+const topic = document.querySelector("body").getAttribute("data-topic");
 const questionText = questionData[topic];
 const questionAnswerText = answerData[topic];
 
@@ -19,11 +19,11 @@ const questionSlugs = questions.map(question => question.getAttribute("data-slug
 const results = document.querySelector("#results");
 const resultsContainer = document.querySelector("#results-container");
 const resultsChartTarget = document.querySelector("#results-chart");
-const resultsChart = visual(resultsChartTarget, tooltip);
+const resultsChart = visual(resultsChartTarget, tooltip, topic);
 const selected = {};
 
 const candidatePositionsMap = new Map();
-Object.entries(positions[topic]).forEach(([questionSlug, answers]) => {
+Object.entries(positions[topic] || {}).forEach(([questionSlug, answers]) => {
   Object.entries(answers).forEach(([answerSlug, candidates]) => {
     candidates.forEach(({slug}) => {
       const position = candidatePositionsMap.get(slug) || {};
@@ -51,10 +51,10 @@ function main() {
   
     const questionSlug = question.getAttribute("data-slug");
     const buttons = Array.from(question.querySelectorAll("form button"));
-    const chart = visual(chartTarget, tooltip);
+    const chart = visual(chartTarget, tooltip, topic);
     
     const you = {name: "YOU", label: "YOU", maxRadius: 45};
-    const questionPositions = positions[topic][questionSlug];
+    const questionPositions = positions[topic] && positions[topic][questionSlug] || {};
     const answerPositions = Object.fromEntries(Object.entries(questionPositions).map(([key, answer]) => {
       return [key, answer.map(candidate => {
         const node = {

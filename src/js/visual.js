@@ -4,6 +4,11 @@ const {drag} = require("d3-drag");
 const {easeQuadIn} = require("d3-ease");
 
 const youSlug = "YOU";
+const colors = {
+  "nypd": "#f78e65",
+  "education": "#848c73",
+  "corona-recovery": "#b98fc1"
+}
 
 function forceBounds(width, height) {
   var nodes;
@@ -53,8 +58,10 @@ function forceGrowth() {
   return force;
 }
 
-module.exports = function (target, tooltip) {
+module.exports = function (target, tooltip, topic) {
   var updateFunction;
+
+  const activeColor = colors[topic] || "#999999";
 
   const canvas = select(document.createElement("canvas"))
     .attr("width", 0)
@@ -158,7 +165,7 @@ module.exports = function (target, tooltip) {
           context.moveTo(x, y);
 
           context.arc(x, y, r, 0, 2 * Math.PI);
-          context.fillStyle = d.name === youSlug ? "#f78e65" : d.party === "D" ? "#C3CBDD" : d.party === "R" ? "#F6D5D8" : "#e6e6e6";
+          context.fillStyle = d.name === youSlug ? activeColor : d.party === "D" ? "#C3CBDD" : d.party === "R" ? "#F6D5D8" : "#e6e6e6";
           context.fill();
 
           if (d.image) {

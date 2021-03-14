@@ -7,6 +7,10 @@ var url = require('url');
 var htmlparser = require('htmlparser2');
 var Entities = require('html-entities').AllHtmlEntities;
 
+var docs = require('../data/topicData.json').reduce((docs, topic) => {
+  return {...docs, [topic.doc]: topic.topic}
+}, {});
+
 module.exports = function(grunt) {
 
   grunt.registerTask("docs", "Load Google Docs into the data folder", function() {
@@ -30,11 +34,11 @@ module.exports = function(grunt) {
      * where <project> is the project you authenticated with using `grunt google-auth`
      */
     async.eachLimit(
-      config.docs,
+      Object.keys(docs),
       2, // adjust this up or down based on rate limiting
       async function(fileId) {
         var meta = await drive.files.get({ fileId, supportsAllDrives: true });
-        var name = meta.data.name.replace(/\s+/g, "_") + ".docs.txt";
+        var name = docs[fileId] + ".docs.txt";
         var body = await drive.files.export({ fileId, mimeType: "text/html", supportsAllDrives: true });
         var text = body.data.trim().replace(/\r\n/g, "\n");
         // replace triple breaks with regular paragraph breaks

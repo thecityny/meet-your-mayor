@@ -7,20 +7,19 @@
 </head>
 
 <% 
-  const docSlug = "criminal-justice-test";
   const archieml = grunt.data.archieml[docSlug];
   const topic = archieml.topic;
   const questions = archieml.questions;
 
-  const questionText = grunt.data.json.questionData[topic];
-  const questionAnswerText = grunt.data.json.answerData[topic];
-  const questionPositions = grunt.data.json.positionData[topic];
+  const questionText = grunt.data.json.questionData[topic] || {};
+  const questionAnswerText = grunt.data.json.answerData[topic] || {};
+  const questionPositions = grunt.data.json.positionData[topic] || {};
 
   const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
   const candidateSlugs = Object.keys(grunt.data.json.candidateData);
 %>
 
-<body>
+<body class="<%= topic %>" data-topic="<%= topic %>">
   <div class="splash-screen">
     <div class="splash-screen-background">
       <div class="background-circle"></div>
@@ -41,13 +40,11 @@
     </div>
   </div>
   <main>
-    <%= t.include("partials/_archie.ejs", grunt.data) %>
-
     <% if (questions) { %>
       <% questions.forEach((question, index) => { %>
       <% 
-        const answerText = questionAnswerText[question.slug];
-        const answerPositions = questionPositions[question.slug];
+        const answerText = questionAnswerText[question.slug] || {};
+        const answerPositions = questionPositions[question.slug] || {};
         const answerCandidateSlugs = [].concat(...Object.values(answerPositions)).map(d => d.slug);
         const naAnswerPositions = candidateSlugs.filter(slug => answerCandidateSlugs.indexOf(slug) < 0).map(d => ({slug: d}));
         const positions = {...answerPositions, na: naAnswerPositions};

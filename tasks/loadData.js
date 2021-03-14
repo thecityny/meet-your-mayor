@@ -6,7 +6,7 @@ Parses data
 
 const {rollup} = require("d3-array");
 
-const policySheet = require("../data/policy.sheet.json");
+const policySheet = require("../data/policy-published.sheet.json");
 const topicSheet = require("../data/topics.sheet.json");
 const questionSheet = require("../data/questions.sheet.json");
 const answerSheet = require("../data/answers.sheet.json");
@@ -57,10 +57,12 @@ module.exports = function(grunt) {
     const topicColumn = "topic";
     const candidateColumn = "candidate-slug";
     const candidateActiveColumn = "active";
+    const topicActiveColumn = "active";
     const questionColumn = "question-slug";
     const answerColumn = "answer-slug";
     const questionTextColumn = "question-text";
     const answerTextColumn = "answer-text";
+    const docColumn = "doc";
 
     // Candidates
     const candidates = validate(candidateSheet, d => {
@@ -82,9 +84,19 @@ module.exports = function(grunt) {
 
     // Topics
     const topics = validate(topicSheet, d => {
-      return d[topicColumn];
+      return d[topicColumn] && d[topicActiveColumn] && d[docColumn];
     });
+    const activeTopics = topics.filter(d => d[topicActiveColumn] === "yes");
     const topicSlugs = topics.map(d => d[topicColumn]);
+    const topicData = activeTopics.map(d => {
+      const idMatches = d[docColumn].match(/docs\.google\.com\/document\/d\/(.+)\//i);
+      const id = idMatches && idMatches[1];
+
+      return {
+        topic: d[topicColumn],
+        doc: id
+      };
+    });
 
     // Questions
     const questions = validate(questionSheet, d => {
@@ -155,6 +167,7 @@ module.exports = function(grunt) {
     );
 
     console.log(`Saving data`);
+    grunt.file.write(`${path}/topicData.json`, JSON.stringify(topicData, replacer, 2));
     grunt.file.write(`${path}/candidateData.json`, JSON.stringify(candidateData, replacer, 2));
     grunt.file.write(`${path}/questionData.json`, JSON.stringify(questionData, replacer, 2));
     grunt.file.write(`${path}/answerData.json`, JSON.stringify(answerData, replacer, 2));
