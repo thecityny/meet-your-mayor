@@ -32,6 +32,17 @@ body {
 
 }
 
+body.loading {
+  .question form {
+    opacity: 0.5;
+    cursor: wait;
+
+    button {
+      pointer-events: none;
+    }
+  }
+}
+
 .subhead {
   font-size: 40px;
   line-height: 1em;
@@ -41,6 +52,20 @@ body {
 .copy {
   font-size: 20px;
   line-height: 30px;
+
+  a, a:visited {
+    color: #404040;
+  }
+
+  a:hover, a:active, a:focus {
+    color: #333;
+  }
+}
+
+.intro {
+  strong {
+    .medface();
+  }
 }
 
 @meta-color: #404040;
@@ -759,4 +784,67 @@ body {
 
 .tooltip-source {
   .ital();
+}
+
+.login-note {
+  .lightface();
+  color: #333;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.login-buttons {
+  margin: 20px 0;
+}
+
+.fb-button {
+  background: rgba(255,255,255,0.9);
+  .medface();
+  font-size: 14px;
+  text-align: left;
+  padding: 10px;
+  border: 0;
+  outline: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  box-sizing: border-box;
+  color: #666;
+  border: 1px solid #666;
+
+  &:hover {
+    color:#1877F2;
+    border: 1px solid #1877F2;
+    svg path.circle {
+      fill: #1877F2
+    } 
+
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-right: 5px;
+
+    .circle {
+      fill: #666;
+    }
+    .f {
+      fill: #fff;
+    }
+  }
+}
+
+.login {
+  padding: 10px 20px;
+  margin: 40px 0 15px;
+  background: rgba(255,255,255,0.2);
+  overflow: auto;
+  text-align: center;
+}
+
+.login-prompt {
+  .medface();
+  font-size: 18px;
+  margin: 15px 0;
 }

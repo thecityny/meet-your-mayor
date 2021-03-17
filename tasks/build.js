@@ -54,7 +54,7 @@ module.exports = function(grunt) {
   };
 
   grunt.registerTask("build", "Processes index.html using shared data (if available)", function() {
-    var sourceFilename = "src/index.html";
+    var sourceFilename = "src/_template.html";
     var input = grunt.file.read(sourceFilename);
 
     topics.forEach(function(topic) {
@@ -64,6 +64,17 @@ module.exports = function(grunt) {
       grunt.verbose.writeln("Processing topic: " +  topic);
       var output = process(input, data, sourceFilename);
       grunt.file.write(`build/${topic}.html`, output);
+    });
+
+    var files = grunt.file.expandMapping(["**/*.html", "!**/_*.html", "!js/**/*.html"], "build", { cwd: "src" });
+    var data = Object.create(grunt.data || {});
+    data.t = grunt.template;
+    files.forEach(function(file) {
+      var src = file.src.shift();
+      grunt.verbose.writeln("Processing file: " +  src);
+      var input = grunt.file.read(src);
+      var output = process(input, data, src);
+      grunt.file.write(file.dest, output);
     });
   });
 

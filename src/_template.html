@@ -19,7 +19,11 @@
   const candidateSlugs = Object.keys(grunt.data.json.candidateData);
 %>
 
-<body class="<%= topic %>" data-topic="<%= topic %>">
+<body class="<%= topic %> loading" data-topic="<%= topic %>">
+
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v10.0&appId=3802878269795841" nonce="QG4nWXXa"></script>
+
   <div class="splash-screen">
     <div class="splash-screen-background">
       <div class="background-circle"></div>
@@ -40,11 +44,20 @@
     </div>
   </div>
   <main>
-    <% if (archieml.intro) { %>
-      <div class="section">
+    <div class="section intro">
+      <% if (archieml.intro) { %>
         <%= t.include("partials/_archie.ejs", {story: archieml.intro}) %>
+      <% } %>
+      <div class="copy-container">
+        <div class="login">
+          <p class="login-prompt"></p>
+          <p class="login-buttons">
+            <button id="fb-button" class="fb-button"><%=  t.include("assets/login-icons/f_logo.svg") %> <span class="fb-button-text">Log in with Facebook</span></button>
+          </p>
+        </div>
+        <p class="copy login-note">Logging in is optional and allows us to show you your selections across multiple browsing sessions. Read about how we store your data for this interactive and keep it private in our <a href="#">privacy statement</a>.</p>
       </div>
-    <% } %>
+    </div>
 
     <% if (questions) { %>
       <% questions.forEach((question, index) => { %>
@@ -105,7 +118,7 @@
                             <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)</p>
                             <% if (position.quote) { %>
                               <p class="response-quote"><%= position.quote %></p>
-                              <p class="response-source">from <%= position.url ? `<a href="${answer.url}">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>
+                              <p class="response-source">from <%= position.url ? `<a href="${answer.url}" target="_blank">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>
                             <% } %>
                           </div>
                         </li>
