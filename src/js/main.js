@@ -56,7 +56,8 @@ function setProfileImage (url) {
   });
 };
 
-const endpoint = "https://lh48uaczhk.execute-api.us-east-1.amazonaws.com/Prod/";
+// const endpoint = "http://localhost:3000";
+const endpoint = "https://lh48uaczhk.execute-api.us-east-1.amazonaws.com/Prod";
 
 // Facebook login
 const fbButton = document.querySelector("#fb-button");
@@ -98,7 +99,7 @@ const questions = questionTargets.reduce((questions, question) => {
         selected[questionSlug] = value;
         getMatches(selected);
 
-        if (answerSlug !== value && fbToken && triggerUpdate) {
+        if ((answerSlug !== value || answerSlug === "") && fbToken && triggerUpdate) {
           fetch(`${endpoint}/answers?auth=facebook&topic=${topic}`, {
             method: "POST",
             headers: {
@@ -471,7 +472,9 @@ async function fbLogin(authResponse) {
     }).then(response => response.json());
 
     Object.entries(questions).forEach(([questionSlug, setAnswerSlug]) => {
-      setAnswerSlug(data[questionSlug] || "");
+      if (typeof data[questionSlug] !== "undefined") {
+        setAnswerSlug(data[questionSlug]);
+      }
     });
 
     getMatches(data);

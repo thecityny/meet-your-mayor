@@ -55,7 +55,19 @@
             <button id="fb-button" class="fb-button"><%=  t.include("assets/login-icons/f_logo.svg") %> <span class="fb-button-text">Log in with Facebook</span></button>
           </p>
         </div>
-        <p class="copy login-note">Logging in is optional and allows us to show you your selections across multiple browsing sessions. Read about how we store your data for this interactive and keep it private in our <a href="#">privacy statement</a>.</p>
+        <p class="copy login-note">Logging in is optional and allows us to show you your selections across multiple browsing sessions. Read about how we store your data for this interactive and keep it private in our <a href="https://www.thecity.nyc/e/22094122">privacy statement</a>.</p>
+      </div>
+    </div>
+
+    <div class="section section-highlight">
+      <div class="newsletter container">
+        <div class="newsletter-text">
+          <h3 class="newsletter-head">Get the Civic Newsroom newsletter</h3>
+          <p class="newsletter-intro">Sign up to get THE CITY's 2021 election and voting news and delivered to you each morning</p>
+        </div>
+        <div class="newsletter-link">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfWq2QeMt-TfJHZcRHp4MTefdVo6OkC2_Lx3zIe2xyPJoE5iA/viewform">Subscribe</a>
+        </div>
       </div>
     </div>
 
@@ -144,7 +156,7 @@
       <% }); %>
     <% } %>
 
-    <div id="results-container" class="results-container section">
+    <div id="results-container" class="results-container section section-highlight">
       <h2 class="results-title">Your <%= archieml.hed %> Matches</h2>
       <div id="results-chart" class="results-chart"></div>
       <div id="results" class="results"></div>
@@ -154,11 +166,12 @@
     <div class="section">
       <div class="copy-container">
         <h3 class="subhead">More topics</h3>
+        <p class="topics-intro">Check back regularly for new topics from now until the primary in&nbsp;June.</p>
         <ul class="topics-list copy">
           <% Object.entries(archieml.links).forEach(([key, value]) => { %>
           <li><a href="<%= key %>.html"><%= value %></a></li>
           <% }) %>
-          <li><a href="#">All &#8594;</a></li>
+          <li><a href="https://www.thecity.nyc/e/22094122">All &#8594;</a></li>
         </ul>
       </div>
     </div>
