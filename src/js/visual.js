@@ -4,11 +4,6 @@ const {drag} = require("d3-drag");
 const {easeQuadIn} = require("d3-ease");
 
 const youSlug = "YOU";
-const colors = {
-  "nypd": "#f78e65",
-  "education": "#848c73",
-  "corona-recovery": "#b98fc1"
-}
 
 function forceBounds(width, height) {
   var nodes;
@@ -58,10 +53,10 @@ function forceGrowth() {
   return force;
 }
 
-module.exports = function (target, tooltip, topic) {
+module.exports = function (target, tooltip, color) {
   var updateFunction;
 
-  const activeColor = colors[topic] || "#999999";
+  const activeColor = color || "#999999";
 
   const canvas = select(document.createElement("canvas"))
     .attr("width", 0)
@@ -134,7 +129,7 @@ module.exports = function (target, tooltip, topic) {
           const markup = `<p class="tooltip-name">${node.name}${node.party ? ` (${node.party})` : ""}</p>`
             +`${node.quote 
               ? `<p class="tooltip-quote">${node.quote}</p>`
-              + `<p class="tooltip-source">from ${node.url ? `<a href="${node.url}">${node.source}</a>` : node.source}`
+              + `<p class="tooltip-source">from ${node.url ? `<a href="${node.url}" target="_blank">${node.source}</a>` : node.source}`
               + `${node.date ? `, <span class="tooltip-date">${node.date}</span>` : ""}</p>` 
               : ""}`;
               
@@ -168,16 +163,18 @@ module.exports = function (target, tooltip, topic) {
           context.fillStyle = d.name === youSlug ? activeColor : d.party === "D" ? "#C3CBDD" : d.party === "R" ? "#F6D5D8" : "#e6e6e6";
           context.fill();
 
+          if ((!d.image || d.name === youSlug) && r === d.maxRadius) {
+            context.fillStyle = d.name === youSlug ? "#ffffff" : "#404040";
+            context.fillText(d.label, x, y);
+          }
+
           if (d.image) {
             context.save();
             context.arc(x, y, r, 0, 2 * Math.PI);
             context.clip();
             context.drawImage(d.image, x - r, y - r, r * 2, r * 2);
             context.restore();
-          } else if (r === d.maxRadius) {
-            context.fillStyle = d.name === youSlug ? "#ffffff" : "#404040";
-            context.fillText(d.label, x, y);
-          }
+          } 
         });
         context.restore();
       }
@@ -209,5 +206,8 @@ module.exports = function (target, tooltip, topic) {
     updateFunction();
   }
 
-  return join;
+  return {
+    join,
+    refresh
+  };
 }
