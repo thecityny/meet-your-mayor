@@ -149,6 +149,24 @@
       <div id="results-chart" class="results-chart"></div>
       <div id="results" class="results"></div>
     </div>
+
+    <% if (archieml.links) { %>
+    <div class="section">
+      <div class="copy-container">
+        <h3 class="subhead">More topics</h3>
+        <ul class="topics-list copy">
+          <% Object.entries(archieml.links).forEach(([key, value]) => { %>
+          <li><a href="<%= key %>.html"><%= value %></a></li>
+          <% }) %>
+          <li><a href="#">All &#8594;</a></li>
+        </ul>
+      </div>
+    </div>
+    <% } %>
+
+    <div class="copy-container">
+      <p class="photo-credit">Candidate images from Ben Fractenberg/THE CITY, Alejandro Durán/THE CITY, Shutterstock and campaign websites.</p>
+    </div>
   </main>
   <%= t.include("partials/_footer.html") %>
   <script src="app.js" async></script>
