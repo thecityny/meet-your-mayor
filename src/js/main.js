@@ -95,24 +95,22 @@ const questions = questionTargets.reduce((questions, question) => {
     return [
       () => answerSlug,
       (value, triggerUpdate = false) => {
-        if (answerSlug !== value) {
-          selected[questionSlug] = value;
-          getMatches(selected);
+        selected[questionSlug] = value;
+        getMatches(selected);
 
-          if (fbToken && triggerUpdate) {
-            fetch(`${endpoint}/answers?auth=facebook&topic=${topic}`, {
-              method: "POST",
-              headers: {
-                "Authorization": `Bearer ${fbToken}`,
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(selected, null, 2)
-            });
-          }
-  
-          answerSlug = value;
-          listeners.forEach(fun => fun(value));
+        if (answerSlug !== value && fbToken && triggerUpdate) {
+          fetch(`${endpoint}/answers?auth=facebook&topic=${topic}`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${fbToken}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(selected, null, 2)
+          });
         }
+
+        answerSlug = value;
+        listeners.forEach(fun => fun(value));
       },
       (fun) => listeners.push(fun)
     ]
@@ -281,7 +279,9 @@ const resultsChart = visual(resultsChartTarget, tooltip, activeColor);
 visualCollection.push(resultsChart);
 
 function getMatches(selected) {
-  const selectedQuestions = Object.keys(selected);
+  const selectedQuestions = Object.entries(selected)
+    .filter(([key, value]) => value)
+    .map(([key, value]) => key);
   const selectedCandidates = selectedQuestions.reduce((candidates, questionSlug) => {
     const answerSlug = selected[questionSlug];
     const answerPositions = positions[questionSlug] && positions[questionSlug][answerSlug] || [];
@@ -296,7 +296,7 @@ function getMatches(selected) {
     .reduce((candidates, answerCandidates) => [
       ...candidates, 
       ...answerCandidates
-    ]);
+    ], []);
 
   const orderedQuestionSlugs = questionTargets
     .map(question => question.getAttribute("data-slug"))
@@ -357,7 +357,7 @@ function getMatches(selected) {
   const topMarkup = `<ul class="matches-list">${topMatches.map(d => candidateCard(d)).join("")}</ul>`;
   const otherMarkup = `<div class="all-matches expandable collapsed">`
     + `<div class="matches-header expandable-header">`
-      + `<p class="matches-link-group expandable-link"><span class="display-closed">+ Show other candidates</span><span class="display-open">- Hide other candidates</span></p>`
+      + `<p class="matches-link-group expandable-link"><span class="display-closed">+ Show ${topMatches.length > 0 ? "other" : "all"} candidates</span><span class="display-open">- Hide ${topMatches.length > 0 ? "other" : "all"} candidates</span></p>`
     + `</div>`
     + `<ul class="matches-list expandable-body">${otherMatches.map(d => candidateCard(d)).join("")}</ul>`
     + `</div>`;
@@ -421,13 +421,19 @@ function attachExpandHandlers(target) {
 const fbButtonText = fbButton.querySelector(".fb-button-text");
 const loginPrompt = document.querySelector(".login-prompt");
 
-FB.getLoginStatus(response => {
-  if (response.status === 'connected') {
-    fbLogin(response.authResponse);
-  } else {
-    fbLogout();
-  }
-});
+try {
+  FB.getLoginStatus(response => {
+    if (response.status === 'connected') {
+      fbLogin(response.authResponse);
+    } else {
+      fbLogout();
+    }
+  });
+} catch (e) {
+  console.error(e);
+  body.classList.remove(loadingClass);
+}
+
 
 async function fbLogin(authResponse) {
   fbButtonText.innerHTML = "Log out"
@@ -468,8 +474,7 @@ async function fbLogin(authResponse) {
       setAnswerSlug(data[questionSlug] || "");
     });
 
-    selected = data;
-    getMatches(selected);
+    getMatches(data);
   } catch (e) {
     console.error(e);
   }

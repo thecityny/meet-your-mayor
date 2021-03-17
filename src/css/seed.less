@@ -353,7 +353,7 @@ body.loading {
     }
 
     &::after {
-      content: "No candidates agreed with you";
+      content: "No candidates selected this answer";
       display: block;
       position: absolute;
       top: 0;
@@ -368,6 +368,10 @@ body.loading {
       justify-content: center;
     }
   }
+}
+
+.results-chart.chart-empty::after {
+  content: "No candidates matched your answers";
 }
 
 .circle-image {
