@@ -171,6 +171,7 @@ module.exports = function(grunt) {
     grunt.file.write(`${path}/candidateData.json`, JSON.stringify(candidateData, replacer, 2));
     grunt.file.write(`${path}/questionData.json`, JSON.stringify(questionData, replacer, 2));
     grunt.file.write(`${path}/answerData.json`, JSON.stringify(answerData, replacer, 2));
+    grunt.file.write(`${path}/answerSlugs.json`, JSON.stringify(answerSlugs, replacer, 2));
     grunt.file.write(`${path}/positionData.json`, JSON.stringify(positionData, replacer, 2));
   }
 }
