@@ -20,10 +20,6 @@
 %>
 
 <body class="<%= topic %> loading" data-topic="<%= topic %>">
-
-  <div id="fb-root"></div>
-  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v10.0&appId=3802878269795841" nonce="QG4nWXXa"></script>
-
   <div class="splash-screen">
     <div class="splash-screen-background">
       <div class="background-circle"></div>
@@ -50,12 +46,13 @@
       <% } %>
       <div class="copy-container">
         <div class="login">
-          <p class="login-prompt"></p>
+          <p class="login-prompt">Customize your results with your profile image</p>
           <p class="login-buttons">
-            <button id="fb-button" class="fb-button"><%=  t.include("assets/login-icons/f_logo.svg") %> <span class="fb-button-text">Log in with Facebook</span></button>
+            <button id="g-button" class="g-button"><%=  t.include("assets/login-icons/google_logo.svg") %> <span class="g-button-text">Log in with Google</span></button>
+            <button id="fb-button" class="fb-button"><%=  t.include("assets/login-icons/facebook_logo.svg") %> <span class="fb-button-text">Log in with Facebook</span></button>
           </p>
         </div>
-        <p class="copy login-note">Logging in is optional and allows us to show you your selections across multiple browsing sessions. Read about how we store your data for this interactive and keep it private in our <a href="https://www.thecity.nyc/e/22094122">privacy statement</a>.</p>
+        <p class="copy login-note">Logging in is optional and used exclusively to obtain a profile image. We don't store any of your data or send data to any of the above providers. Read our full <a href="https://www.thecity.nyc/e/22094122">privacy statement</a> for this interactive.</p>
       </div>
     </div>
 
@@ -63,7 +60,7 @@
       <div class="newsletter container">
         <div class="newsletter-text">
           <h3 class="newsletter-head">Get the Civic Newsroom newsletter</h3>
-          <p class="newsletter-intro">Sign up to get THE CITY's 2021 election and voting news and delivered to you each morning</p>
+          <p class="newsletter-intro">Sign up to get THE CITY's 2021 election and voting news and delivered to your inbox</p>
         </div>
         <div class="newsletter-link">
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSfWq2QeMt-TfJHZcRHp4MTefdVo6OkC2_Lx3zIe2xyPJoE5iA/viewform">Subscribe</a>
@@ -97,7 +94,7 @@
                 <% question.answers.forEach(function(answer) { %>
                   <button class="input-group" value="<%= answer %>"><%= answerText[answer] %></button>
                 <% }); %>
-                <button class="input-group" value="">No position</button>
+                <button class="input-group" value="">Skip this question</button>
               </form>
             </div>
             <div class="answer copy-container">
@@ -182,7 +179,9 @@
     </div>
   </main>
   <%= t.include("partials/_footer.html") %>
-  <script src="app.js" async></script>
+  <script src="app.js"></script>
+  <script src="https://connect.facebook.net/en_US/sdk.js" async defer crossorigin="anonymous"></script>
+  <script src="https://apis.google.com/js/platform.js?onload=gAsyncInit" async defer></script>
   <%/*  t.include("partials/_analytics.html") */%>
 </body>
 

@@ -2,6 +2,7 @@
 const {rollup, max} = require("d3-array");
 const visual = require("./visual");
 const tooltip = require("./tooltip.js");
+const auth = require("./auth.js");
 
 // Data
 const candidates = require("../../data/candidateData.json");
@@ -32,6 +33,7 @@ Object.entries(positions).forEach(([questionSlug, answers]) => {
 const candidatePositions = Object.fromEntries(Array.from(candidatePositionsMap));
 
 // Constants
+const localStorageSlug = `mym-${topic}`;
 const activeColors = {
   "nypd": "#f78e65",
   "education": "#848c73",
@@ -56,12 +58,8 @@ function setProfileImage (url) {
   });
 };
 
-// const endpoint = "http://localhost:3000";
-const endpoint = "https://lh48uaczhk.execute-api.us-east-1.amazonaws.com/Prod";
-
-// Facebook login
-const fbButton = document.querySelector("#fb-button");
-var fbToken = "";
+// Init login options
+auth(setProfileImage);
 
 // Set up each question
 const questionTargets = Array.from(document.querySelectorAll(".question"));
@@ -99,15 +97,8 @@ const questions = questionTargets.reduce((questions, question) => {
         selected[questionSlug] = value;
         getMatches(selected);
 
-        if ((answerSlug !== value || answerSlug === "") && fbToken && triggerUpdate) {
-          fetch(`${endpoint}/answers?auth=facebook&topic=${topic}`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${fbToken}`,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(selected, null, 2)
-          });
+        if ((answerSlug !== value || answerSlug === "") && triggerUpdate) {
+          localStorage.setItem(localStorageSlug, JSON.stringify(selected, null, 2));
         }
 
         answerSlug = value;
@@ -419,95 +410,23 @@ function attachExpandHandlers(target) {
   });
 }
 
-const fbButtonText = fbButton.querySelector(".fb-button-text");
-const loginPrompt = document.querySelector(".login-prompt");
-
-try {
-  FB.getLoginStatus(response => {
-    if (response.status === 'connected') {
-      fbLogin(response.authResponse);
-    } else {
-      fbLogout();
-    }
-  });
-} catch (e) {
-  console.error(e);
-  body.classList.remove(loadingClass);
-}
-
-
-async function fbLogin(authResponse) {
-  fbButtonText.innerHTML = "Log out"
-  fbToken = authResponse.signedRequest;
+function loadAnswers() {
+  const dataString = localStorage.getItem(localStorageSlug) || "{}";
+  const data = JSON.parse(dataString);
 
   try {
-    FB.api(
-      `/${authResponse.userID}/picture`,
-      'GET',
-      {
-        redirect: 0,
-        width: 200,
-        height: 200
-      },
-      response => {
-        setProfileImage(response.data.url);
-      }
-    );
-
-    FB.api('/me', function(response) {
-      loginPrompt.innerHTML = "You are currently logged in as " + response.name;
-    });
-  } catch (e) {
-    loginPrompt.innerHTML = "You are currently logged in"
-    console.error(e);
-  }
-
-  
-  try {
-    const data = await fetch(`${endpoint}/answers?auth=facebook&topic=${topic}`, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${fbToken}`
-      }
-    }).then(response => response.json());
-
     Object.entries(questions).forEach(([questionSlug, setAnswerSlug]) => {
       if (typeof data[questionSlug] !== "undefined") {
         setAnswerSlug(data[questionSlug]);
       }
     });
-
+  
     getMatches(data);
   } catch (e) {
     console.error(e);
   }
-
+  
   body.classList.remove(loadingClass);
 }
 
-function fbLogout () {
-  setProfileImage("");
-  fbToken = "";
-  loginPrompt.innerHTML = "Log in to save your answers"
-  fbButtonText.innerHTML = "Log in with Facebook"
-  body.classList.remove(loadingClass);
-}
-
-fbButton.addEventListener("click", e => {
-  FB.getLoginStatus(response => {
-    if (response.status !== 'connected') {
-      body.classList.add(loadingClass);
-
-      FB.login(response => {
-        if (response.status === 'connected') {
-          fbLogin(response.authResponse);
-        } else {
-          body.classList.remove(loadingClass);
-        }
-      });
-    } else {
-      FB.logout();
-      fbLogout();
-    }
-  });
-});
+loadAnswers();

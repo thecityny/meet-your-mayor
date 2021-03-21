@@ -878,9 +878,17 @@ body.loading {
 
 .login-buttons {
   margin: 20px 0;
+
+  &.google .fb-button {
+    display: none;
+  }
+
+  &.facebook .g-button {
+    display: none;
+  }
 }
 
-.fb-button {
+.fb-button, .g-button {
   background: rgba(255,255,255,0.9);
   .medface();
   font-size: 14px;
@@ -894,27 +902,16 @@ body.loading {
   color: #666;
   border: 1px solid #666;
 
-  &:hover {
-    color:#1877F2;
-    border: 1px solid #1877F2;
-    svg path.circle {
-      fill: #1877F2
-    } 
-
-  }
-
   svg {
     width: 24px;
     height: 24px;
     vertical-align: middle;
     margin-right: 5px;
+  }
 
-    .circle {
-      fill: #666;
-    }
-    .f {
-      fill: #fff;
-    }
+  &:hover {
+    color:#1877F2;
+    border: 1px solid #1877F2;
   }
 }
 
