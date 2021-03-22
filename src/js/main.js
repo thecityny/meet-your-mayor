@@ -65,9 +65,8 @@ function setProfileImage (url) {
   profileImage.crossOrigin = "anonymous";
 
   if (!url) {
-    you.image = "";
+    profileImage.src = emptyImage;
   } else {
-    you.image = profileImage;
     profileImage.src = url;
   }
   visualCollection.forEach(visual => {
