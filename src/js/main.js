@@ -1,6 +1,7 @@
 // Libraries
 const {rollup, max} = require("d3-array");
 const visual = require("./visual");
+const resultsImage = require("./results-image.js");
 const tooltip = require("./tooltip.js");
 const auth = require("./auth.js");
 const track = require("./lib/tracking");
@@ -35,12 +36,24 @@ const candidatePositions = Object.fromEntries(Array.from(candidatePositionsMap))
 
 // Constants
 const localStorageSlug = `mym-${topic}`;
-const activeColors = {
-  "nypd": "#f78e65",
-  "education": "#848c73",
-  "corona-recovery": "#b98fc1"
+const topicData = {
+  "nypd": {
+    color: "#f78e65",
+    background: "#fda584",
+    label: "NYPD"
+  },
+  "education": {
+    color: "#848c73",
+    background: "#a8b18c",
+    label: "Education"
+  },
+  "corona-recovery": {
+    color: "#b98fc1",
+    background: "#c9b6ca",
+    label: "COVID Recovery"
+  }
 }
-const activeColor = activeColors[topic];
+const activeColor = topicData[topic].color;
 const loadingClass = "loading";
 const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
 const profileImage = new Image(100, 100);
@@ -52,8 +65,9 @@ function setProfileImage (url) {
   profileImage.crossOrigin = "anonymous";
 
   if (!url) {
-    profileImage.src = emptyImage;
+    you.image = "";
   } else {
+    you.image = profileImage;
     profileImage.src = url;
   }
   visualCollection.forEach(visual => {
@@ -63,14 +77,6 @@ function setProfileImage (url) {
 
 // Init login options
 auth(setProfileImage, track);
-
-const resultsLinkContainer = document.querySelector("#results-link-container");
-const resultsLink = document.querySelector("#results-link");
-window.downloadImage = function () {
-  const canvas = document.querySelector("#results-chart canvas");
-  const dataUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-  resultsLink.href = dataUrl;
-};
 
 const shareLinks = Array.from(document.querySelectorAll(".share-container a"));
 shareLinks.forEach(link => {
@@ -290,6 +296,20 @@ const resultsChartTarget = document.querySelector("#results-chart");
 const resultsChart = visual(resultsChartTarget, tooltip, activeColor);
 visualCollection.push(resultsChart);
 
+const resultsImageTarget = document.querySelector("#results-image");
+const resultsImageChart = resultsImage(resultsImageTarget, topicData[topic]);
+visualCollection.push(resultsImageChart);
+
+const resultsLinkContainer = document.querySelector("#results-link-container");
+const resultsLink = document.querySelector("#results-link");
+var resultsImageObjectURL = "";
+window.downloadImage = function () {
+  URL.revokeObjectURL(resultsImageObjectURL);
+  const dataUrl = resultsImageTarget.toDataURL("image/png");
+  resultsImageObjectURL = URL.createObjectURL(dataURItoBlob(dataUrl));
+  resultsLink.href = resultsImageObjectURL;
+};
+
 function getMatches(selected) {
   const selectedQuestions = Object.entries(selected)
     .filter(([key, value]) => value)
@@ -397,6 +417,7 @@ function getMatches(selected) {
     resultsChartTarget.classList.remove("chart-empty");
     resultsLinkContainer.classList.add("active");
     resultsChart.join([...nodes, you].map(node => ({...node, radius: 0})));
+    resultsImageChart.join([...nodes, you]);
   } else {
     resultsLinkContainer.classList.remove("active");
     resultsChartTarget.classList.add("chart-empty");
@@ -418,6 +439,7 @@ function attachExpandHandlers(target) {
     const body = container.querySelector(".expandable-body");
 
     link && body && link.addEventListener("click", async e => {
+      e.preventDefault();
       if (expanded) {
         track("click:collapse", value);
         // await readMore.collapse(body);
@@ -465,4 +487,16 @@ Array.from(document.querySelectorAll(".topics-list a")).forEach(link => {
     track("click:topics", link.href);
   });
 });
+
+function dataURItoBlob(dataURI) {
+  var byteString = atob(dataURI.split(',')[1]);
+  var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+  var ab = new ArrayBuffer(byteString.length);
+  var ia = new Uint8Array(ab);
+  for (var i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+  }
+  var blob = new Blob([ab], {type: mimeString});
+  return blob;
+}
 

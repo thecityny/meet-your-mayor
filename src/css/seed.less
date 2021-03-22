@@ -401,9 +401,14 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
 
 .responses-link-group {
   flex-grow: 1;
-  cursor: pointer;
 
-  &:hover {
+  a, a:visited {
+    color: #404040;
+    text-decoration: none;
+  }
+
+  a:hover, a:active, a:focus {
+    color: #333;
     text-decoration: underline;
   }
 }
@@ -738,6 +743,8 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
     border-radius: 50%;
     width: 40px;
     height: 40px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .down-arrow, .up-arrow {

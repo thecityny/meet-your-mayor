@@ -17,7 +17,7 @@
     "title": `Meet Your Mayor: ${archieml.hed}`,
     "description": archieml.description,
     "url": `https://projects.thecity.nyc/meet-your-mayor/${topic}.html`,
-    "image": `https://projects.thecity.nyc/meet-your-mayor/assets/social-${topic}.jpg`,
+    "image": `https://projects.thecity.nyc/meet-your-mayor/assets/share-${topic}.jpg`,
     "logo": "https://projects.thecity.nyc/meet-your-mayor/assets/logo.png",
     "author": "THE CITY",
     "datePublished": archieml.datePublished
@@ -33,7 +33,7 @@
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
-<body class="<%= topic %> loading" data-topic="<%= topic %>">
+<body class="<%= topic %>" data-topic="<%= topic %>">
   <div class="splash-screen">
     <div class="splash-screen-background">
       <div class="background-circle"></div>
@@ -126,7 +126,9 @@
             </div>
             <div class="expandable collapsed" data-value="<%= question.slug %>">
               <div class="responses-header expandable-header copy-container">
-                <p class="expandable-link responses-link-group"><span class="display-open">- Hide all responses</span><span class="display-closed">+ Show all responses</span></p>
+                <div class="responses-link-group">
+                  <a class="expandable-link" href="#"><span class="display-open">- Hide all responses</span><span class="display-closed">+ Show all responses</span></a>
+                </div>
                 <div class="responses-button-group visible-open">
                   <button class="active" type="button" value="grid">Grid</button>
                   <button type="button" value="list">List</button>
@@ -187,7 +189,7 @@
             <a class="email-link" href="<%= emailUrl %>" target="_blank" data-value="email"><%=  t.include("assets/social-icons/email.svg") %><span class="link-text">  Email</span></a>
           </p>
           <p id="results-link-container" class="results-link-container">
-            <a class="results-link" id="results-link" href="#" download="meet-your-mayor-<%= topic %>-matches.png" onClick="downloadImage()" data-value="download">Download your results as an image</a>
+            <a class="results-link" id="results-link" href="#" target="_blank" onClick="downloadImage()" data-value="download">Download your results as an image</a>
           </p>
         </div>
       </div>
@@ -210,10 +212,11 @@
     <% } %>
 
     <div class="copy-container">
-      <p class="photo-credit">Candidate images from Ben Fractenberg/THE CITY, Alejandro Durán/THE CITY, Shutterstock and campaign websites.</p>
+      <p class="photo-credit">Reporting by Ann Choi and Mónica Cordero, development by Will Welch, editing by Alyssa Katz. Candidate images from Ben Fractenberg/THE CITY, Alejandro Durán/THE CITY, Shutterstock and campaign websites.</p>
     </div>
   </main>
   <%= t.include("partials/_footer.html") %>
+  <canvas id="results-image" style="display: none;"></canvas>
   <script src="app.js"></script>
   <script src="https://connect.facebook.net/en_US/sdk.js" async defer crossorigin="anonymous"></script>
   <% <!--<script src="https://apis.google.com/js/platform.js?onload=gAsyncInit" async defer></script>--> %>
