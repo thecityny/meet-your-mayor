@@ -19,15 +19,24 @@ module.exports = function(grunt) {
     var seeds = config.scripts;
 
     async.forEachOf(seeds, function(dest, src, c) {
-      var b = browserify({ debug: mode == "dev" });
-      b.plugin(require("browser-pack-flat/plugin"));
-      b.transform("babelify", { global: true, presets: [
-        ["@babel/preset-env", {
-          targets: { browsers: ["safari >= 12"]},
-          loose: true,
-          modules: false
-        }]
-      ]});
+      var b = browserify({ debug: false });
+      b.transform("babelify", {
+        global: true, 
+        sourceMaps: false,
+        presets: [
+          ['@babel/preset-env'],
+          ["@babel/preset-react", {}]
+        ],
+        ignore: [/[\/\\]core-js/, /@babel[\/\\]runtime/],
+        plugins: [
+          ["@babel/plugin-proposal-object-rest-spread"],
+          ["@babel/plugin-transform-runtime", {
+            "regenerator": true,
+            "corejs": 3
+          }]
+        ]
+      });
+      b.plugin("tinyify");
 
       //make sure build/ exists
       grunt.file.mkdir("build");
@@ -44,15 +53,15 @@ module.exports = function(grunt) {
 
       if (mode == "dev") {
         //output sourcemap
-        assembly = assembly.pipe(exorcist(mapFile, null, null, "."));
+        // assembly = assembly.pipe(exorcist(mapFile, null, null, "."));
       }
       assembly.pipe(output).on("finish", function() {
         if (mode != "dev") return;
 
         //correct path separators in the sourcemap for Windows
-        var sourcemap = grunt.file.readJSON(mapFile);
-        sourcemap.sources = sourcemap.sources.map(function(s) { return s.replace(/\\/g, "/") });
-        grunt.file.write(mapFile, JSON.stringify(sourcemap, null, 2));
+        // var sourcemap = grunt.file.readJSON(mapFile);
+        // sourcemap.sources = sourcemap.sources.map(function(s) { return s.replace(/\\/g, "/") });
+        // grunt.file.write(mapFile, JSON.stringify(sourcemap, null, 2));
 
         c();
       });
