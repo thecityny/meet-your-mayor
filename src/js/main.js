@@ -48,6 +48,8 @@ const visualCollection = [];
 var selected = {};
 
 function setProfileImage (url) {
+  profileImage.crossOrigin = "anonymous";
+
   if (!url) {
     profileImage.src = emptyImage;
   } else {
@@ -60,6 +62,14 @@ function setProfileImage (url) {
 
 // Init login options
 auth(setProfileImage);
+
+const resultsLinkContainer = document.querySelector("#results-link-container");
+const resultsLink = document.querySelector("#results-link");
+window.downloadImage = function () {
+  const canvas = document.querySelector("#results-chart canvas");
+  const dataUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+  resultsLink.href = dataUrl;
+};
 
 // Set up each question
 const questionTargets = Array.from(document.querySelectorAll(".question"));
@@ -375,8 +385,10 @@ function getMatches(selected) {
 
   if (nodes.length > 0) {
     resultsChartTarget.classList.remove("chart-empty");
+    resultsLinkContainer.classList.add("active");
     resultsChart.join([...nodes, you].map(node => ({...node, radius: 0})));
   } else {
+    resultsLinkContainer.classList.remove("active");
     resultsChartTarget.classList.add("chart-empty");
   }
   

@@ -15,13 +15,8 @@
   "scripts": {
     "src/js/main.js": "build/app.js"
   },
-  "title": "",
-  "description": "",
-  "url": "",
-  "image": "assets/logo.png",
-  "author": "",
   "sheets": ["17fF1TXHpGf3fiSWAPoAvrQzD46SBdLiyg0HB0vhTmTQ"],
   "docs": [],
-  "embedded": true,
+  "embedded": false,
   "production": false
 }

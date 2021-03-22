@@ -1,12 +1,7 @@
 <!doctype html>
 <html lang="en-US">
 
-<head>
-  <%= t.include("partials/_head.html", grunt.data.json) %>
-  <link rel="stylesheet" type="text/css" href="style.css">
-</head>
-
-<% 
+  <% 
   const archieml = grunt.data.archieml[docSlug];
   const topic = archieml.topic;
   const questions = archieml.questions;
@@ -17,7 +12,26 @@
 
   const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
   const candidateSlugs = Object.keys(grunt.data.json.candidateData);
+
+  const project = {
+    "title": `Meet Your Mayor: ${archieml.hed}`,
+    "description": archieml.description,
+    "url": `https://projects.thecity.nyc/meet-your-mayor/${topic}.html`,
+    "image": `https://projects.thecity.nyc/meet-your-mayor/assets/social-${topic}.jpg`,
+    "logo": "https://projects.thecity.nyc/meet-your-mayor/assets/logo.png",
+    "author": "THE CITY",
+    "datePublished": archieml.datePublished
+  };
+  
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(project.description)}&counturl=${encodeURIComponent(project.url)}&url=${encodeURIComponent(project.url + "?utm_campaign=www.thecity.nyc&utm_medium=social&utm_source=twitter&utm_content=mym")}&via=THECITYNY`;
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?text=${encodeURIComponent(project.description)}&u=${encodeURIComponent(project.url + "?utm_campaign=www.thecity.nyc&utm_medium=social&utm_source=facebook&utm_content=mym")}`;
+  const emailUrl = `mailto:?subject=${project.title}&body=${project.description}%0A%0A${encodeURIComponent(project.url)}`;
 %>
+
+<head>
+  <%= t.include("partials/_head.html", {project: project}) %>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
 
 <body class="<%= topic %> loading" data-topic="<%= topic %>">
   <div class="splash-screen">
@@ -28,8 +42,8 @@
       <div class="watermark"><a href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a></div>
       <p class="series-headline">Meet Your Mayor</p>
       <h1 class="topic"><%= archieml.hed %></h1>
-      <% const updated = new Date(); %>
-      <p class="date"><time datetime="<%= updated.toISOString() %>"><%= updated.toLocaleDateString("en-US", {
+      <% const published = new Date(archieml.datePublished); %>
+      <p class="date"><time datetime="<%= published.toISOString() %>"><%= published.toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
           year: "numeric"
@@ -44,23 +58,32 @@
       <% if (archieml.intro) { %>
         <%= t.include("partials/_archie.ejs", {story: archieml.intro}) %>
       <% } %>
+      <% const updated = new Date(); %>
+      <div class="copy-container">
+        <p class="copy"><em>Last updated <time datetime="<%= updated.toISOString() %>"><%= updated.toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+          }) %></time>.</em>
+        </p>
+      </div>
       <div class="copy-container">
         <div class="login">
           <p class="login-prompt">Customize your results with your profile image</p>
           <p class="login-buttons">
-            <button id="g-button" class="g-button"><%=  t.include("assets/login-icons/google_logo.svg") %> <span class="g-button-text">Log in with Google</span></button>
+            <%  <!--<button id="g-button" class="g-button"><%=  t.include("assets/login-icons/google_logo.svg") %> <span class="g-button-text">Log in with Google</span></button>--> %>
             <button id="fb-button" class="fb-button"><%=  t.include("assets/login-icons/facebook_logo.svg") %> <span class="fb-button-text">Log in with Facebook</span></button>
           </p>
         </div>
-        <p class="copy login-note">Logging in is optional and used exclusively to obtain a profile image. We don't store any of your data or send data to any of the above providers. Read our full <a href="https://www.thecity.nyc/e/22094122">privacy statement</a> for this interactive.</p>
+        <p class="copy login-note">Logging in is optional and used exclusively to obtain a profile image. We don't store any data from the above providers. Read our full <a href="https://www.thecity.nyc/e/22094122">privacy statement</a> for this interactive.</p>
       </div>
     </div>
 
     <div class="section section-highlight">
       <div class="newsletter container">
         <div class="newsletter-text">
-          <h3 class="newsletter-head">Get the Civic Newsroom newsletter</h3>
-          <p class="newsletter-intro">Sign up to get THE CITY's 2021 election and voting news and delivered to your inbox</p>
+          <h3 class="newsletter-head">What do you need to know to vote?</h3>
+          <p class="newsletter-intro">Sign up to get THE CITY's 2021 election newsletter delivered to your inbox every Tuesday</p>
         </div>
         <div class="newsletter-link">
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSfWq2QeMt-TfJHZcRHp4MTefdVo6OkC2_Lx3zIe2xyPJoE5iA/viewform">Subscribe</a>
@@ -156,6 +179,18 @@
     <div id="results-container" class="results-container section section-highlight">
       <h2 class="results-title">Your <%= archieml.hed %> Matches</h2>
       <div id="results-chart" class="results-chart"></div>
+      <div class="copy-container">
+        <div class="share-container">
+          <p> 
+            <a class="twitter-link" href="<%= twitterUrl %>" target="_blank"><%=  t.include("assets/social-icons/twitter.svg") %><span class="link-text"> Twitter</span></a>
+            <a class="facebook-link" href="<%= facebookUrl %>" target="_blank"><%=  t.include("assets/social-icons/facebook.svg") %><span class="link-text"> Facebook</span></a>
+            <a class="email-link" href="<%= emailUrl %>" target="_blank"><%=  t.include("assets/social-icons/email.svg") %><span class="link-text">  Email</span></a>
+          </p>
+          <p id="results-link-container" class="results-link-container">
+            <a class="results-link" id="results-link" href="#" download="meet-your-mayor-<%= topic %>-matches.png" onClick="downloadImage()">Download your results as an image</a>
+          </p>
+        </div>
+      </div>
       <div id="results" class="results"></div>
     </div>
 
@@ -181,7 +216,7 @@
   <%= t.include("partials/_footer.html") %>
   <script src="app.js"></script>
   <script src="https://connect.facebook.net/en_US/sdk.js" async defer crossorigin="anonymous"></script>
-  <script src="https://apis.google.com/js/platform.js?onload=gAsyncInit" async defer></script>
+  <% <!--<script src="https://apis.google.com/js/platform.js?onload=gAsyncInit" async defer></script>--> %>
   <%/*  t.include("partials/_analytics.html") */%>
 </body>
 

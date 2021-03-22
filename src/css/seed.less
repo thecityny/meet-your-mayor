@@ -68,6 +68,72 @@ body.loading {
   }
 }
 
+.share-container {
+  margin: 30px 0;
+  overflow: auto;
+  text-align: center;
+
+  p {
+    margin: 10px 0;
+  }
+}
+
+.results-link-container {
+  display: none;
+
+  &.active {
+    display: block;
+  }
+}
+
+a.twitter-link, a.facebook-link, a.email-link, a.results-link {
+  &, &:hover, &:active, &:focus, &:visited {
+    text-decoration: none;
+    box-shadow: none;
+    color: #404040;
+    padding: 10px;
+    overflow: auto;
+    display: inline-block;
+  }
+
+  &, &:focus, &:visited {
+    background: rgba(255,255,255,0.4);
+  }
+
+  &:hover, &:active {
+    background: rgba(255,255,255,0.6);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    vertical-align: bottom;
+  }
+
+  .link-text {
+    display: none;
+  }
+
+  @media screen and (min-width: 400px) {
+    .link-text {
+      display: inline;
+    }
+
+    svg {
+      margin-right: 5px;
+    }
+  }
+}
+.twitter-link svg path {
+  fill: #1d9bf0;
+}
+.facebook-link svg path {
+  fill: #1877F2;
+}
+.email-link svg path {
+  fill: #868686;
+}
+
 .photo-credit {
   color: #404040;
   .bookface();
