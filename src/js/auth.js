@@ -1,4 +1,4 @@
-module.exports = function (setProfileImage) {
+module.exports = function (setProfileImage, track) {
   const loginPrompt = document.querySelector(".login-prompt");
   const loginButtons = document.querySelector(".login-buttons");
   
@@ -47,8 +47,10 @@ module.exports = function (setProfileImage) {
     services.fb.button.addEventListener("click", e => {
       FB.getLoginStatus(response => {
         if (response.status !== 'connected') {
+          track("click:login", "facebook");
           FB.login();
         } else {
+          track("click:logout", "facebook");
           FB.logout();
         }
       });
@@ -116,12 +118,14 @@ module.exports = function (setProfileImage) {
   
     services.g.button.addEventListener("click", async e => {
       if (!auth2.isSignedIn.get()) {
+        track("click:login", "twitter");
         try {
           await auth2.signIn();
         } catch (e) {
           console.error(e);
         }
       } else {
+        track("click:logout", "twitter");
         try {
           auth2.signOut();
         } catch (e) {

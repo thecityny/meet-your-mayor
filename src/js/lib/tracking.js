@@ -18,7 +18,7 @@ var track = function(eventAction, eventLabel, eventValue) {
     eventLabel,
     eventValue,
     hitType: "event",
-    eventCategory: document.title
+    eventCategory: "mym"
   }
 
   var search = window.location.search.replace(/^\?/, "");

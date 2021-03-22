@@ -124,7 +124,7 @@
               <h4>Candidates who agree with you</h4>
               <div class="chart"></div>
             </div>
-            <div class="expandable collapsed">
+            <div class="expandable collapsed" data-value="<%= question.slug %>">
               <div class="responses-header expandable-header copy-container">
                 <p class="expandable-link responses-link-group"><span class="display-open">- Hide all responses</span><span class="display-closed">+ Show all responses</span></p>
                 <div class="responses-button-group visible-open">
@@ -182,12 +182,12 @@
       <div class="copy-container">
         <div class="share-container">
           <p> 
-            <a class="twitter-link" href="<%= twitterUrl %>" target="_blank"><%=  t.include("assets/social-icons/twitter.svg") %><span class="link-text"> Twitter</span></a>
-            <a class="facebook-link" href="<%= facebookUrl %>" target="_blank"><%=  t.include("assets/social-icons/facebook.svg") %><span class="link-text"> Facebook</span></a>
-            <a class="email-link" href="<%= emailUrl %>" target="_blank"><%=  t.include("assets/social-icons/email.svg") %><span class="link-text">  Email</span></a>
+            <a class="twitter-link" href="<%= twitterUrl %>" target="_blank" data-value="twitter"><%=  t.include("assets/social-icons/twitter.svg") %><span class="link-text"> Twitter</span></a>
+            <a class="facebook-link" href="<%= facebookUrl %>" target="_blank" data-value="facebook"><%=  t.include("assets/social-icons/facebook.svg") %><span class="link-text"> Facebook</span></a>
+            <a class="email-link" href="<%= emailUrl %>" target="_blank" data-value="email"><%=  t.include("assets/social-icons/email.svg") %><span class="link-text">  Email</span></a>
           </p>
           <p id="results-link-container" class="results-link-container">
-            <a class="results-link" id="results-link" href="#" download="meet-your-mayor-<%= topic %>-matches.png" onClick="downloadImage()">Download your results as an image</a>
+            <a class="results-link" id="results-link" href="#" download="meet-your-mayor-<%= topic %>-matches.png" onClick="downloadImage()" data-value="download">Download your results as an image</a>
           </p>
         </div>
       </div>
@@ -217,7 +217,7 @@
   <script src="app.js"></script>
   <script src="https://connect.facebook.net/en_US/sdk.js" async defer crossorigin="anonymous"></script>
   <% <!--<script src="https://apis.google.com/js/platform.js?onload=gAsyncInit" async defer></script>--> %>
-  <%/*  t.include("partials/_analytics.html") */%>
+  <%= t.include("partials/_analytics.html") %>
 </body>
 
 </html>

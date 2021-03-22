@@ -3,6 +3,7 @@ const {rollup, max} = require("d3-array");
 const visual = require("./visual");
 const tooltip = require("./tooltip.js");
 const auth = require("./auth.js");
+const track = require("./lib/tracking");
 
 // Data
 const candidates = require("../../data/candidateData.json");
@@ -61,7 +62,7 @@ function setProfileImage (url) {
 };
 
 // Init login options
-auth(setProfileImage);
+auth(setProfileImage, track);
 
 const resultsLinkContainer = document.querySelector("#results-link-container");
 const resultsLink = document.querySelector("#results-link");
@@ -70,6 +71,14 @@ window.downloadImage = function () {
   const dataUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
   resultsLink.href = dataUrl;
 };
+
+const shareLinks = Array.from(document.querySelectorAll(".share-container a"));
+shareLinks.forEach(link => {
+  link.addEventListener("click", e => {
+    const value = e.target.getAttribute("data-value");
+    track("click:share", value);
+  });
+})
 
 // Set up each question
 const questionTargets = Array.from(document.querySelectorAll(".question"));
@@ -145,6 +154,7 @@ const questions = questionTargets.reduce((questions, question) => {
   // On answer selection, update visual
   addAnswerSlugListener((answerSlug) => {
     const emptyChartClass = "chart-empty";
+    track("click:question", questionSlug);
 
     if (answerSlug) {
       answer.classList.add("active");
@@ -332,7 +342,7 @@ function getMatches(selected) {
 
   function candidateCard([candidateSlug, matches]) {
     const candidate = candidates[candidateSlug];
-    return `<li class="match expandable collapsed">`
+    return `<li class="match expandable collapsed" data-value="candidate">`
       + `<div class="match-header expandable-header expandable-link">`
         + `<img class="match-image ${candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : ""}" alt="${candidate.name}" src="${candidate.image ? `assets/images/${candidate.image}` : emptyImage}" />`
         + `<div>`
@@ -357,7 +367,7 @@ function getMatches(selected) {
   };
 
   const topMarkup = `<ul class="matches-list">${topMatches.map(d => candidateCard(d)).join("")}</ul>`;
-  const otherMarkup = `<div class="all-matches expandable collapsed">`
+  const otherMarkup = `<div class="all-matches expandable collapsed" data-value="candidates">`
     + `<div class="matches-header expandable-header">`
       + `<p class="matches-link-group expandable-link"><span class="display-closed">+ Show ${topMatches.length > 0 ? "other" : "all"} candidates</span><span class="display-open">- Hide ${topMatches.length > 0 ? "other" : "all"} candidates</span></p>`
     + `</div>`
@@ -403,15 +413,18 @@ function attachExpandHandlers(target) {
 
   containers.forEach(container => {
     var expanded = false;
+    const value = container.getAttribute("data-value");
     const link = container.querySelector(".expandable-link");
     const body = container.querySelector(".expandable-body");
 
     link && body && link.addEventListener("click", async e => {
       if (expanded) {
+        track("click:collapse", value);
         // await readMore.collapse(body);
         container.classList.remove(expandedClass);
         container.classList.add(collapsedClass);
       } else {
+        track("click:expand", value);
         container.classList.remove(collapsedClass);
         container.classList.add(expandedClass);
         // await readMore.expand(body);
@@ -442,3 +455,14 @@ function loadAnswers() {
 }
 
 loadAnswers();
+
+document.querySelector(".newsletter-link a").addEventListener("click", e => {
+  track("click:newsletter");
+});
+
+Array.from(document.querySelectorAll(".topics-list a")).forEach(link => {
+  link.addEventListener("click", e => {
+    track("click:topics", link.href);
+  });
+});
+
