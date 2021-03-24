@@ -73,12 +73,16 @@ module.exports = function(grunt) {
     const activeCandidateSlugs = activeCandidates.map(d => d[candidateColumn]);
     const candidateData = rollup(activeCandidates, v => {
       const candidate = v[0];
+      const droppedOut = candidate["dropped-out"] && new Date(candidate["dropped-out"]);
+      const droppedOutString = droppedOut && `${apMonths[droppedOut.getUTCMonth()]} ${droppedOut.getUTCDate()}` || "";
+
       return {
         name: candidate["first-name"] + " " + candidate["last-name"],
         lastName: candidate["last-name"], 
         label: candidate["label"],
         image: candidate["image"],
-        party: candidate["party"]
+        party: candidate["party"],
+        droppedOut: droppedOutString
       };
     }, d => d[candidateColumn]);
 
@@ -147,7 +151,7 @@ module.exports = function(grunt) {
       positions, 
       v => v.reduce((v, d) => {
         const date = d.date && new Date(d.date);
-        const dateString = date && `${apMonths[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}` || "";
+        const dateString = date && `${apMonths[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}` || "";
 
         if (activeCandidateSlugs.indexOf(d[candidateColumn]) > -1) {
           return v.concat({

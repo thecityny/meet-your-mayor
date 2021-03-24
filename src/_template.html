@@ -62,11 +62,11 @@
       <% } %>
       <% const updated = new Date(); %>
       <div class="copy-container">
-        <p class="copy"><em>Last updated <time datetime="<%= updated.toISOString() %>"><%= updated.toLocaleDateString("en-US", {
+        <p class="copy"><a href="#change-list" id="changed-link"><em>Last updated <time datetime="<%= updated.toISOString() %>"><%= updated.toLocaleDateString("en-US", {
             month: "long",
             day: "numeric",
             year: "numeric"
-          }) %></time>.</em>
+          }) %></time></em></a>
         </p>
       </div>
       <div class="copy-container">
@@ -129,18 +129,29 @@
                   <div class="response" data-slug="<%= answer %>">
                     <h4><%= answerText[answer] %></h4>
                     <% if (positions[answer] && positions[answer].length > 0) { %>
+                    <% const sortedPositions = positions[answer].sort((a, b) => {
+                      const aText = grunt.data.json.candidateData[a.slug].lastName.toLowerCase();
+                      const bText = grunt.data.json.candidateData[b.slug].lastName.toLowerCase();
+                        if (aText < bText) {
+                          return -1;
+                        }
+                        if (aText > bText) {
+                          return 1;
+                        }
+                        return 0;
+                    }) %>
                     <ul>
-                      <% positions[answer].forEach(function(position) { %>
+                      <% sortedPositions.forEach(function(position) { %>
                         <% const candidate = grunt.data.json.candidateData[position.slug]; %>
                         <li data-slug="<%= position.slug %>">
-                          <figure class="circle-image response-image">
-                            <img class="<%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %>" src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
+                          <figure class="circle-image response-image <%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %> <%= candidate.droppedOut ? "dropped-out" : "" %>">
+                            <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
                             <div class="circle-image-label response-image-label">
                               <%= candidate.image ? "" : candidate.label %>
                             </div>
                           </figure>
                           <div class="response-details">
-                            <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)</p>
+                            <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)<%= (candidate.droppedOut ? `<span class="response-status">Dropped out ${candidate.droppedOut}</span>` : "") %></p>
                             <% if (position.quote) { %>
                               <p class="response-quote"><%= position.quote %></p>
                               <p class="response-source">from <%= position.url ? `<a href="${answer.url}" target="_blank">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>
@@ -222,7 +233,7 @@
               return {text: change.text, date: dateString};
             });
           %>
-          <ul class="change-list">
+          <ul id="change-list" class="change-list">
             <% changes.forEach(change => { %>
               <li><span class="change-date"><%= change.date %>:</span> <%= change.text %></li>
             <% }) %>

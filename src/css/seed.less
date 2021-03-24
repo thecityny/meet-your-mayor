@@ -532,19 +532,28 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
   position: relative;
   display: inline-block;
   pointer-events: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: @default-background;
+  flex-shrink: 0;
+  margin: 0;
+
+  &.rep {
+    background-color: @rep-background;
+  }
+
+  &.dem {
+    background-color: @dem-background;
+  }
 
   img {
-    width: 50px;
-    border-radius: 50%;
-    background: @default-background;
+    width: 100%;
+  }
 
-    &.rep {
-      background-color: @rep-background;
-    }
-
-    &.dem {
-      background-color: @dem-background;
-    }
+  &.dropped-out img {
+    opacity: 0.3;
   }
 }
 
@@ -634,6 +643,14 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
   .medface();
   font-size: 16px;
   margin: 15px 0 10px;
+}
+
+.response-status {
+  font-size: 15px;
+  .ital();
+  display: inline-block;
+  width: 100%;
+  margin: 5px 0;
 }
 
 .response-quote {
@@ -777,16 +794,6 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
   width: 50px;
   height: 50px;
   vertical-align: middle;
-  border-radius: 50%;
-  background: @default-background;
-
-  &.rep {
-    background-color: @rep-background;
-  }
-
-  &.dem {
-    background-color: @dem-background;
-  }
 
   @media screen and (min-width: 400px) {
     margin: 0 20px 0 0;
@@ -797,6 +804,14 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
   .medface();
   font-size: 16px;
   margin: 5px 0;
+}
+
+.match-status {
+  font-size: 15px;
+  .ital();
+  display: inline-block;
+  width: 100%;
+  margin-top: 5px;
 }
 
 .match-rank {
@@ -939,6 +954,14 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
 .tooltip-name {
   font-size: 15px;
   .medface();
+}
+
+.tooltip-status {
+  font-size: 14px;
+  .ital();
+  display: inline-block;
+  width: 100%;
+  margin: 4px 0;
 }
 
 .tooltip-source {

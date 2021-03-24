@@ -272,7 +272,7 @@ function responses(target, questionNodes, getView, addViewListener) {
         if (getView() === gridView) {
           tooltip.show();
           tooltip.setPosition(x, y);
-          tooltip.setHTML(`<p class="tooltip-name">${position.name}${position.party ? ` (${position.party})` : ""}</p>`
+          tooltip.setHTML(`<p class="tooltip-name">${position.name}${position.party ? ` (${position.party})` : ""}${position.droppedOut ? `<span class="tooltip-status">Dropped out ${position.droppedOut}</span>` : ""}</p>`
             +`${position.quote 
               ? `<p class="tooltip-quote">${position.quote}</p>`
               + `<p class="tooltip-source">from ${position.url ? `<a href="${position.url}" target="_blank">${position.source}</a>` : position.source}`
@@ -363,9 +363,12 @@ function getMatches(selected) {
     const candidate = candidates[candidateSlug];
     return `<li class="match expandable collapsed" data-value="candidate">`
       + `<div class="match-header expandable-header expandable-link">`
-        + `<img class="match-image ${candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : ""}" alt="${candidate.name}" src="${candidate.image ? `assets/images/${candidate.image}` : emptyImage}" />`
+        + `<figure class="circle-image match-image ${candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : ""} ${candidate.droppedOut ? "dropped-out" : ""}">`
+          + `<img src="${candidate.image ? `assets/images/${candidate.image}` : emptyImage}" alt="${candidate.name}" />`
+          + `<div class="circle-image-label">${candidate.image ? "" : candidate.label}</div>`
+        + `</figure>`
         + `<div>`
-          + `<p class="match-name">${candidate.name}</p>`
+          + `<p class="match-name">${candidate.name} (${candidate.party})${candidate.droppedOut ? `<span class="match-status">Dropped out ${candidate.droppedOut}</span>` : ""}</p>`
           + `<p class="match-rank">Matched you on ${matches} of ${selectedQuestions.length} questions</p>`
         + `</div>`
         + `<div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>`
@@ -476,6 +479,12 @@ function loadAnswers() {
 }
 
 loadAnswers();
+
+const changeList = document.querySelector("#change-list");
+document.querySelector("#changed-link").addEventListener("click", e => {
+  e.preventDefault();
+  changeList.scrollIntoView(true);
+});
 
 document.querySelector(".newsletter-link a").addEventListener("click", e => {
   track("click:newsletter");

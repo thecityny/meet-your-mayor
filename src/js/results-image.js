@@ -64,7 +64,7 @@ module.exports = function (target, topic) {
       context.textAlign = "center";
       context.textBaseline = "top";
       context.fillStyle = "#404040";
-      context.fillText(`MEET YOUR MAYOR: My ${topic.label} matches`, width / 2, 45);
+      context.fillText(`MEET YOUR MAYOR: My ${topic.label} Matches`, width / 2, 45);
       context.drawImage(logoImg, (width - 750) / 2, height - 125, 750, 100);
 
       context.fillStyle = "#ffffff";
@@ -77,6 +77,7 @@ module.exports = function (target, topic) {
       context.textAlign = "center";
       context.textBaseline = "middle";
       candidates.forEach((d) => {
+        context.save();
         const r = d.r;
         const x = d.x;
         const y = d.y;
@@ -87,6 +88,10 @@ module.exports = function (target, topic) {
         context.arc(x, y, r, 0, 2 * Math.PI);
         context.fillStyle = d.name === youSlug ? activeColor : d.party === "D" ? "#C3CBDD" : d.party === "R" ? "#F6D5D8" : "#e6e6e6";
         context.fill();
+
+        if (d.droppedOut) {
+          context.globalAlpha = 0.3;
+        }
 
         if (!d.image || d.name === youSlug) {
           context.fillStyle = d.name === youSlug ? "#ffffff" : "#404040";
@@ -100,6 +105,8 @@ module.exports = function (target, topic) {
           context.drawImage(d.image, x - r, y - r, r * 2, r * 2);
           context.restore();
         } 
+
+        context.restore();
       });
       context.restore();
     }

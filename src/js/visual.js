@@ -126,7 +126,7 @@ module.exports = function (target, tooltip, color) {
           tooltip.show();
           tooltip.setPosition(window.scrollX + rect.left + (node.x + width / 2),  window.scrollY + rect.top + (node.y + height / 2) + (node.r * 0.5));
 
-          const markup = `<p class="tooltip-name">${node.name}${node.party ? ` (${node.party})` : ""}</p>`
+          const markup = `<p class="tooltip-name">${node.name}${node.party ? ` (${node.party})` : ""}${node.droppedOut ? `<span class="tooltip-status">Dropped out ${node.droppedOut}</span>` : ""}</p>`
             +`${node.quote 
               ? `<p class="tooltip-quote">${node.quote}</p>`
               + `<p class="tooltip-source">from ${node.url ? `<a href="${node.url}" target="_blank">${node.source}</a>` : node.source}`
@@ -152,16 +152,21 @@ module.exports = function (target, tooltip, color) {
         context.textAlign = "center";
         context.textBaseline = "middle";
         candidates.forEach((d) => {
+          context.save();
           const r = d.r;
           const x = d.x;
           const y = d.y;
-          
+
           context.beginPath();
           context.moveTo(x, y);
 
           context.arc(x, y, r, 0, 2 * Math.PI);
           context.fillStyle = d.name === youSlug ? activeColor : d.party === "D" ? "#C3CBDD" : d.party === "R" ? "#F6D5D8" : "#e6e6e6";
           context.fill();
+
+          if (d.droppedOut) {
+            context.globalAlpha = 0.3;
+          }
 
           if ((!d.image || d.name === youSlug) && r === d.maxRadius) {
             context.fillStyle = d.name === youSlug ? "#ffffff" : "#404040";
@@ -174,7 +179,9 @@ module.exports = function (target, tooltip, color) {
             context.clip();
             context.drawImage(d.image, x - r, y - r, r * 2, r * 2);
             context.restore();
-          } 
+          }
+
+          context.restore();
         });
         context.restore();
       }
