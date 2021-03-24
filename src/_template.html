@@ -26,6 +26,8 @@
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(project.description)}&counturl=${encodeURIComponent(project.url)}&url=${encodeURIComponent(project.url + "?utm_campaign=www.thecity.nyc&utm_medium=social&utm_source=twitter&utm_content=mym")}&via=THECITYNY`;
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?text=${encodeURIComponent(project.description)}&u=${encodeURIComponent(project.url + "?utm_campaign=www.thecity.nyc&utm_medium=social&utm_source=facebook&utm_content=mym")}`;
   const emailUrl = `mailto:?subject=${project.title}&body=${project.description}%0A%0A${encodeURIComponent(project.url)}`;
+
+  const apMonths = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
 %>
 
 <head>
@@ -200,7 +202,7 @@
     <% } %>
 
     <div class="section">
-      <div class="newsletter copy-container">
+      <div class="newsletter photo-container">
         <div class="newsletter-text">
           <h3 class="newsletter-head">What do you need to know to vote?</h3>
           <p class="newsletter-intro">Sign up to get THE CITY's 2021 election newsletter delivered to your inbox every Tuesday</p>
@@ -211,9 +213,25 @@
       </div>
     </div>
 
-    <div class="copy-container">
-      <p class="photo-credit">Reporting by Ann Choi and Mónica Cordero, development by Will Welch, editing by Alyssa Katz. Candidate images from Ben Fractenberg/THE CITY, Alejandro Durán/THE CITY, Shutterstock and campaign websites.</p>
+    <div class="section section-transparent">
+      <div class="photo-container">
+        <% if (archieml.changes) { %>
+          <% const changes = archieml.changes.map(change => {
+              const date = new Date(change.date);
+              const dateString = `${apMonths[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
+              return {text: change.text, date: dateString};
+            });
+          %>
+          <ul class="change-list">
+            <% changes.forEach(change => { %>
+              <li><span class="change-date"><%= change.date %>:</span> <%= change.text %></li>
+            <% }) %>
+          </ul>
+        <% } %>
+        <p class="photo-credit">Reporting by Ann Choi and Mónica Cordero, development by Will Welch, editing by Alyssa Katz. Candidate images from Ben Fractenberg/THE CITY, Alejandro Durán/THE CITY, Shutterstock and campaign websites.</p>
+      </div>
     </div>
+
   </main>
   <%= t.include("partials/_footer.html") %>
   <canvas id="results-image" style="display: none;"></canvas>
