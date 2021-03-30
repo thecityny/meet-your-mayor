@@ -60,15 +60,13 @@
       <% if (archieml.intro) { %>
         <%= t.include("partials/_archie.ejs", {story: archieml.intro}) %>
       <% } %>
-      <% const updated = new Date(); %>
-      <div class="copy-container">
-        <p class="copy"><a href="#change-list" id="changed-link"><em>Last updated <time datetime="<%= updated.toISOString() %>"><%= updated.toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric"
-          }) %></time></em></a>
-        </p>
-      </div>
+      <% if (archieml.changes.length) { %>
+        <% const latestChange = archieml.changes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0]; %>
+        <% const updated = new Date(latestChange && latestChange.date); %>
+        <div class="copy-container">
+          <p class="copy"><a href="#change-list" id="changed-link"><em>Last updated <time datetime="<%= updated.toISOString() %>"><%= apMonths[updated.getUTCMonth()] %> <%= updated.getUTCDate() %>, <%= updated.getUTCFullYear() %></time></em></a></p>
+        </div>
+      <% } %>
       <div class="copy-container">
         <div class="login">
           <p class="login-prompt">Customize your results with your profile image</p>

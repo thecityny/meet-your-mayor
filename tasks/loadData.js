@@ -88,7 +88,7 @@ module.exports = function(grunt) {
 
     // Topics
     const topics = validate(topicSheet, d => {
-      return d[topicColumn] && d[topicActiveColumn] && d[docColumn];
+      return d[topicColumn] && d[topicActiveColumn];
     });
     const activeTopics = topics.filter(d => d[topicActiveColumn] === "yes");
     const topicSlugs = topics.map(d => d[topicColumn]);

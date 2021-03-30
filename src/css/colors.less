@@ -1,49 +1,31 @@
-body.education {
-  background-color: #a8b18c;
+.theme-colors(@body, @active) {
+  background-color: @body;
   .question form button.active {
-    background-color: #848c73;
+    background-color: @active;
   }
   .copy {
     a, a:visited {
-      box-shadow: 0 1px 0 #848c73;
+      box-shadow: 0 1px 0 @active;
     }
   
     a:visited, a:hover, a:active, a:focus {
-      box-shadow: 0 2px 0 #848c73;
+      box-shadow: 0 2px 0 @active;
     }
   }
+}
+
+body.education {
+  .theme-colors(#a8b18c, #848c73);
 }
 
 body.nypd {
-  background-color: #fda584;
-  .question form button.active {
-    background-color: #f78e65;
-  }
-
-  .copy {
-    a, a:visited {
-      box-shadow: 0 1px 0 #f78e65;
-    }
-  
-    a:visited, a:hover, a:active, a:focus {
-      box-shadow: 0 2px 0 #f78e65;
-    }
-  }
+  .theme-colors(#fda584, #f78e65);
 }
 
 body.corona-recovery {
-  background-color: #c9b6ca;
-  .question form button.active {
-    background-color: #b98fc1;
-  }
+  .theme-colors(#c9b6ca, #b98fc1);
+}
 
-  .copy {
-    a, a:visited {
-      box-shadow: 0 1px 0 #b98fc1;
-    }
-  
-    a:visited, a:hover, a:active, a:focus {
-      box-shadow: 0 2px 0 #b98fc1;
-    }
-  }
+body.transportation {
+  .theme-colors(#8cafa6, #6e8e83);
 }

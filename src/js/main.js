@@ -51,6 +51,11 @@ const topicData = {
     color: "#b98fc1",
     background: "#c9b6ca",
     label: "COVID Recovery"
+  },
+  "transportation": {
+    color: "#6e8e83",
+    background: "#8cafa6",
+    label: "Transportation"
   }
 }
 const activeColor = topicData[topic].color;
@@ -481,7 +486,8 @@ function loadAnswers() {
 loadAnswers();
 
 const changeList = document.querySelector("#change-list");
-document.querySelector("#changed-link").addEventListener("click", e => {
+const changeLink = document.querySelector("#changed-link");
+changeLink && changeLink.addEventListener("click", e => {
   e.preventDefault();
   changeList.scrollIntoView(true);
 });
