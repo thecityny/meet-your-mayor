@@ -56,6 +56,11 @@ const topicData = {
     color: "#6e8e83",
     background: "#8cafa6",
     label: "Transportation"
+  },
+  "housing": {
+    color: "#A85D71",
+    background: "#DD94A4",
+    label: "Housing"
   }
 }
 const activeColor = topicData[topic].color;

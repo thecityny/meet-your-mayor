@@ -71,7 +71,7 @@
         <div class="login">
           <p class="login-prompt">Customize your results with your profile image</p>
           <p class="login-buttons">
-            <%  <!--<button id="g-button" class="g-button"><%=  t.include("assets/login-icons/google_logo.svg") %> <span class="g-button-text">Log in with Google</span></button>--> %>
+            <button id="g-button" class="g-button"><%=  t.include("assets/login-icons/google_logo.svg") %> <span class="g-button-text">Log in with Google</span></button>
             <button id="fb-button" class="fb-button"><%=  t.include("assets/login-icons/facebook_logo.svg") %> <span class="fb-button-text">Log in with Facebook</span></button>
           </p>
         </div>
@@ -89,7 +89,7 @@
         const positions = {...answerPositions, na: naAnswerPositions};
       %>
     
-      <div class="question section" data-slug="<%= question.slug %>">
+      <div id="<%= question.slug %>" class="question section" data-slug="<%= question.slug %>">
         <div class="copy-container">
           <h2 class="subhead"><%= question.subhead %></h2>
           <div class="copy">
@@ -246,7 +246,7 @@
   <canvas id="results-image" style="display: none;"></canvas>
   <script src="app.js"></script>
   <script src="https://connect.facebook.net/en_US/sdk.js" async defer crossorigin="anonymous"></script>
-  <% <!--<script src="https://apis.google.com/js/platform.js?onload=gAsyncInit" async defer></script>--> %>
+  <script src="https://apis.google.com/js/platform.js?onload=gAsyncInit" async defer></script>
   <%= t.include("partials/_analytics.html") %>
 </body>
 
