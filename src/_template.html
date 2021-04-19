@@ -32,7 +32,13 @@
   const apMonths = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
 
   const dropouts = candidateSlugs
-    .filter(candidateSlug => candidateData[candidateSlug].droppedOutDate)
+    .filter(candidateSlug => {
+      const candidate = candidateData[candidateSlug];
+
+      if (candidate.droppedOutDate) {
+        return new Date(candidate.droppedOutDate).getTime() > new Date(archieml.datePublished).getTime()
+      }
+    })
     .map(candidateSlug => {
       return {
         text: `${candidateData[candidateSlug].name} dropped out of the mayoral race.`,
