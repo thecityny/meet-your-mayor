@@ -64,6 +64,7 @@ module.exports = function(grunt) {
     const questionTextColumn = "question-text";
     const answerTextColumn = "answer-text";
     const docColumn = "doc";
+    const droppedOutColumn = "dropped-out";
 
     // Candidates
     const candidates = validate(candidateSheet, d => {
@@ -74,7 +75,7 @@ module.exports = function(grunt) {
     const activeCandidateSlugs = activeCandidates.map(d => d[candidateColumn]);
     const candidateData = rollup(activeCandidates, v => {
       const candidate = v[0];
-      const droppedOut = candidate["dropped-out"] && new Date(candidate["dropped-out"]);
+      const droppedOut = candidate[droppedOutColumn] && new Date(candidate[droppedOutColumn]);
       const droppedOutString = droppedOut && `${apMonths[droppedOut.getUTCMonth()]} ${droppedOut.getUTCDate()}` || "";
 
       return {
@@ -83,7 +84,8 @@ module.exports = function(grunt) {
         label: candidate["label"],
         image: candidate["image"],
         party: candidate["party"],
-        droppedOut: droppedOutString
+        droppedOut: droppedOutString,
+        droppedOutDate: candidate[droppedOutColumn]
       };
     }, d => d[candidateColumn]);
 

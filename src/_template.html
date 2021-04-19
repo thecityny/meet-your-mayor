@@ -9,6 +9,7 @@
   const questionText = grunt.data.json.questionData[topic] || {};
   const questionAnswerText = grunt.data.json.answerData[topic] || {};
   const questionPositions = grunt.data.json.positionData[topic] || {};
+  const candidateData = grunt.data.json.candidateData || {};
 
   const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
   const topicData = grunt.data.json.topicData.filter(d => d.topic === topic)[0];
@@ -29,6 +30,23 @@
   const emailUrl = `mailto:?subject=${project.title}&body=${project.description}%0A%0A${encodeURIComponent(project.url)}`;
 
   const apMonths = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
+
+  const dropouts = candidateSlugs
+    .filter(candidateSlug => candidateData[candidateSlug].droppedOutDate)
+    .map(candidateSlug => {
+      return {
+        text: `${candidateData[candidateSlug].name} dropped out of the mayoral race.`,
+        date: candidateData[candidateSlug].droppedOutDate
+      }
+    });
+  
+  const changeEntries = (archieml.changes || []).concat(dropouts);
+  const changes = changeEntries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map(change => {
+      const date = new Date(change.date);
+      const dateString = `${apMonths[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
+      return {text: change.text, date: dateString};
+    });
 %>
 
 <head>
@@ -61,9 +79,8 @@
       <% if (archieml.intro) { %>
         <%= t.include("partials/_archie.ejs", {story: archieml.intro}) %>
       <% } %>
-      <% if (archieml.changes.length) { %>
-        <% const latestChange = archieml.changes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0]; %>
-        <% const updated = new Date(latestChange && latestChange.date); %>
+      <% if (changes.length) { %>
+        <% const updated = new Date(changes[0].date); %>
         <div class="copy-container">
           <p class="copy"><a href="#change-list" id="changed-link"><em>Last updated <time datetime="<%= updated.toISOString() %>"><%= apMonths[updated.getUTCMonth()] %> <%= updated.getUTCDate() %>, <%= updated.getUTCFullYear() %></time></em></a></p>
         </div>
@@ -129,8 +146,8 @@
                     <h4><%= answerText[answer] %></h4>
                     <% if (positions[answer] && positions[answer].length > 0) { %>
                     <% const sortedPositions = positions[answer].sort((a, b) => {
-                      const aText = grunt.data.json.candidateData[a.slug].lastName.toLowerCase();
-                      const bText = grunt.data.json.candidateData[b.slug].lastName.toLowerCase();
+                      const aText = candidateData[a.slug].lastName.toLowerCase();
+                      const bText = candidateData[b.slug].lastName.toLowerCase();
                         if (aText < bText) {
                           return -1;
                         }
@@ -141,7 +158,7 @@
                     }) %>
                     <ul>
                       <% sortedPositions.forEach(function(position) { %>
-                        <% const candidate = grunt.data.json.candidateData[position.slug]; %>
+                        <% const candidate = candidateData[position.slug]; %>
                         <li data-slug="<%= position.slug %>">
                           <figure class="circle-image response-image <%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %> <%= candidate.droppedOut ? "dropped-out" : "" %>">
                             <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
@@ -167,7 +184,7 @@
                 <% if (naAnswerPositions.length) { %>
                   <div class="response">
                     <h4>No response / no position</h4>
-                    <p class="no-position"><%= naAnswerPositions.map(d => grunt.data.json.candidateData[d.slug].name).join(", ") %></p>
+                    <p class="no-position"><%= naAnswerPositions.map(d => candidateData[d.slug].name).join(", ") %></p>
                   </div>
                 <% } %>
               </div>
@@ -225,13 +242,7 @@
 
     <div class="section section-transparent">
       <div class="photo-container">
-        <% if (archieml.changes) { %>
-          <% const changes = archieml.changes.map(change => {
-              const date = new Date(change.date);
-              const dateString = `${apMonths[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
-              return {text: change.text, date: dateString};
-            });
-          %>
+        <% if (changes.length) { %>
           <ul id="change-list" class="change-list">
             <% changes.forEach(change => { %>
               <li><span class="change-date"><%= change.date %>:</span> <%= change.text %></li>
