@@ -11,6 +11,7 @@ const topicSheet = require("../data/topics.sheet.json");
 const questionSheet = require("../data/questions.sheet.json");
 const answerSheet = require("../data/answers.sheet.json");
 const candidateSheet = require("../data/candidates.sheet.json");
+const activeSheet = require("../data/active-candidates.sheet.json");
 
 const apMonths = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
 
@@ -92,13 +93,27 @@ module.exports = function(grunt) {
     });
     const activeTopics = topics.filter(d => d[topicActiveColumn] === "yes");
     const topicSlugs = topics.map(d => d[topicColumn]);
+
+    // Topic candidates
+    const topicCandidates = validate(activeSheet, d => {
+      return activeCandidateSlugs.indexOf(d[candidateColumn]) > -1
+        && topicSlugs.indexOf(d[topicColumn]) > -1;
+    });
+    const topicCandidateData = rollup(
+      topicCandidates,
+      v => v.map(d => d[candidateColumn]),
+      d => d[topicColumn]
+    );
+    
+    // Topic data
     const topicData = activeTopics.map(d => {
       const idMatches = d[docColumn].match(/docs\.google\.com\/document\/d\/(.+)\//i);
       const id = idMatches && idMatches[1];
 
       return {
         topic: d[topicColumn],
-        doc: id
+        doc: id,
+        candidates: topicCandidateData.get(d[topicColumn])
       };
     });
 

@@ -11,7 +11,8 @@
   const questionPositions = grunt.data.json.positionData[topic] || {};
 
   const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
-  const candidateSlugs = Object.keys(grunt.data.json.candidateData);
+  const topicData = grunt.data.json.topicData.filter(d => d.topic === topic)[0];
+  const candidateSlugs = topicData && topicData.candidates || [];
 
   const project = {
     "title": `Meet Your Mayor: ${archieml.hed}`,
