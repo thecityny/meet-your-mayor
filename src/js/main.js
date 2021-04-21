@@ -11,6 +11,7 @@ const candidates = require("../../data/candidateData.json");
 const positionsData = require("../../data/positionData.json");
 const questionData = require("../../data/questionData.json");
 const answerData = require("../../data/answerData.json");
+const topicData = require("../../data/topicDisplayData.json");
 
 // Topic data
 const body = document.querySelector("body");
@@ -36,38 +37,6 @@ const candidatePositions = Object.fromEntries(Array.from(candidatePositionsMap))
 
 // Constants
 const localStorageSlug = `mym-${topic}`;
-const topicData = {
-  "nypd": {
-    color: "#f78e65",
-    background: "#fda584",
-    label: "NYPD"
-  },
-  "education": {
-    color: "#848c73",
-    background: "#a8b18c",
-    label: "Education"
-  },
-  "corona-recovery": {
-    color: "#b98fc1",
-    background: "#c9b6ca",
-    label: "COVID Recovery"
-  },
-  "transportation": {
-    color: "#6e8e83",
-    background: "#8cafa6",
-    label: "Transportation"
-  },
-  "housing": {
-    color: "#A85D71",
-    background: "#DD94A4",
-    label: "Housing"
-  },
-  "immigration": {
-    color: "#4B81AA",
-    background: "#8CA7C4",
-    label: "Immigration"
-  }
-}
 const activeColor = topicData[topic].color;
 const loadingClass = "loading";
 const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";

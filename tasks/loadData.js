@@ -119,6 +119,14 @@ module.exports = function(grunt) {
       };
     });
 
+    const topicDisplayData = Object.fromEntries(activeTopics.map(d => {
+      return [d[topicColumn], {
+        color: d["color"],
+        background: d["background"],
+        label: d["label"]
+      }];
+    }));
+
     // Questions
     const questions = validate(questionSheet, d => {
       return topicSlugs.indexOf(d[topicColumn]) > -1
@@ -189,6 +197,7 @@ module.exports = function(grunt) {
 
     console.log(`Saving data`);
     grunt.file.write(`${path}/topicData.json`, JSON.stringify(topicData, replacer, 2));
+    grunt.file.write(`${path}/topicDisplayData.json`, JSON.stringify(topicDisplayData, replacer, 2));
     grunt.file.write(`${path}/candidateData.json`, JSON.stringify(candidateData, replacer, 2));
     grunt.file.write(`${path}/questionData.json`, JSON.stringify(questionData, replacer, 2));
     grunt.file.write(`${path}/answerData.json`, JSON.stringify(answerData, replacer, 2));

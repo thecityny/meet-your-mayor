@@ -10,6 +10,7 @@
   const questionAnswerText = grunt.data.json.answerData[topic] || {};
   const questionPositions = grunt.data.json.positionData[topic] || {};
   const candidateData = grunt.data.json.candidateData || {};
+  const topicDisplayData = grunt.data.json.topicDisplayData[topic] || {};
 
   const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
   const topicData = grunt.data.json.topicData.filter(d => d.topic === topic)[0];
@@ -58,6 +59,20 @@
 <head>
   <%= t.include("partials/_head.html", {project: project}) %>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <style>
+    body {
+      background-color: <%= topicDisplayData.background %>;
+    }
+    .question form button.active {
+      background-color: <%= topicDisplayData.color %>;
+    }
+    .copy a, .copy a:visited {
+      box-shadow: 0 1px 0 <%= topicDisplayData.color %>;
+    }
+    .copy a:visited, .copy a:hover, .copy a:active, .copy a:focus {
+      box-shadow: 0 2px 0 <%= topicDisplayData.color %>;
+    }
+  </style>
 </head>
 
 <body class="<%= topic %>" data-topic="<%= topic %>">
