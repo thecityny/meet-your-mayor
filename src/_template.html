@@ -16,6 +16,9 @@
   const topicData = grunt.data.json.topicData.filter(d => d.topic === topic)[0];
   const candidateSlugs = topicData && topicData.candidates || [];
 
+  const datePublishedParts = topicDisplayData.date.split("-").map(part => parseInt(part, 10));;
+  const datePublished = new Date(datePublishedParts[0], datePublishedParts[1] - 1, datePublishedParts[2]);
+
   const project = {
     "title": `Meet Your Mayor: ${archieml.hed}`,
     "description": archieml.description,
@@ -23,7 +26,7 @@
     "image": `https://projects.thecity.nyc/meet-your-mayor/assets/share-${topic}.jpg`,
     "logo": "https://projects.thecity.nyc/meet-your-mayor/assets/logo.png",
     "author": "THE CITY",
-    "datePublished": archieml.datePublished
+    "datePublished": datePublished.toISOString()
   };
   
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(project.description)}&counturl=${encodeURIComponent(project.url)}&url=${encodeURIComponent(project.url + "?utm_campaign=www.thecity.nyc&utm_medium=social&utm_source=twitter&utm_content=mym")}&via=THECITYNY`;
@@ -37,7 +40,7 @@
       const candidate = candidateData[candidateSlug];
 
       if (candidate.droppedOutDate) {
-        return new Date(candidate.droppedOutDate).getTime() > new Date(archieml.datePublished).getTime()
+        return new Date(candidate.droppedOutDate).getTime() > new Date(topicDisplayData.date).getTime()
       }
     })
     .map(candidateSlug => {
@@ -84,8 +87,7 @@
       <div class="watermark"><a href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a></div>
       <p class="series-headline">Meet Your Mayor</p>
       <h1 class="topic"><%= archieml.hed %></h1>
-      <% const published = new Date(archieml.datePublished); %>
-      <p class="date"><time datetime="<%= published.toISOString() %>"><%= published.toLocaleDateString("en-US", {
+      <p class="date"><time datetime="<%= datePublished.toISOString() %>"><%= datePublished.toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
           year: "numeric"
@@ -234,20 +236,23 @@
       <div id="results" class="results"></div>
     </div>
 
-    <% if (archieml.links) { %>
     <div class="section">
       <div class="copy-container">
         <h3 class="subhead">More topics</h3>
         <p class="topics-intro">Check back regularly for new topics from now until the primary in&nbsp;June.</p>
         <ul class="topics-list copy">
-          <% Object.entries(archieml.links).forEach(([key, value]) => { %>
-          <li><a href="<%= key %>.html"><%= value %></a></li>
+          <% 
+            const links = Object.entries(grunt.data.json.topicDisplayData)
+              .sort((a, b) => new Date(b[1].date).getTime() - new Date(a[1].date).getTime())
+              .filter(([key, value]) => key !== topic);
+          %>
+          <% links.forEach(([key, values]) => { %>
+          <li><a href="<%= key %>.html"><%= values.label %></a></li>
           <% }) %>
           <li><a href="https://www.thecity.nyc/e/22094122">All &#8594;</a></li>
         </ul>
       </div>
     </div>
-    <% } %>
 
     <div class="section">
       <div class="newsletter photo-container">

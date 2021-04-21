@@ -123,7 +123,8 @@ module.exports = function(grunt) {
       return [d[topicColumn], {
         color: d["color"],
         background: d["background"],
-        label: d["label"]
+        label: d["label"],
+        date: d["date"]
       }];
     }));
 
