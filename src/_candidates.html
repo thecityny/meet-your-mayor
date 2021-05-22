@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en-US">
+
+  <% 
+  // TODO: replace during build
+  const archieml = grunt.data.archieml["candidates"];
+
+  const questionText = grunt.data.json.questionData || {};
+  const questionAnswerText = grunt.data.json.answerData || {};
+  const positionData = grunt.data.json.positionData || {};
+  const candidateData = grunt.data.json.candidateData || {};
+  const topicDisplayData = grunt.data.json.topicDisplayData || {};
+  const topicData = grunt.data.json.topicData || {};
+
+  const activeTopics = topicData.reduce((activeTopics, topic) => {
+    if (topic.candidates.indexOf(candidateSlug) > -1) {
+      return [].concat(activeTopics, topic.topic);
+    }
+    return activeTopics;
+  }, []);
+
+  const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+
+  // TODO: first published? Updated?
+  const datePublished = new Date();
+
+  const project = {
+    "title": `${candidateData[candidateSlug].name}`,
+    "description": "Insert description here",
+    "url": `https://projects.thecity.nyc/meet-your-mayor/${candidateSlug}.html`,
+    "image": `https://projects.thecity.nyc/meet-your-mayor/assets/share-${candidateSlug}.jpg`,
+    "logo": "https://projects.thecity.nyc/meet-your-mayor/assets/logo.png",
+    "author": "THE CITY",
+    "datePublished": datePublished.toISOString()
+  };
+  
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(project.description)}&counturl=${encodeURIComponent(project.url)}&url=${encodeURIComponent(project.url + "?utm_campaign=www.thecity.nyc&utm_medium=social&utm_source=twitter&utm_content=mym")}&via=THECITYNY`;
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?text=${encodeURIComponent(project.description)}&u=${encodeURIComponent(project.url + "?utm_campaign=www.thecity.nyc&utm_medium=social&utm_source=facebook&utm_content=mym")}`;
+  const emailUrl = `mailto:?subject=${project.title}&body=${project.description}%0A%0A${encodeURIComponent(project.url)}`;
+
+  const apMonths = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
+%>
+
+<head>
+  <%= t.include("partials/_head.html", {project: project}) %>
+  <link rel="stylesheet" type="text/css" href="../candidates.css">
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <h1><a class="header-logo" href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a></h1>
+    </div>
+  </header>
+  <main>
+    <div class="container article-header">
+      <p class="header-label">Meet Your Mayor</p>
+      <h1 class="header-title"><%= candidateData[candidateSlug].name %></h1>
+      <p class="header-date"><time datetime="<%= datePublished.toISOString() %>">Last updated: <%= datePublished.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        }) %></time>
+      </p>
+    </div>
+    <div class="container article-body">
+      <div class="article-body-content">
+        <figure class="image-hero photo" style="display: none;">
+          <img src="<%= emptyImage %>" alt="Alt text here" />
+          <span class="photo-meta">
+            <figcaption>Caption here</figcaption>
+            <cite>Credit here</cite>
+          </span>
+        </figure>
+        <% activeTopics.forEach(topic => { %>
+          <% if (positionData[topic]) { %>
+            <h3 class="position-topic"><%= topicDisplayData[topic].label %> Positions</h3>
+            <a class="topic-link" href="../<%= topic %>.html">View topic guide</a>
+            <ul class="position-questions">
+              <% Object.keys(positionData[topic]).forEach(question => { %>
+                <li>
+                  <% 
+                    // Get all the candidate positions on a question, filter for the candidate slug.
+                    // Return the position if it exists, otherwise undefined.
+                    const candidateAnswer = Object.entries(positionData[topic][question]).reduce((candidateAnswer, [answerSlug, answer]) => {
+                      if (!candidateAnswer) {
+                        const candidatePosition = answer.filter(position => position.slug === candidateSlug)[0];
+  
+                        if (candidatePosition) {
+                          return {...candidatePosition, answerSlug}
+                        } 
+                      } else {
+                        return candidateAnswer;
+                      }
+                    }, undefined); 
+                  %>
+                  <h4 class="position-question"><%= questionText[topic][question] %></h4>
+                  <% if (candidateAnswer) { %>
+                    <p class="position-answer"><%= questionAnswerText[topic][question][candidateAnswer.answerSlug] %></p>
+                    <% if (candidateAnswer.quote) { %>
+                      <figcaption class="position-block-quote">
+                        <blockquote class="position-quote"><%= candidateAnswer.quote %></blockquote>
+                        <figcaption class="position-source">from <cite><%= candidateAnswer.url ? `<a href="${candidateAnswer.url}">${candidateAnswer.source}</a>` : candidateAnswer.source %></cite><%= candidateAnswer.date ? `, ${candidateAnswer.date}` : "" %></figcaption>  
+                      </figcaption>
+                    <% } %>
+                  <% } else { %>
+                    <p class="position-answer">No response / no position</p>
+                  <% } %>
+                </li>
+              <% }); %>
+            </ul>
+          <% } %>
+        <% }); %>
+      </div>
+      <div class="article-body-sidebar">
+        <div class="sidebar-box">
+          <h3 class="sidebar-header">Candidates</h3>
+          <ul class="sidebar-list">
+            <% // Sort candidates by last name
+              const sortedCandidates = Object.entries(candidateData).sort((a, b) => {
+                const aText = a[1].lastName.toLowerCase();
+                const bText =  b[1].lastName.toLowerCase()
+
+                if (aText < bText) {
+                  return -1;
+                }
+                if (aText > bText) {
+                  return 1;
+                }
+                return 0;
+              });
+              sortedCandidates.forEach(([candidateSlug, candidate]) => { 
+            %>
+              <li><a href="<%= candidateSlug %>.html"><%= candidate.name %></a></li>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+  <%= t.include("partials/_footer.html") %>
+  <script src="../candidates.js"></script>
+  <%= t.include("partials/_analytics.html") %>
+</body>
+
+</html>

@@ -9,6 +9,8 @@ var path = require("path");
 var typogr = require("typogr");
 var template = require("./lib/template");
 
+var candidateData = require("../data/candidateData.json");
+var candidates = Object.keys(candidateData);
 var topics = require('../data/topicData.json').map(d => d.topic);
 
 module.exports = function(grunt) {
@@ -18,6 +20,18 @@ module.exports = function(grunt) {
     var input = Object.create(data || grunt.data);
     input.t = grunt.template
     return fn(input);
+  };
+
+  var writeOutput = function(templatePath, entries, slugKey, destPath) {
+    var input = grunt.file.read(templatePath);
+    entries.forEach(function(entry) {
+      var data = Object.create(grunt.data || {});
+      data.t = grunt.template;
+      data[slugKey] = entry;
+      grunt.verbose.writeln("Processing topic: " +  entry);
+      var output = process(input, data, templatePath);
+      grunt.file.write(`${destPath}/${entry}.html`, output);
+    });
   };
 
   //expose this for other tasks to use
@@ -54,17 +68,8 @@ module.exports = function(grunt) {
   };
 
   grunt.registerTask("build", "Processes index.html using shared data (if available)", function() {
-    var sourceFilename = "src/_template.html";
-    var input = grunt.file.read(sourceFilename);
-
-    topics.forEach(function(topic) {
-      var data = Object.create(grunt.data || {});
-      data.t = grunt.template;
-      data.docSlug = topic;
-      grunt.verbose.writeln("Processing topic: " +  topic);
-      var output = process(input, data, sourceFilename);
-      grunt.file.write(`build/${topic}.html`, output);
-    });
+    writeOutput("src/_template.html", topics, "docSlug", "build");
+    writeOutput("src/_candidates.html", candidates, "candidateSlug", "build/candidates");
 
     var files = grunt.file.expandMapping(["**/*.html", "!**/_*.html", "!js/**/*.html"], "build", { cwd: "src" });
     var data = Object.create(grunt.data || {});

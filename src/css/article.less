@@ -167,18 +167,33 @@
 
   img {
     max-width: inherit;
+    display: block;
     width: 100%;
   }
+}
+
+.photo-meta {
+  padding: 10px 0;
+  display: block;
+  .bookface();
+  font-size: 13.5px;
+  line-height: 21.5px;
+  color: #626262;
+  border-bottom: 1px solid #404040;
 
   figcaption {
-    font-family: @serif;
-    font-weight: bold;
-    font-size: 10.5px;
-    line-height: 14px;
+    display: inline;
+  }
 
-    em {
-      color: #808080;
-      font-weight: normal;
+  cite {
+    display: inline;
+    opacity: 0.75;
+    font-style: normal;
+
+    &::before {
+      content: "|";
+      display: inline-block;
+      margin: 0 5px;
     }
   }
 }
