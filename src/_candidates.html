@@ -140,7 +140,9 @@
   </main>
   <%= t.include("partials/_footer.html") %>
   <script src="../candidates.js"></script>
-  <%= t.include("partials/_analytics.html") %>
+  <% if (mode !== "dev") { %>
+    <%= t.include("partials/_analytics.html") %>
+  <% } %>
 </body>
 
 </html>

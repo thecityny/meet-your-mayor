@@ -24,9 +24,9 @@ module.exports = function(grunt) {
 
   var writeOutput = function(templatePath, entries, slugKey, destPath) {
     var input = grunt.file.read(templatePath);
+    var data = Object.create(grunt.data || {});
+
     entries.forEach(function(entry) {
-      var data = Object.create(grunt.data || {});
-      data.t = grunt.template;
       data[slugKey] = entry;
       grunt.verbose.writeln("Processing topic: " +  entry);
       var output = process(input, data, templatePath);
@@ -67,13 +67,18 @@ module.exports = function(grunt) {
     return process(file, templateData, where);
   };
 
-  grunt.registerTask("build", "Processes index.html using shared data (if available)", function() {
+  grunt.registerTask("build", "Processes index.html using shared data (if available)", function(mode) {
+    grunt.data = {
+      ...grunt.data,
+      mode
+    }
+
     writeOutput("src/_template.html", topics, "docSlug", "build");
     writeOutput("src/_candidates.html", candidates, "candidateSlug", "build/candidates");
 
     var files = grunt.file.expandMapping(["**/*.html", "!**/_*.html", "!js/**/*.html"], "build", { cwd: "src" });
     var data = Object.create(grunt.data || {});
-    data.t = grunt.template;
+
     files.forEach(function(file) {
       var src = file.src.shift();
       grunt.verbose.writeln("Processing file: " +  src);

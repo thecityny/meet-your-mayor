@@ -285,7 +285,9 @@
   <script src="app.js"></script>
   <script src="https://connect.facebook.net/en_US/sdk.js" async defer crossorigin="anonymous"></script>
   <script src="https://apis.google.com/js/platform.js?onload=gAsyncInit" async defer></script>
-  <%= t.include("partials/_analytics.html") %>
+  <% if (mode !== "dev") { %>
+    <%= t.include("partials/_analytics.html") %>
+  <% } %>
 </body>
 
 </html>
