@@ -11,11 +11,13 @@
   },
   "styles": {
     "src/css/seed.less": "build/style.css",
-    "src/css/candidates.less": "build/candidates.css"
+    "src/css/candidates.less": "build/candidates.css",
+    "src/css/final.less": "build/final.css"
   },
   "scripts": {
     "src/js/main.js": "build/app.js",
-    "src/js/candidates.js": "build/candidates.js"
+    "src/js/candidates.js": "build/candidates.js",
+    "src/js/final.js": "build/final.js"
   },
   "sheets": ["17fF1TXHpGf3fiSWAPoAvrQzD46SBdLiyg0HB0vhTmTQ"],
   "docs": [],
