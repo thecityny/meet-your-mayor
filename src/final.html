@@ -68,6 +68,13 @@
 <head>
   <%= t.include("partials/_head.html", {project: project}) %>
   <link rel="stylesheet" type="text/css" href="final.css">
+  <style>
+    <% Object.entries(json.topicDisplayData).forEach(([topic, displayData]) => { %>
+    .question[data-topic="<%= topic %>"] form button.active {
+      background-color: <%= displayData.color %>;
+    }
+    <% }); %>
+  </style>
 </head>
 
 <body>
@@ -124,7 +131,7 @@
         const naAnswerPositions = topicCandidates.filter(slug => answerCandidateSlugs.indexOf(slug) < 0).map(d => ({slug: d}));
         const positions = {...answerPositions, na: naAnswerPositions};
     %>
-      <div id="<%= question.slug %>" class="question section" data-slug="<%= question.slug %>">
+      <div id="<%= topic %>-<%= question.slug %>" class="question section" data-topic="<%= topic %>" data-slug="<%= question.slug %>">
         <div class="copy-container">
           <h2 class="subhead"><%= question.subhead %></h2>
           <div class="copy">
