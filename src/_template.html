@@ -130,7 +130,7 @@
         const positions = {...answerPositions, na: naAnswerPositions};
       %>
     
-      <div id="<%= question.slug %>" class="question section" data-slug="<%= question.slug %>">
+      <div id="<%= question.slug %>" class="question question-section section" data-slug="<%= question.slug %>">
         <div class="copy-container">
           <h2 class="subhead"><%= question.subhead %></h2>
           <div class="copy">
@@ -163,7 +163,7 @@
                   <button type="button" value="list">List</button>
                 </div>
               </div>
-              <div class="responses expandable-body grid copy-container">
+              <div class="responses responses-topic expandable-body grid copy-container">
                 <% question.answers.forEach(function(answer) { %>
                   <div class="response" data-slug="<%= answer %>">
                     <h4><%= answerText[answer] %></h4>
@@ -183,10 +183,12 @@
                       <% sortedPositions.forEach(function(position) { %>
                         <% const candidate = candidateData[position.slug]; %>
                         <li data-slug="<%= position.slug %>">
-                          <figure class="circle-image response-image <%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %> <%= candidate.droppedOut ? "dropped-out" : "" %>">
-                            <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
-                            <div class="circle-image-label response-image-label">
-                              <%= candidate.image ? "" : candidate.label %>
+                          <figure class="response-image">
+                            <div class="circle-image <%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %> <%= candidate.droppedOut ? "dropped-out" : "" %>">
+                              <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
+                              <div class="circle-image-label response-image-label">
+                                <%= candidate.image ? "" : candidate.label %>
+                              </div>
                             </div>
                           </figure>
                           <div class="response-details">

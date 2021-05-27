@@ -11,8 +11,7 @@
   },
   "styles": {
     "src/css/seed.less": "build/style.css",
-    "src/css/candidates.less": "build/candidates.css",
-    "src/css/final.less": "build/final.css"
+    "src/css/candidates.less": "build/candidates.css"
   },
   "scripts": {
     "src/js/main.js": "build/app.js",

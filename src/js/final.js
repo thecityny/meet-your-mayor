@@ -144,37 +144,19 @@ const questions = questionTargets.reduce((questions, question) => {
   // Initialize answer buttons
   answerSelection(question.querySelector("form"), setAnswerSlug, addAnswerSlugListener);
   
-  // Initialize answer elements
-  const answer = question.querySelector(".answer");
-  const chartTarget = question.querySelector(".chart");  
-  const chart = visual(chartTarget, tooltip, activeColor);
-  visualCollection.push(chart);
-  
-  // On answer selection, update visual
+  // On answer selection, show responses
+  const agreed = question.querySelector(".agreed");
   addAnswerSlugListener((answerSlug) => {
-    const emptyChartClass = "chart-empty";
-    track("click:question", questionSlug);
-
-    // If an answer is selected, activate the chart
-    if (answerSlug) {
-      answer.classList.add("active");
-
-      const answerNodes = questionNodes[answerSlug] || [];
-      if (answerNodes.length > 0) {
-        chartTarget.classList.remove(emptyChartClass);
-        chart.join([...answerNodes, you].map(node => ({...node, radius: 0})));
-      } else {
-        chartTarget.classList.add(emptyChartClass);
-      }
-    // Otherwise, deactivate the chart
+    if (answerSlug !== "") {
+      agreed.classList.add("active");
     } else {
-      answer.classList.remove("active");
+      agreed.classList.remove("active");
     }
   });
 
   // Set up expandable responses view
-  viewControl(question.querySelector(".responses-button-group"), setView);
-  responses(question.querySelector(".responses"), questionNodes, getView, addViewListener);
+  viewControl(question.querySelector(".expand-answers"), getView, setView, addViewListener);
+  responses(question.querySelector(".responses"), questionNodes, getView, addViewListener, addAnswerSlugListener);
   attachExpandHandlers(question);
 
   const topicObject = questions[topic] || {};
@@ -213,27 +195,30 @@ function answerSelection(target, setAnswerSlug, addAnswerSlugListener) {
 }
 
 // Set up response grid/list view toggle
-function viewControl(target, setView) {
-  const viewButtons = target.querySelectorAll("button");
+function viewControl(target, getView, setView, addViewListener) {
+  target.addEventListener("click", e => {
+    e.preventDefault();
+    
+    if (getView() === "grid") {
+      setView("list");
+    } else {
+      setView("grid");
+    }
+  });
 
-  Array.from(viewButtons).forEach(button => {
-    button.addEventListener("click", e => {
-      const view = e.target.value;
-      setView(view);
-
-      Array.from(viewButtons).forEach(button => {
-        if (button.value === view) {
-          button.classList.add("active");
-        } else {
-          button.classList.remove("active");
-        }
-      });
-    });
+  addViewListener(view => {
+    if (view === "list") {
+      target.classList.add("expanded");
+      target.classList.remove("collapsed");
+    } else {
+      target.classList.remove("expanded");
+      target.classList.add("collapsed");
+    }
   });
 }
 
 // Set up responses view
-function responses(target, questionNodes, getView, addViewListener) {
+function responses(target, questionNodes, getView, addViewListener, addAnswerSlugListener) {
   const gridView = "grid";
 
   addViewListener((view) => {
@@ -249,6 +234,14 @@ function responses(target, questionNodes, getView, addViewListener) {
   responses.forEach(response => {
     const answerSlug = response.getAttribute("data-slug");
     const positions = answerSlug && questionNodes[answerSlug] || [];
+
+    addAnswerSlugListener((slug) => {
+      if (slug === answerSlug) {
+        response.classList.add("active");
+      } else {
+        response.classList.remove("active");
+      }
+    });
 
     // Index positions by candidate slug
     const candidatePositions = positions.reduce((positions, position) => {
