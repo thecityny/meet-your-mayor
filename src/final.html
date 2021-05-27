@@ -119,86 +119,89 @@
       </div>
     </div>
 
-    <% json.topicData.forEach(({topic}) => {
-      const questions = archieml[topic] && archieml[topic].questions || [];
-      const topicData = json.topicData.filter(d => d.topic === topic)[0] || {};
-      const topicCandidates = topicData.candidates || [];
-    %>
-    <div>
-      <div class="photo-container">
-        <h2><%= archieml[topic].hed %></h2>
-        <p>Answered X of <%= questions.length %></p>
-      </div>
-      <%
-        questions.forEach((question, index) => {
-          const answerText = json.answerData[topic] && json.answerData[topic][question.slug] || {};
-          const answerPositions = json.positionData[topic] && json.positionData[topic][question.slug] || {};
-          const positions = answerPositions;
+    <div class="photo-container">
+      <% json.topicData.forEach(({topic}) => {
+        const questions = archieml[topic] && archieml[topic].questions || [];
+        const topicData = json.topicData.filter(d => d.topic === topic)[0] || {};
+        const topicCandidates = topicData.candidates || [];
       %>
-      <div id="<%= topic %>-<%= question.slug %>" class="question question-final" data-topic="<%= topic %>" data-slug="<%= question.slug %>">
-        <div class="photo-container">
-          <h3 class="question-hed"><%= json.questionData[topic] && json.questionData[topic][question.slug] %></h3>
-          <div class="question-copy">
-            <%= t.renderMarkdown(question.intro) %>
-          </div>
-          <form>
-            <% question.answers.forEach((answer) => { %>
-              <button class="input-group" value="<%= answer %>"><%= answerText[answer] %></button>
-            <% }); %>
-            <button class="input-group" value="">Skip this question</button>
-          </form>
-          <div class="agreed">
-            <h4>Candidates who agree with you<a href="#" class="expand-answers collapsed"><span class="display-open">Collapse answers</span><span class="display-closed">Expand answers</span></a></h4>
-            <div class="responses responses-final grid">
-              <% question.answers.forEach(function(answer) { %>
-                <div class="response" data-slug="<%= answer %>">
-                  <% if (positions[answer] && positions[answer].length > 0) { %>
-                  <% const sortedPositions = positions[answer].sort((a, b) => {
-                    const aText = candidateData[a.slug].lastName.toLowerCase();
-                    const bText = candidateData[b.slug].lastName.toLowerCase();
-                      if (aText < bText) {
-                        return -1;
-                      }
-                      if (aText > bText) {
-                        return 1;
-                      }
-                      return 0;
-                  }) %>
-                  <ul>
-                    <% sortedPositions.forEach(function(position) { %>
-                      <% const candidate = candidateData[position.slug]; %>
-                      <li data-slug="<%= position.slug %>">
-                        <figure class="response-image">
-                          <div class="circle-image <%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %> <%= candidate.droppedOut ? "dropped-out" : "" %>">
-                            <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
-                            <div class="circle-image-label response-image-label">
-                              <%= candidate.image ? "" : candidate.label %>
-                            </div>
-                          </div>
-                          <figcaption class="circle-image-caption"><%= candidate.lastName %></figcaption>
-                        </figure>
-                        <div class="response-details">
-                          <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)<%= (candidate.droppedOut ? `<span class="response-status">Dropped out ${candidate.droppedOut}</span>` : "") %></p>
-                          <% if (position.quote) { %>
-                            <p class="response-quote"><%= position.quote %></p>
-                            <p class="response-source">from <%= position.url ? `<a href="${position.url}" target="_blank">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>
-                          <% } %>
-                        </div>
-                      </li>
-                    <% }); %>
-                  </ul>
-                  <% } else { %>
-                    <p class="no-response">No candidates selected this answer</p>
-                  <% } %>
-                </div>
+      <div class="expandable topic-section collapsed" data-value="<%= topic %>">
+        <div class="topic-header expandable-header expandable-link">
+          <h2 class="topic-header-name"><%= archieml[topic].hed %></h2>
+          <p class="topic-header-count">Answered X of <%= questions.length %></p>
+          <div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>
+        </div>
+        <div class="expandable-body">
+          <%
+            questions.forEach((question, index) => {
+              const answerText = json.answerData[topic] && json.answerData[topic][question.slug] || {};
+              const answerPositions = json.positionData[topic] && json.positionData[topic][question.slug] || {};
+              const positions = answerPositions;
+          %>
+          <div id="<%= topic %>-<%= question.slug %>" class="question question-final" data-topic="<%= topic %>" data-slug="<%= question.slug %>">
+            <h3 class="question-hed"><%= json.questionData[topic] && json.questionData[topic][question.slug] %></h3>
+            <div class="question-copy">
+              <%= t.renderMarkdown(question.intro) %>
+            </div>
+            <form>
+              <% question.answers.forEach((answer) => { %>
+                <button class="input-group" value="<%= answer %>"><%= answerText[answer] %></button>
               <% }); %>
+              <button class="input-group" value="">Skip this question</button>
+            </form>
+            <div class="agreed">
+              <h4>Candidates who agree with you<a href="#" class="expand-answers collapsed"><span class="display-open">Collapse answers</span><span class="display-closed">Expand answers</span></a></h4>
+              <div class="responses responses-final grid">
+                <% question.answers.forEach(function(answer) { %>
+                  <div class="response" data-slug="<%= answer %>">
+                    <% if (positions[answer] && positions[answer].length > 0) { %>
+                    <% const sortedPositions = positions[answer].sort((a, b) => {
+                      const aText = candidateData[a.slug].lastName.toLowerCase();
+                      const bText = candidateData[b.slug].lastName.toLowerCase();
+                        if (aText < bText) {
+                          return -1;
+                        }
+                        if (aText > bText) {
+                          return 1;
+                        }
+                        return 0;
+                    }) %>
+                    <ul>
+                      <% sortedPositions.forEach(function(position) { %>
+                        <% const candidate = candidateData[position.slug]; %>
+                        <li data-slug="<%= position.slug %>">
+                          <figure class="response-image">
+                            <div class="circle-image <%= candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : "" %> <%= candidate.droppedOut ? "dropped-out" : "" %>">
+                              <img src="<%= candidate.image ? `assets/images/${candidate.image}` : emptyImage %>" alt="<%= candidate.name %>" />
+                              <div class="circle-image-label response-image-label">
+                                <%= candidate.image ? "" : candidate.label %>
+                              </div>
+                            </div>
+                            <figcaption class="circle-image-caption"><%= candidate.lastName %></figcaption>
+                          </figure>
+                          <div class="response-details">
+                            <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)<%= (candidate.droppedOut ? `<span class="response-status">Dropped out ${candidate.droppedOut}</span>` : "") %></p>
+                            <% if (position.quote) { %>
+                              <p class="response-quote"><%= position.quote %></p>
+                              <p class="response-source">from <%= position.url ? `<a href="${position.url}" target="_blank">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>
+                            <% } %>
+                          </div>
+                        </li>
+                      <% }); %>
+                    </ul>
+                    <% } else { %>
+                      <p class="no-response">No candidates selected this answer</p>
+                    <% } %>
+                  </div>
+                <% }); %>
+              </div>
             </div>
           </div>
+          <% }) %>
         </div>
       </div>
-      <% }) %>
+      <% }); %>
     </div>
-    <% }); %>
     
     <div id="results-container" class="results-container section section-highlight">
       <h2 class="results-title">Your <%= archieml.hed %> Matches</h2>

@@ -73,6 +73,23 @@ shareLinks.forEach(link => {
   });
 })
 
+attachExpandHandlers(document);
+
+const topicCounts = Array.from(document.querySelectorAll(".topic-section"))
+  .reduce((topicCounts, section) => {
+    const slug = section.getAttribute("data-value");
+    const target = section.querySelector(".topic-header-count");
+    const count = section.querySelectorAll(".question").length;
+
+    return {
+      ...topicCounts,
+      [slug]: {
+        target,
+        count
+      }
+    }
+  }, {});
+
 // Set up each question
 const questionTargets = Array.from(document.querySelectorAll(".question"));
 
@@ -112,11 +129,11 @@ const questions = questionTargets.reduce((questions, question) => {
           selected[topic] = {};
         }
         selected[topic][questionSlug] = value;
-        getMatches(selected);
 
         // If the answer is different or "Skip," update local storage
         if ((answerSlug !== value || answerSlug === "") && triggerUpdate) {
           localStorage.setItem(localStorageSlug, JSON.stringify(selected, null, 2));
+          getMatches(selected);
         }
 
         answerSlug = value;
@@ -316,6 +333,12 @@ function getMatches(selected) {
         .map(([question, answer]) => question);
       return [topic, filteredAnswers];
     }));
+
+  // Update answered section counts
+  Object.entries(topicCounts).forEach(([slug, count]) => {
+    const value = selectedQuestions[slug] && selectedQuestions[slug].length || 0;
+    count.target.innerHTML = `Answered ${value} of ${count.count}`;
+  });
 
   const selectedQuestionCount = Object.values(selectedQuestions).reduce((count, questions) => {
     return count + questions.length;
