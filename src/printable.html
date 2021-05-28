@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Meet Your Mayor — Printout</title>
+
+  <!-- Favicon -->
+  <meta name="apple-mobile-web-app-title" content="The City">
+  <link rel="apple-touch-icon-precomposed" sizes="76x76" href="https://static.thecity.nyc/media/icon.76x76.png">
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="https://static.thecity.nyc/media/icon.120x120.png">
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://static.thecity.nyc/media/icon.152x152.png">
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="https://static.thecity.nyc/media/icon.180x180.png">
+  <link rel="mask-icon" sizes="any" href="https://static.thecity.nyc/media/mask.svg" color="">
+  <link rel="icon" sizes="196x196" href="https://static.thecity.nyc/media/icon.196x196.png">
+  <meta name="application-name" content="The City">
+  <meta name="msapplication-TileColor" content="">
+  <meta name="msapplication-TileImage" content="https://static.thecity.nyc/media/icon.144x144.png">
+  <link rel="icon" type="image/svg+xml" href="https://static.thecity.nyc/media/icon.svg">
+  <link rel="shortcut icon" type="image/x-icon" href="https://static.thecity.nyc/media/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body class="printable">
+  <%=  t.include("partials/_header.html") %>
+  <div class="container">
+    <h1 id="print-title" class="print-header"></h1>
+  </div>
+
+  <noscript>This page requires JavaScript</noscript>
+  <div id="print-container"></div>
+
+  <% 
+    const orderedQuestions = json.topicData.reduce((orderedQuestions, {topic}) => {
+      const questions = archieml[topic] && archieml[topic].questions && archieml[topic].questions.map(({slug}) => [topic, slug]) || [];
+      return [
+        ...orderedQuestions,
+        ...questions
+      ];
+    }, []);
+  %>
+  <script id="ordered-questions" type="application/json"><%= JSON.stringify(orderedQuestions) %></script>
+  <script src="printable.js"></script>
+</body>
+
+</html>

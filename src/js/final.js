@@ -414,8 +414,10 @@ function getMatches(selected) {
         + `<div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>`
       + `</div>`
       + `<div class="expandable-body">`
+        + `<p class="match-links"><a href="candidates/${candidateSlug}.html">Candidate page</a> &middot; <a href="printable.html?view=single&candidate=${candidateSlug}">Print view</a></p>`
         + Object.entries(orderedQuestionSlugs).map(([topic, questionSlugs]) => {
-          return `<h4 class="match-topic">${topicDisplayData[topic].label}</h4><ul class="match-position-list">${questionSlugs.map(questionSlug => {
+          const agreeCount = questionSlugs.filter(questionSlug => selectedCandidates[topic] && selectedCandidates[topic][questionSlug].indexOf(candidateSlug) > -1).length;
+          return `<h4 class="match-topic">${topicDisplayData[topic].label} &middot; ${agreeCount} of ${questionSlugs.length} matched</h4><ul class="match-position-list">${questionSlugs.map(questionSlug => {
             const answerSlug = candidatePositions[candidateSlug] && candidatePositions[candidateSlug][topic] && candidatePositions[candidateSlug][topic][questionSlug];
             return `<li class="match-position">`
               + `<div class="match-position-agree ${selectedCandidates[topic] && selectedCandidates[topic][questionSlug].indexOf(candidateSlug) > -1 ? "check" : "cross"}"></div>`

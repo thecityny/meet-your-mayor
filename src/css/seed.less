@@ -2,6 +2,7 @@
 @import "article";
 @import "tooltip";
 @import "final";
+@import "print";
 
 body {
   margin: 0;
@@ -874,6 +875,18 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
   .medface();
 }
 
+.match-links {
+  margin: 10px 0 20px;
+  padding: 0 20px;
+  font-size: 14px;
+  color: #666;
+  .bookface();
+
+  a, a:hover, a:active, a:focus, a:visited {
+    color: inherit;
+  }
+}
+
 .match-position {
   display: flex;
   overflow: auto;
@@ -917,8 +930,7 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
     right: 0;
     top: calc(50% - 1px);
     width: 10px;
-    height: 2px;
-    background: #842029;
+    border: 1px solid #842029;
   }
 
   &::before {

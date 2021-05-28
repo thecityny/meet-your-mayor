@@ -16,7 +16,8 @@
   "scripts": {
     "src/js/main.js": "build/app.js",
     "src/js/candidates.js": "build/candidates.js",
-    "src/js/final.js": "build/final.js"
+    "src/js/final.js": "build/final.js",
+    "src/js/printable.js": "build/printable.js"
   },
   "sheets": ["17fF1TXHpGf3fiSWAPoAvrQzD46SBdLiyg0HB0vhTmTQ"],
   "docs": [],
