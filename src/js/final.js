@@ -1,7 +1,6 @@
 // Libraries
-const {rollup, max} = require("d3-array");
+const {rollup, max, intersection} = require("d3-array");
 const visual = require("./visual");
-const resultsImage = require("./results-image.js");
 const tooltip = require("./tooltip.js");
 const auth = require("./auth.js");
 const track = require("./lib/tracking");
@@ -45,7 +44,6 @@ const activeColor = "#666666";
 const loadingClass = "loading";
 const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
 const profileImage = new Image(100, 100);
-const you = {name: "YOU", label: "YOU", maxRadius: 45, image: profileImage};
 const visualCollection = [];
 var selected = {};
 
@@ -301,26 +299,16 @@ function responses(target, questionNodes, getView, addViewListener, addAnswerSlu
 // Results elements
 const results = document.querySelector("#results");
 const resultsContainer = document.querySelector("#results-container");
-const resultsChartTarget = document.querySelector("#results-chart");
-const resultsChart = visual(resultsChartTarget, tooltip, activeColor);
-visualCollection.push(resultsChart);
 
-const resultsImageTarget = document.querySelector("#results-image");
-const resultsImageChart = resultsImage(resultsImageTarget, {
-  color: activeColor,
-  label: "Roundup"
-});
-visualCollection.push(resultsImageChart);
+const sidebarHeader = document.querySelector(".sidebar-header");
+const mobileFooterHeader = document.querySelector(".mobile-footer-header");
+const mobileChartTarget = document.querySelector(".mobile-candidate-icons");
+const sidebarChartTarget = document.querySelector("#sidebar-chart");
+const sidebarChart = visual(sidebarChartTarget, tooltip, activeColor);
+visualCollection.push(sidebarChart);
 
-const resultsLinkContainer = document.querySelector("#results-link-container");
-const resultsLink = document.querySelector("#results-link");
-var resultsImageObjectURL = "";
-window.downloadImage = function () {
-  URL.revokeObjectURL(resultsImageObjectURL);
-  const dataUrl = resultsImageTarget.toDataURL("image/png");
-  resultsImageObjectURL = URL.createObjectURL(dataURItoBlob(dataUrl));
-  resultsLink.href = resultsImageObjectURL;
-};
+const you = {name: "YOU", label: "YOU", maxRadius: 40, image: profileImage};
+var sidebarChartNodes = [you];
 
 // Count the number of matches for each candidate, create result cards,
 // format result lists and display final visual
@@ -399,9 +387,10 @@ function getMatches(selected) {
     return bInt - aInt;
   });
   // Match display data
-  const maxMatches = max(rankedEntries, d => d[1]);
-  const topMatches = rankedEntries.filter(d => maxMatches !== 0 && d[1] === maxMatches);
-  const otherMatches = rankedEntries.filter(d => maxMatches === 0 || d[1] !== maxMatches);
+  // const maxMatches = max(rankedEntries, d => d[1]);
+  const maxMatches = rankedEntries[(rankedEntries.length >= 5 ? 5 : rankedEntries.length) - 1][1];
+  const topMatches = rankedEntries.filter(d => maxMatches === 0 ? d[1] > 0 : d[1] >= maxMatches);
+  const otherMatches = rankedEntries.filter(d => maxMatches === 0 ? d[1] === 0 : d[1] < maxMatches);
 
   // Match card template
   function candidateCard([candidateSlug, matches]) {
@@ -441,35 +430,68 @@ function getMatches(selected) {
     + `</div>`
     + `<ul class="matches-list expandable-body">${otherMatches.map(d => candidateCard(d)).join("")}</ul>`
     + `</div>`;
-  results.innerHTML = (topMatches.length > 0 ? "<h3 class=\"matches-title\">Match details</h3>" : "")
-    + (topMatches.length > 0 ? topMarkup : "")
-    + (otherMatches.length > 0 ? otherMarkup : "");
+  results.innerHTML = selectedQuestionCount === 0 
+    ? "<p class=\"no-matches\">Answer questions to see matches</p>" 
+    : (topMatches.length > 0 ? topMarkup : "<p class=\"no-matches\">No matches</p>") + (otherMatches.length > 0 ? otherMarkup : "");
+
+  const sidebarChartNodesList = sidebarChartNodes.map(({slug}) => slug);
+  const noChange = topMatches.length === sidebarChartNodes.length && 
+    topMatches.reduce((noChange, [slug]) => {
+      return noChange && sidebarChartNodesList.indexOf(slug) > -1;
+    }, true);
 
   // Nodes for final visual
-  const nodes = topMatches.map(([slug, index]) => {
-    const node = {
-      ...candidates[slug],
-      maxRadius: 30
-    };
+  if (!noChange) {
+    sidebarChartNodes = topMatches.map(([slug, index]) => {
+      const existing = sidebarChartNodes.filter(node => node.slug === slug)[0];
+  
+      if (existing) {
+        return existing;
+      }
+  
+      const node = {
+        ...candidates[slug],
+        slug,
+        maxRadius: 25
+      };
+    
+      if (node.image) {
+        const image = new Image(100, 100);
+        image.src = `assets/images/${node.image}`;
+        node.image = image;
+      }
+  
+      return node;
+    });
+  
+    // Final result display formatting
+    sidebarChart.join([...sidebarChartNodes, you]);
+    mobileChartTarget.innerHTML = sidebarChartNodes.map(({slug}) => {
+      const candidate = candidates[slug];
+      return `<li>
+        <div class="circle-image ${candidate.party === "D" ? "dem" : candidate.party === "R" ? "rep" : ""} ${candidate.droppedOut ? "dropped-out" : ""}">
+          <img src="${candidate.image ? `assets/images/${candidate.image}` : emptyImage}" alt="${candidate.name}" />
+        </div>
+      </li>`;
+    }).join("");
+  }
 
-    if (node.image) {
-      const image = new Image(100, 100);
-      image.src = `assets/images/${node.image}`;
-      node.image = image;
-    }
+  const resultsHeaderString = selectedQuestionCount === 0 
+    ? "Answer questions to see matches"
+    : topMatches.length === 0 
+    ? `No matches on ${selectedQuestionCount > 1 ? `${selectedQuestionCount} questions` : "one question"}`
+    : selectedQuestionCount === 1 
+    ? "Matched you on at least one question" 
+    : `Matched you on at least ${maxMatches === 0 ? "1" : maxMatches} of ${selectedQuestionCount} questions`;
+  sidebarHeader.innerHTML = resultsHeaderString;
+  mobileFooterHeader.innerHTML = resultsHeaderString;
 
-    return node;
-  });
-
-  // Final result display formatting
-  if (nodes.length > 0) {
-    resultsChartTarget.classList.remove("chart-empty");
-    resultsLinkContainer.classList.add("active");
-    resultsChart.join([...nodes, you].map(node => ({...node, radius: 0})));
-    resultsImageChart.join([...nodes, you]);
+  if (sidebarChartNodes.length === 0) {
+    mobileChartTarget.classList.add("empty");
+    sidebarChartTarget.classList.add("empty");
   } else {
-    resultsLinkContainer.classList.remove("active");
-    resultsChartTarget.classList.add("chart-empty");
+    mobileChartTarget.classList.remove("empty");
+    sidebarChartTarget.classList.remove("empty");
   }
   
   attachExpandHandlers(results);
@@ -546,15 +568,26 @@ Array.from(document.querySelectorAll(".topics-list a")).forEach(link => {
   });
 });
 
-function dataURItoBlob(dataURI) {
-  var byteString = atob(dataURI.split(',')[1]);
-  var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
-  var ab = new ArrayBuffer(byteString.length);
-  var ia = new Uint8Array(ab);
-  for (var i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-  }
-  var blob = new Blob([ab], {type: mimeString});
-  return blob;
-}
+const questionContainer = document.querySelector("#questions");
+const mobileFooter = document.querySelector(".mobile-footer");
 
+const exitObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.target === questionContainer) {
+      if (entry.isIntersecting && entry.intersectionRect.y > 0) {
+        mobileFooter.classList.add("active");
+      } else {
+        mobileFooter.classList.remove("active");
+      }
+    }
+    if (entry.target === resultsContainer) {
+      if (entry.isIntersecting) {
+        mobileFooter.classList.remove("active");
+      } else {
+        mobileFooter.classList.add("active");
+      }
+    }
+  });
+}, {});
+exitObserver.observe(questionContainer);
+exitObserver.observe(resultsContainer);
