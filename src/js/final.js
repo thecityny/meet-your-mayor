@@ -10,6 +10,7 @@ const candidates = require("../../data/candidateData.json");
 const positionsData = require("../../data/positionData.json");
 const questionData = require("../../data/questionData.json");
 const answerData = require("../../data/answerData.json");
+const topicDisplayData = require("../../data/topicDisplayData.json");
 
 // Topic data
 const body = document.querySelector("body");
@@ -356,10 +357,16 @@ function getMatches(selected) {
       return [...candidates, ...answerCandidates];
     }, []);
   
-  // Array of question slugs in order of appearance [[topic, questionSlug], ...]
+  // Array of question slugs in order of appearance {topic: [questionSlug, ...]}
   const orderedQuestionSlugs = questionTargets
     .map(question => [question.getAttribute("data-topic"), question.getAttribute("data-slug")])
-    .filter(([topic, questionSlug]) => selectedQuestions[topic] && selectedQuestions[topic].indexOf(questionSlug) > -1);
+    .filter(([topic, questionSlug]) => selectedQuestions[topic] && selectedQuestions[topic].indexOf(questionSlug) > -1)
+    .reduce((orderedQuestionSlugs, [topic, questionSlug]) => {
+      return {
+        ...orderedQuestionSlugs,
+        [topic]: [...(orderedQuestionSlugs[topic] || []), questionSlug]
+      }
+    }, {});
 
   // Every candidate that doesn't appear in candidateOccurrences
   const otherCandidates = Object.keys(candidates).filter(d => candidateOccurrences.indexOf(d) < 0);
@@ -408,16 +415,17 @@ function getMatches(selected) {
         + `<div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>`
       + `</div>`
       + `<div class="expandable-body">`
-        + `<ul class="match-position-list">${orderedQuestionSlugs.map(([topic, questionSlug]) => {
-          const answerSlug = candidatePositions[candidateSlug] && candidatePositions[candidateSlug][topic] && candidatePositions[candidateSlug][topic][questionSlug];
-          return `<li class="match-position">`
-            + `<div class="match-position-agree ${selectedCandidates[topic] && selectedCandidates[topic][questionSlug].indexOf(candidateSlug) > -1 ? "check" : "cross"}"></div>`
-            + `<div class="match-position-text">`
-              + `<p class="match-question">${questionData[topic][questionSlug]}</p>`
-              + `<p class="match-answer">${answerSlug ? answerData[topic][questionSlug][answerSlug] : "No response / no position"}</p>`
-            + `</div></li>`;
-          }).join("")}`
-        + `</ul>`
+        + Object.entries(orderedQuestionSlugs).map(([topic, questionSlugs]) => {
+          return `<h4 class="match-topic">${topicDisplayData[topic].label}</h4><ul class="match-position-list">${questionSlugs.map(questionSlug => {
+            const answerSlug = candidatePositions[candidateSlug] && candidatePositions[candidateSlug][topic] && candidatePositions[candidateSlug][topic][questionSlug];
+            return `<li class="match-position">`
+              + `<div class="match-position-agree ${selectedCandidates[topic] && selectedCandidates[topic][questionSlug].indexOf(candidateSlug) > -1 ? "check" : "cross"}"></div>`
+              + `<div class="match-position-text">`
+                + `<p class="match-question">${questionData[topic][questionSlug]}</p>`
+                + `<p class="match-answer">${answerSlug ? answerData[topic][questionSlug][answerSlug] : "No response / no position"}</p>`
+              + `</div></li>`;
+          }).join("")}</ul>`;
+        }).join("")
       + `</div>`
     + `</li>`
   };
