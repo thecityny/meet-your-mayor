@@ -40,7 +40,6 @@ const candidatePositions = Object.fromEntries(Array.from(candidatePositionsMap))
 
 
 // Constants
-const localStorageSlug = `mym-final`;
 const activeColor = "#666666";
 const loadingClass = "loading";
 const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
@@ -131,7 +130,7 @@ const questions = questionTargets.reduce((questions, question) => {
 
         // If the answer is different or "Skip," update local storage
         if ((answerSlug !== value || answerSlug === "") && triggerUpdate) {
-          localStorage.setItem(localStorageSlug, JSON.stringify(selected, null, 2));
+          localStorage.setItem(`mym-${topic}`, JSON.stringify(selected[topic], null, 2));
           getMatches(selected);
         }
 
@@ -537,8 +536,16 @@ function attachExpandHandlers(target) {
 }
 
 function loadAnswers() {
-  const dataString = localStorage.getItem(localStorageSlug) || "{}";
-  const data = JSON.parse(dataString);
+  const data = Object.entries(localStorage).reduce((localData, [key, data]) => {
+    if (key.startsWith("mym-") && key !== "mym-final") {
+      return {
+        ...localData,
+        [key.match(/^mym\-(.+)$/)[1]]: JSON.parse(data)
+      };
+    } else {
+      return localData;
+    }
+  }, {});
 
   try {
     Object.entries(questions).forEach(([topic, questions]) => {
