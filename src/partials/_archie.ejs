@@ -27,18 +27,18 @@
 
   <%/* pulls in body text */%>
   <% if (item.type == 'markdown') { %>
-    <div class="copy copy-container">
+    <div class="copy">
       <%= t.renderMarkdown(item.value) %>
     </div>
   <% } %>
 
   <% if (item.type == 'text') { %>
-    <p class="copy copy-container"><%= item.value %></p>
+    <p class="copy"><%= item.value %></p>
   <% } %>
 
   <%/* pulls in subheads */%>
   <% if (item.type == 'subhead') { %>
-  <h3 class='subhead copy-container'><%= item.value.text %></h3>
+  <h3 class='subhead'><%= item.value.text %></h3>
   <% } %>
 
   <%/* pulls in photos */%>

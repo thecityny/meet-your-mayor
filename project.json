@@ -10,8 +10,7 @@
     }
   },
   "styles": {
-    "src/css/seed.less": "build/style.css",
-    "src/css/candidates.less": "build/candidates.css"
+    "src/css/seed.less": "build/style.css"
   },
   "scripts": {
     "src/js/main.js": "build/app.js",
@@ -20,7 +19,9 @@
     "src/js/printable.js": "build/printable.js"
   },
   "sheets": ["17fF1TXHpGf3fiSWAPoAvrQzD46SBdLiyg0HB0vhTmTQ"],
-  "docs": [],
+  "docs": {
+    "1gF5UVpEBeWwhyRx_VTwcXlLRLJ6DYLxsqU_T7UJEC5c": "candidates"
+  },
   "embedded": false,
   "production": true
 }

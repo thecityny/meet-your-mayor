@@ -7,7 +7,7 @@ var url = require('url');
 var htmlparser = require('htmlparser2');
 var Entities = require('html-entities').AllHtmlEntities;
 
-var docs = require('../data/topicData.json').reduce((docs, topic) => {
+var topicDocs = require('../data/topicData.json').reduce((docs, topic) => {
   return {...docs, [topic.doc]: topic.topic}
 }, {});
 
@@ -16,6 +16,8 @@ module.exports = function(grunt) {
   grunt.registerTask("docs", "Load Google Docs into the data folder", function() {
 
     var config = grunt.file.readJSON("project.json");
+    var docs = {...config.docs, ...topicDocs};
+
     var auth = null;
     try {
       auth = authenticate();

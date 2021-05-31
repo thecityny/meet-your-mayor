@@ -325,7 +325,7 @@ function responses(target, questionNodes, getView, addViewListener, addAnswerSlu
 const results = document.querySelector("#results");
 const resultsContainer = document.querySelector("#results-container");
 
-const sidebarHeader = document.querySelector(".sidebar-header");
+const sidebarHeader = document.querySelector(".sidebar-box-chart-header");
 const mobileFooterHeader = document.querySelector(".mobile-footer-header");
 const mobileChartTarget = document.querySelector(".mobile-candidate-icons");
 const sidebarChartTarget = document.querySelector("#sidebar-chart");

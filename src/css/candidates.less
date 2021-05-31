@@ -1,13 +1,6 @@
-@import "base";
-@import "article";
-
 @header-black: #111111;
 @type-black: #333333;
 @meta-black: #404040;
-
-.article-header {
-  margin: 30px auto;
-}
 
 .header-title {
   .boldface();
@@ -19,10 +12,19 @@
 
 .header-label {
   .bookface();
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   color: @header-black;
   margin: 10px 0;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover, a:active {
+    text-decoration: underline;
+  }
 }
 
 .header-date {
@@ -33,20 +35,6 @@
   letter-spacing: .15em;
   font-size: 14px;
   margin: 8px 0;
-}
-
-.article-body {
-  display: flex;
-}
-
-.article-body-content {
-  flex-grow: 1;
-}
-
-.article-body-sidebar {
-  width: 300px;
-  flex-shrink: 0;
-  margin-left: 30px;
 }
 
 .image-hero {
@@ -63,7 +51,7 @@
   list-style: square;
   margin: 20px 0 40px 0;
   padding: 10px 30px;
-  background: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.4);
 
   & > li {
     margin: 0 0 40px 20px;
@@ -89,7 +77,22 @@
   font-size: 16px;
   line-height: 26px;
   margin: 12px 0;
+  padding: 0 10px;
   color: @type-black;
+
+  &.active {
+    background: #fff;
+    padding: 10px;
+
+    &::before {
+      content: "Selected: ";
+      .medface();
+    }
+  }
+
+  &.none {
+    padding: 0;
+  }
 }
 
 .position-quote {
@@ -117,19 +120,13 @@
   padding: 8px 20px 8px 26px;
   margin: 16px 0;
   overflow: auto;
-  background: #e9e9e9;
+  background: #e6e6e6;
 }
 
 .topic-link {
   &:active, &:link, &:hover, &:focus, &:visited {
     color: @meta-black;
   }
-}
-
-.sidebar-box {
-  background: #ffffff;
-  padding: 15px 20px;
-  // border: 2px solid #777;
 }
 
 .sidebar-header {
@@ -161,8 +158,4 @@
   a:hover, a:active {
     color: @city-blue;
   }
-}
-
-.header-logo {
-  width: 100px;
 }

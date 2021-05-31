@@ -3,8 +3,6 @@
 
   <% 
   // TODO: replace during build
-  const archieml = grunt.data.archieml["candidates"];
-
   const questionText = grunt.data.json.questionData || {};
   const questionAnswerText = grunt.data.json.answerData || {};
   const positionData = grunt.data.json.positionData || {};
@@ -25,7 +23,7 @@
   const datePublished = new Date();
 
   const project = {
-    "title": `${candidateData[candidateSlug].name}`,
+    "title": `Meet Your Mayor: ${candidateData[candidateSlug].name}`,
     "description": "Insert description here",
     "url": `https://projects.thecity.nyc/meet-your-mayor/${candidateSlug}.html`,
     "image": `https://projects.thecity.nyc/meet-your-mayor/assets/share-${candidateSlug}.jpg`,
@@ -43,18 +41,25 @@
 
 <head>
   <%= t.include("partials/_head.html", {project: project}) %>
-  <link rel="stylesheet" type="text/css" href="../candidates.css">
+  <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 
 <body>
-  <header class="header">
-    <div class="container">
-      <h1><a class="header-logo" href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a></h1>
+  <nav class="nav">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a>
+      </div>
+      <div class="nav-title"></div>
+      <div class="nav-links">
+        <a class="nav-link-secondary" href="https://www.thecity.nyc/civic-newsroom">Civic Newsroom</a>
+        <a href="https://www.thecity.nyc/campaign-2021">Election Coverage</a>
+      </div>
     </div>
-  </header>
+  </nav>
   <main>
-    <div class="container article-header">
-      <p class="header-label">Meet Your Mayor</p>
+    <div class="article-header">
+      <p class="header-label"><a href="https://www.thecity.nyc/22330081/meet-your-mayor-nyc">Meet Your Mayor</a></p>
       <h1 class="header-title"><%= candidateData[candidateSlug].name %></h1>
       <p class="header-date"><time datetime="<%= datePublished.toISOString() %>">Last updated: <%= datePublished.toLocaleDateString("en-US", {
           month: "long",
@@ -63,7 +68,7 @@
         }) %></time>
       </p>
     </div>
-    <div class="container article-body">
+    <div class="article-body">
       <div class="article-body-content">
         <figure class="image-hero photo" style="display: none;">
           <img src="<%= emptyImage %>" alt="Alt text here" />
@@ -72,47 +77,78 @@
             <cite>Credit here</cite>
           </span>
         </figure>
-        <% activeTopics.forEach(topic => { %>
+        
+        <% if (archieml["candidates"][candidateSlug]) {
+          const bio = archieml["candidates"][candidateSlug].filter(entry => entry.type !== "website");
+          const website = archieml["candidates"][candidateSlug].filter(entry => entry.type === "website")[0];
+        %>
+          <% if (bio) { %> 
+            <%= t.include("partials/_archie.ejs", {story: bio}) %>
+          <% } %>
+          <% if (website) { %>
+            <p class="copy"><a href="<%= website.value %>">Candidate website</a></p>
+          <% } %>
+        <% } %>
+        <div class="final-intro">
+          <h2 class="subhead">Positions</h2>
+          <p class="copy">See where the candidate falls on the multiple-choice questions below.</p>
+        </div>
+        <% activeTopics.forEach(topic => {
+          const questions = archieml[topic] && archieml[topic].questions || [];
+        %>
           <% if (positionData[topic]) { %>
-            <h3 class="position-topic"><%= topicDisplayData[topic].label %> Positions</h3>
-            <a class="topic-link" href="../<%= topic %>.html">View topic guide</a>
-            <ul class="position-questions">
-              <% Object.keys(positionData[topic]).forEach(question => { %>
-                <li>
-                  <% 
-                    // Get all the candidate positions on a question, filter for the candidate slug.
-                    // Return the position if it exists, otherwise undefined.
-                    const candidateAnswer = Object.entries(positionData[topic][question]).reduce((candidateAnswer, [answerSlug, answer]) => {
-                      if (!candidateAnswer) {
-                        const candidatePosition = answer.filter(position => position.slug === candidateSlug)[0];
-  
-                        if (candidatePosition) {
-                          return {...candidatePosition, answerSlug}
-                        } 
-                      } else {
-                        return candidateAnswer;
-                      }
-                    }, undefined); 
-                  %>
-                  <h4 class="position-question"><%= questionText[topic][question] %></h4>
-                  <% if (candidateAnswer) { %>
-                    <p class="position-answer"><%= questionAnswerText[topic][question][candidateAnswer.answerSlug] %></p>
-                    <% if (candidateAnswer.quote) { %>
-                      <figcaption class="position-block-quote">
-                        <blockquote class="position-quote"><%= candidateAnswer.quote %></blockquote>
-                        <figcaption class="position-source">from <cite><%= candidateAnswer.url ? `<a href="${candidateAnswer.url}">${candidateAnswer.source}</a>` : candidateAnswer.source %></cite><%= candidateAnswer.date ? `, ${candidateAnswer.date}` : "" %></figcaption>  
-                      </figcaption>
-                    <% } %>
-                  <% } else { %>
-                    <p class="position-answer">No response / no position</p>
-                  <% } %>
-                </li>
-              <% }); %>
-            </ul>
+            <div class="topic-section expandable collapsed" data-value="<%= topic %>">
+              <div class="topic-header expandable-header expandable-link">
+                <h2 class="topic-header-name"><%= topicDisplayData[topic].label %></h2>
+                <div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>
+              </div>
+              <div class="expandable-body">
+                <a class="topic-link" href="../<%= topic %>.html">View topic guide</a>
+                <ul class="position-questions">
+                  <% questions.forEach(({slug, answers}) => { %>
+                    <li>
+                      <% 
+                        // Get all the candidate positions on a question, filter for the candidate slug.
+                        // Return the position if it exists, otherwise undefined.
+                        const candidateAnswer = Object.entries(positionData[topic][slug]).reduce((candidateAnswer, [answerSlug, answer]) => {
+                          if (!candidateAnswer) {
+                            const candidatePosition = answer.filter(position => position.slug === candidateSlug)[0];
+      
+                            if (candidatePosition) {
+                              return {...candidatePosition, answerSlug}
+                            } 
+                          } else {
+                            return candidateAnswer;
+                          }
+                        }, undefined); 
+                      %>
+                      <h4 class="position-question"><%= questionText[topic][slug] %></h4>
+                      <% if (candidateAnswer) { %>
+                        <% answers.forEach(answerSlug => { %>
+                          <p class="position-answer <%= answerSlug === candidateAnswer.answerSlug ? 'active' : '' %>"><%= questionAnswerText[topic][slug][answerSlug] %></p>
+                        <% }) %> 
+                        <% if (candidateAnswer.quote) { %>
+                          <figcaption class="position-block-quote">
+                            <blockquote class="position-quote"><%= candidateAnswer.quote %></blockquote>
+                            <figcaption class="position-source">from <cite><%= candidateAnswer.url ? `<a href="${candidateAnswer.url}">${candidateAnswer.source}</a>` : candidateAnswer.source %></cite><%= candidateAnswer.date ? `, ${candidateAnswer.date}` : "" %></figcaption>  
+                          </figcaption>
+                        <% } %>
+                      <% } else { %>
+                        <p class="position-answer none">No response / no position</p>
+                      <% } %>
+                    </li>
+                  <% }); %>
+                </ul>
+              </div>
+            </div>
           <% } %>
         <% }); %>
       </div>
-      <div class="article-body-sidebar">
+      <div class="article-body-sidebar-hide">
+        <div class="sidebar-box">
+          <h3 class="sidebar-header">Coverage</h3>
+          <p><a href="https://thecity.nyc/<%= candidateSlug %>">Read THE CITY's coverage of <%= candidateData[candidateSlug].name %></a></p>
+        </div>
         <div class="sidebar-box">
           <h3 class="sidebar-header">Candidates</h3>
           <ul class="sidebar-list">
