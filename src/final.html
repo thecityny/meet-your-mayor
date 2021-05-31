@@ -5,9 +5,9 @@
 
   // TODO: pull from doc
   const settings = {
-    date: new Date(),
+    date: new Date(2021,5,1),
     title: "Ultimate Match",
-    description: "The final quiz of Meet Your Mayor",
+    description: "We’ve surveyed the candidates on 15 topics over the past three months. See which candidates for NYC mayor agree with you most.",
     changes: [],
     dek: "We’ve surveyed the candidates on 15 topics over the past three months. See which candidates for NYC mayor agree with you most.",
     intro: [{type: "text", value: "Lorem ipsum"}]
@@ -79,18 +79,20 @@
 
 <body>
   <nav class="nav">
-    <div class="nav-logo">
-      <a href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a>
-    </div>
-    <div class="nav-title"></div>
-    <div class="nav-links">
-      <a href="https://www.thecity.nyc/campaign-2021">2021 Campaign</a>
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a>
+      </div>
+      <div class="nav-title"></div>
+      <div class="nav-links">
+        <a class="nav-link-secondary" href="https://www.thecity.nyc/civic-newsroom">Civic Newsroom</a>
+        <a href="https://www.thecity.nyc/campaign-2021">2021 Campaign</a>
+      </div>
     </div>
   </nav>
   <div class="splash-screen splash-screen-nav">
-    <div class="splash-screen-background">
-      <div class="background-circle"></div>
-    </div>
+    <div class="splash-screen-visual"></div>
+    <div class="splash-screen-overlay"></div>
     <div class="splash-screen-text">
       <p class="series-headline">Meet Your Mayor</p>
       <h1 class="topic"><%= settings.title %></h1>
@@ -231,7 +233,7 @@
       </div>
     </div>
     
-    <div id="results-container" class="results-container section section-highlight">
+    <div id="results-container" class="results-container section section-highlight-final">
       <h2 class="results-title">Your Top Matches</h2>
       <div class="copy-container">
         <div class="share-container">

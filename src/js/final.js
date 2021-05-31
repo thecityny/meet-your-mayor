@@ -4,6 +4,7 @@ const visual = require("./visual");
 const tooltip = require("./tooltip.js");
 const auth = require("./auth.js");
 const track = require("./lib/tracking");
+const headerVisual = require("./header-visual");
 
 // Data
 const candidates = require("../../data/candidateData.json");
@@ -11,6 +12,30 @@ const positionsData = require("../../data/positionData.json");
 const questionData = require("../../data/questionData.json");
 const answerData = require("../../data/answerData.json");
 const topicDisplayData = require("../../data/topicDisplayData.json");
+
+const headerVisualTarget = document.querySelector(".splash-screen-visual");
+const splashScreen = headerVisual(headerVisualTarget);
+const splashScreenWidth = headerVisualTarget.getBoundingClientRect().width;
+const splashScreenHeight = headerVisualTarget.getBoundingClientRect().height;
+const splashScreenArea = splashScreenWidth * splashScreenHeight;
+const radiusRange = [Math.sqrt(splashScreenArea / 400), Math.sqrt(splashScreenArea / 50)];
+
+splashScreen.join(Object.values(topicDisplayData).map(node => {
+  const angle = Math.random() * 2 * Math.PI;
+  const velocity = 1;
+  const radius = Math.round(Math.random() * (radiusRange[1] - radiusRange[0]) + radiusRange[0]);
+  const width = splashScreenWidth - radius * 2;
+  const height = splashScreenHeight - radius * 2;
+
+  return {
+    x: Math.random() * width - width / 2,
+    y: Math.random() * height - height / 2,
+    vx: Math.cos(angle) * velocity,
+    vy: Math.sin(angle) * velocity,
+    r: radius,
+    color: node.background
+  }
+}));
 
 // Topic data
 const body = document.querySelector("body");

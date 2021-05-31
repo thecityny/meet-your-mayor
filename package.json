@@ -29,6 +29,8 @@
     "d3-drag": "^2.0.0",
     "d3-ease": "^2.0.0",
     "d3-force": "^2.1.1",
+    "d3-force-bounce": "^0.5.9",
+    "d3-force-surface": "^0.5.9",
     "d3-selection": "^2.0.0",
     "dot": "^1.1.2",
     "exorcist": "^1.0.1",
