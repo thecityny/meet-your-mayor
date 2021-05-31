@@ -600,7 +600,7 @@ const exitObserver = new IntersectionObserver((entries, observer) => {
     if (entry.target === resultsContainer) {
       if (entry.isIntersecting) {
         mobileFooter.classList.remove("active");
-      } else {
+      } else if (entry.boundingClientRect.y > 0 && entry.time > 1000) {
         mobileFooter.classList.add("active");
       }
     }

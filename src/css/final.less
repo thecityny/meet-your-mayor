@@ -186,10 +186,10 @@
 .topic-header {
   align-items: center;
   position: relative;
-  padding: 15px 0;
+  padding: 15px 40px 15px 0;
   cursor: pointer;
     
-  @media screen and (min-width: 400px) {
+  @media screen and (min-width: 460px) {
     display: flex;
   }
 
@@ -239,7 +239,7 @@
   margin: 5px 0;
   .bookface();
   
-  @media screen and (min-width: 400px) {
+  @media screen and (min-width: 460px) {
     margin-left: 16px;
   }
 }
@@ -259,13 +259,24 @@
 }
 
 .article-body-sidebar {
-  width: 300px;
+  flex-shrink: 0;
+  padding: 0;
+  margin: 0 20px;
+
+  @media screen and (min-width: 900px) {
+    margin: 20px;
+    width: 300px;
+  }
+}
+
+.article-body-sidebar-hide {
+  display: none;
   flex-shrink: 0;
   padding: 0;
   margin: 20px;
-  display: none;
   
   @media screen and (min-width: 900px) {
+    width: 300px;
     display: block;
   }
 }
@@ -288,19 +299,27 @@
 }
 
 .sidebar-login {
-  padding: 10px 20px;
+  padding: 0 20px;
   margin: 0 0 15px 0;
   background: rgba(255,255,255,0.4);
   overflow: auto;
+  text-align: center;
 
   .login-prompt {
     font-size: 16px;
+    line-height: 26px;
+    margin: 20px 0 10px 0;
   }
 
-  .g-button, .fb-button {
-    text-align: center;
-    width: 100%;
-  };
+  @media screen and (min-width: 900px) {
+    .login-prompt {
+      text-align: left;
+    }
+    .g-button, .fb-button {
+      text-align: center;
+      width: 100%;
+    };
+  }
 }
 
 .final-intro {

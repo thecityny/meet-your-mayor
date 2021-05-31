@@ -6,7 +6,7 @@
   // TODO: pull from doc
   const settings = {
     date: new Date(),
-    title: "The Ultimate Match",
+    title: "Ultimate Match",
     description: "The final quiz of Meet Your Mayor",
     changes: [],
     dek: "We’ve surveyed the candidates on 15 topics over the past three months. See which candidates for NYC mayor agree with you most.",
@@ -78,12 +78,20 @@
 </head>
 
 <body>
-  <div class="splash-screen">
+  <nav class="nav">
+    <div class="nav-logo">
+      <a href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a>
+    </div>
+    <div class="nav-title"></div>
+    <div class="nav-links">
+      <a href="https://www.thecity.nyc/campaign-2021">2021 Campaign</a>
+    </div>
+  </nav>
+  <div class="splash-screen splash-screen-nav">
     <div class="splash-screen-background">
       <div class="background-circle"></div>
     </div>
     <div class="splash-screen-text">
-      <div class="watermark"><a href="https://thecity.nyc/"><%=  t.include("assets/logo.svg") %></a></div>
       <p class="series-headline">Meet Your Mayor</p>
       <h1 class="topic"><%= settings.title %></h1>
       <p class="date"><time datetime="<%= datePublished.toISOString() %>"><%= datePublished.toLocaleDateString("en-US", {
@@ -103,13 +111,15 @@
           <% /* t.include("partials/_archie.ejs", {story: settings.intro}) */ %>
         <% } %> -->
         <div class="copy">
-          <p><strong>Welcome to Meet Your Mayor</strong>,&nbsp;which shows you how the candidates’ stands fit with your take on the issues that matter most to New<span class="widont">&nbsp;</span>Yorkers.</p>
-          <p>If you’re new to Meet Your Mayor, <a href="https://www.thecity.nyc/e/22094122">learn more about how it works</a>&nbsp;and what to expect now through the June 22<span class="widont">&nbsp;</span>primary.</p>
+          <p>Voters of New York City: It’s time to pick your nominee for mayor, with primary day approaching on June 22. Since March, THE CITY has been presenting the candidates’ positions, issue by issue. Meet Your Mayor shows you how the candidates’ stands fit with your take on what matters most to New Yorkers.</p>
+          <p>Now we’ve pulled all 15 Meet Your Mayor editions into one, final, supersized superquiz that will show you your ultimate match. Actually, your top matches, since voters will be ranking up to five selections at the polls.</p>
+          <p>You can answer all 61 of the questions we put to the candidates or select just the ones that interest you. Either way, Meet Your Mayor: Ultimate Match will present you with a list of your top candidate matches, which you can take with you to the polls or share on social media.</p>
+          <p>Your responses will be private, and THE CITY will not collect any information from you. <a href="https://www.thecity.nyc/e/22094122">Learn more about Meet Your Mayor’s privacy practices here</a>.</p>
         </div>
         <% if (changes.length) { %>
           <% const updated = new Date(changes[0].date); %>
-          <div class="photo-container">
-            <p class="copy"><a href="#change-list" id="changed-link"><em>Last updated <time datetime="<%= updated.toISOString() %>"><%= apMonths[updated.getUTCMonth()] %> <%= updated.getUTCDate() %>, <%= updated.getUTCFullYear() %></time></em></a></p>
+          <div class="copy">
+            <p><a href="#change-list" id="changed-link"><em>Last updated <time datetime="<%= updated.toISOString() %>"><%= apMonths[updated.getUTCMonth()] %> <%= updated.getUTCDate() %>, <%= updated.getUTCFullYear() %></time></em></a></p>
           </div>
         <% } %>
       </div>
@@ -213,7 +223,7 @@
         </div>
         <% }); %>
       </div>
-      <div class="article-body-sidebar">
+      <div class="article-body-sidebar-hide">
         <div class="sidebar-box">
           <h4 class="sidebar-header">Answer questions to see matches</h4>
           <div id="sidebar-chart" class="chart"></div>
@@ -238,7 +248,7 @@
       <div id="results" class="results"></div>
     </div>
 
-    <div class="section">
+    <div class="section section-white">
       <div class="newsletter photo-container">
         <div class="newsletter-text">
           <h3 class="newsletter-head">What do you need to know to vote?</h3>
@@ -265,7 +275,7 @@
 
   </main>
   <%= t.include("partials/_footer.html") %>
-  <div class="mobile-footer active">
+  <div class="mobile-footer">
     <h4 class="mobile-footer-header">Answer questions to see matches</h4>
     <ul class="mobile-candidate-icons"></ul>
   </div>

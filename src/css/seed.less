@@ -70,7 +70,7 @@ body.loading {
 }
 
 .share-container {
-  margin: 30px 0;
+  margin: 10px 0;
   overflow: auto;
   text-align: center;
 
@@ -217,7 +217,6 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
 @dem-background: #C3CBDD;
 
 .splash-screen {
-  height: 100vh;
   position: relative;
   overflow: hidden;
   margin: 0;
@@ -226,7 +225,20 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
 
   @media screen and (min-width: 800px) {
     margin: 20px;
+  }
+}
+
+.splash-screen-full {
+  height: 100vh;
+  @media screen and (min-width: 800px) {
     height: calc(100vh - 40px);
+  }
+}
+
+.splash-screen-nav {
+  height: calc(100vh - 60px);
+  @media screen and (min-width: 800px) {
+    height: calc(100vh - 100px);
   }
 }
 
@@ -337,7 +349,10 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
   background: none;
   padding: 40px 0;
 }
-
+.section-white {
+  background: #fff;
+  padding: 40px 0;
+}
 .question-container {
   max-width: 700px;
   padding: 20px 0;
@@ -1033,7 +1048,7 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
 }
 
 .login-buttons {
-  margin: 20px 0;
+  margin: 10px 0 20px 0;
 
   &.google .fb-button {
     display: none;
@@ -1060,8 +1075,8 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
   border: 1px solid #666;
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     vertical-align: middle;
     margin-right: 5px;
   }
@@ -1083,7 +1098,7 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
 .login-prompt {
   .medface();
   font-size: 18px;
-  margin: 15px 0;
+  margin: 15px 0 10px 0;
 }
 
 .change-list {
@@ -1100,4 +1115,49 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
 
 .change-date {
   .medface();
+}
+
+.nav {
+  display: flex;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  padding: 10px 15px;
+  align-items: center;
+  box-shadow: 0 0 4px 0 rgba(0,0,0,0.3);
+}
+
+.nav-logo {
+  width: 100px;
+  flex-grow: 0;
+}
+
+.nav-title {
+  .boldface();
+  text-transform: uppercase;
+  font-size: 26px;
+  flex-grow: 1;
+  text-align: center;
+  margin: 0;
+}
+
+.nav-links {
+  flex-grow: 0;
+
+  a {
+    .bookface();
+    font-size: 14px;
+    color: #fff;
+    background: #000;
+    padding: 10px 20px;
+    letter-spacing: 1px;
+    box-shadow: none;
+    display: inline;
+    white-space: nowrap;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+  }
 }
