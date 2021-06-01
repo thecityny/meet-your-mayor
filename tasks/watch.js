@@ -20,15 +20,15 @@ module.exports = function(grunt) {
       },
       less: {
         files: ["src/**/*.less"],
-        tasks: ["less"]
+        tasks: ["less:dev"]
       },
       templates: {
         files: ["src/**/*.html", "src/**/*.ejs", "data/**/*", "src/**/*.md"],
-        tasks: ["template"]
+        tasks: ["template:dev"]
       },
       js: {
         files: ["src/js/**/*"], //everything, due to templating, GLSL, LESS, etc.
-        tasks: ["bundle"]
+        tasks: ["bundle:dev"]
       }
     }
   });

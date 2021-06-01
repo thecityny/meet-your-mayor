@@ -9,7 +9,7 @@ function forceBounds(width, height) {
   var nodes;
 
   function force() {
-    for (i = nodes.length - 1; i >= 0; i--) {
+    for (var i = nodes.length - 1; i >= 0; i--) {
       const node = nodes[i];
       const xExtent = width / 2 - node.r * 2;
       const yExtent = height / 2 - node.r * 2;
@@ -32,7 +32,7 @@ function forceGrowth() {
   const easeFunction = easeQuadIn;
 
   function force() {
-    for (i = nodes.length - 1; i >= 0; i--) {
+    for (var i = nodes.length - 1; i >= 0; i--) {
       const node = nodes[i];
 
       if (node._timer <= ticks) {

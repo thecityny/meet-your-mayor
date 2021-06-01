@@ -13,10 +13,15 @@
     "src/css/seed.less": "build/style.css"
   },
   "scripts": {
-    "src/js/main.js": "build/app.js"
+    "src/js/main.js": "build/app.js",
+    "src/js/candidates.js": "build/candidates.js",
+    "src/js/final.js": "build/final.js",
+    "src/js/printable.js": "build/printable.js"
   },
   "sheets": ["17fF1TXHpGf3fiSWAPoAvrQzD46SBdLiyg0HB0vhTmTQ"],
-  "docs": [],
+  "docs": {
+    "1gF5UVpEBeWwhyRx_VTwcXlLRLJ6DYLxsqU_T7UJEC5c": "candidates"
+  },
   "embedded": false,
   "production": true
 }

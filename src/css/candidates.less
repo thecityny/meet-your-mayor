@@ -1,0 +1,161 @@
+@header-black: #111111;
+@type-black: #333333;
+@meta-black: #404040;
+
+.header-title {
+  .boldface();
+  font-size: 60px;
+  line-height: 1.1em;
+  margin: 8px 0;
+  color: @header-black;
+}
+
+.header-label {
+  .bookface();
+  font-size: 16px;
+  text-transform: uppercase;
+  color: @header-black;
+  margin: 10px 0;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover, a:active {
+    text-decoration: underline;
+  }
+}
+
+.header-date {
+  .bookface();
+  text-align: left;
+  color: @meta-black;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.image-hero {
+  margin: 0;
+}
+
+.position-topic {
+  .boldface();
+  font-size: 32px;
+  margin: 10px 0;
+}
+
+.position-questions {
+  list-style: square;
+  margin: 20px 0 40px 0;
+  padding: 10px 30px;
+  background: rgba(255,255,255,0.4);
+
+  & > li {
+    margin: 0 0 40px 20px;
+    padding-left: 10px;
+
+    &::marker {
+      font-size: 24px;
+      line-height: 0;
+    }
+  }
+}
+
+.position-question {
+  .medface();
+  font-size: 18px;
+  line-height: 28px;
+  margin: 20px 0 10px 0;
+  color: @meta-black;
+}
+
+.position-answer {
+  .bookface();
+  font-size: 16px;
+  line-height: 26px;
+  margin: 12px 0;
+  padding: 0 10px;
+  color: @type-black;
+
+  &.active {
+    background: #fff;
+    padding: 10px;
+
+    &::before {
+      content: "Selected: ";
+      .medface();
+    }
+  }
+
+  &.none {
+    padding: 0;
+  }
+}
+
+.position-quote {
+  .bookface();
+  font-size: 16px;
+  line-height: 26px;
+  color: @type-black;
+  margin: 10px 0;
+}
+
+.position-source {
+  .ital();
+  font-size: 16px;
+  line-height: 24px;
+  color: @type-black;
+  margin: 10px 0;
+
+  a:active, a:link, a:hover, a:focus, a:visited {
+    color: inherit;
+  }
+}
+
+.position-block-quote {
+  // border-left: 3px solid #666;
+  padding: 8px 20px 8px 26px;
+  margin: 16px 0;
+  overflow: auto;
+  background: #e6e6e6;
+}
+
+.topic-link {
+  &:active, &:link, &:hover, &:focus, &:visited {
+    color: @meta-black;
+  }
+}
+
+.sidebar-header {
+  .boldface();
+  font-size: 26px;
+  color: @meta-black;
+  margin: 10px 0 15px 0;
+}
+
+.sidebar-list {
+  list-style: none;
+  margin: 10px 0;
+  padding: 0;
+
+  li {
+    margin: 0.7em 0;
+  }
+
+  a:link, a:focus, a:visited, a:hover, a:active {
+    text-decoration: none;
+    transition: color 0.1s;
+    display: block;
+  }
+
+  a:link, a:focus, a:visited {
+    color: @meta-black;
+  }
+
+  a:hover, a:active {
+    color: @city-blue;
+  }
+}

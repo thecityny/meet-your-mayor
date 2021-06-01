@@ -11,7 +11,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask("bundle", "Build app.js using browserify", function(mode) {
     //run in dev mode unless otherwise specified
-    mode = mode || "dev";
     var done = this.async();
 
     //specify starter files here - if you need additionally built JS, just add it.
@@ -19,10 +18,10 @@ module.exports = function(grunt) {
     var seeds = config.scripts;
 
     async.forEachOf(seeds, function(dest, src, c) {
-      var b = browserify({ debug: false });
+      var b = browserify({ debug: mode === "dev" });
       b.transform("babelify", {
         global: true, 
-        sourceMaps: false,
+        sourceMaps: mode === "dev",
         presets: [
           ['@babel/preset-env'],
           ["@babel/preset-react", {}]
@@ -36,7 +35,10 @@ module.exports = function(grunt) {
           }]
         ]
       });
-      b.plugin("tinyify");
+
+      if (mode !== "dev") {
+        b.plugin("tinyify");
+      }
 
       //make sure build/ exists
       grunt.file.mkdir("build");
@@ -51,17 +53,18 @@ module.exports = function(grunt) {
       });
       var mapFile = dest + ".map"
 
-      if (mode == "dev") {
+      if (mode === "dev") {
         //output sourcemap
-        // assembly = assembly.pipe(exorcist(mapFile, null, null, "."));
+        assembly = assembly.pipe(exorcist(mapFile, null, null, "."));
       }
-      assembly.pipe(output).on("finish", function() {
-        if (mode != "dev") return;
 
-        //correct path separators in the sourcemap for Windows
-        // var sourcemap = grunt.file.readJSON(mapFile);
-        // sourcemap.sources = sourcemap.sources.map(function(s) { return s.replace(/\\/g, "/") });
-        // grunt.file.write(mapFile, JSON.stringify(sourcemap, null, 2));
+      assembly.pipe(output).on("finish", function() {
+        if (mode === "dev" && grunt.file.exists(mapFile)) {
+          // correct path separators in the sourcemap for Windows
+          var sourcemap = grunt.file.readJSON(mapFile);
+          sourcemap.sources = sourcemap.sources.map(function(s) { return s.replace(/\\/g, "/") });
+          grunt.file.write(mapFile, JSON.stringify(sourcemap, null, 2));
+        }
 
         c();
       });

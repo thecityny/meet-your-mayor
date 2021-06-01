@@ -20,14 +20,16 @@ module.exports = function (setProfileImage, track) {
   
   // Facebook
   window.fbAsyncInit = function () {
-    FB.init({
-      appId: "3802878269795841",
-      status: true,
-      xfbml: false,
-      version: "v10.0"
-    });
+    if (window.location.protocol === "https:") {
+      FB.init({
+        appId: "3802878269795841",
+        status: true,
+        xfbml: false,
+        version: "v10.0"
+      });
 
-    addFacebookHandlers();
+      addFacebookHandlers();
+    }
   };
     
   function addFacebookHandlers() {
@@ -94,15 +96,17 @@ module.exports = function (setProfileImage, track) {
   
   // Google
   window.gAsyncInit = function () {
-    gapi.load("auth2", () => {
-      gapi.auth2.init({
-        client_id: "814604771693-fs3jolnobt3qn1hdbrcnue6vs5mkqm96.apps.googleusercontent.com",
-        cookiepolicy: "single_host_origin",
-        scope: "profile"
-      })
-        .then(auth2 => addGoogleHandlers(auth2))
-        .catch(console.error);
-    });
+    if (window.location.protocol === "https:") {
+      gapi.load("auth2", () => {
+        gapi.auth2.init({
+          client_id: "814604771693-fs3jolnobt3qn1hdbrcnue6vs5mkqm96.apps.googleusercontent.com",
+          cookiepolicy: "single_host_origin",
+          scope: "profile"
+        })
+          .then(auth2 => addGoogleHandlers(auth2))
+          .catch(console.error);
+      });
+    }
   }
   
   function addGoogleHandlers(auth2) {
