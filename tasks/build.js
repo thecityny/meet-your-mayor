@@ -74,7 +74,7 @@ module.exports = function(grunt) {
     }
 
     writeOutput("src/_template.html", topics, "docSlug", "build");
-    writeOutput("src/_candidates.html", candidates, "candidateSlug", "build/candidates");
+    // writeOutput("src/_candidates.html", candidates, "candidateSlug", "build/candidates");
 
     var files = grunt.file.expandMapping(["**/*.html", "!**/_*.html", "!js/**/*.html"], "build", { cwd: "src" });
     var data = Object.create(grunt.data || {});
