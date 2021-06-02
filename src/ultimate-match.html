@@ -8,9 +8,7 @@
     date: new Date(2021,5,1),
     title: "Ultimate Match",
     description: "Candidates for NYC mayor told us where they stand on 15 big issues. Now you can pick your positions and see which contenders are the right ones for you.",
-    changes: [],
-    dek: "Candidates for NYC mayor told us where they stand on 15 big issues. Now you can pick your positions and see which contenders are the right ones for you.",
-    intro: [{type: "text", value: "Lorem ipsum"}]
+    dek: "Candidates for NYC mayor told us where they stand on 15 big issues. Now you can pick your positions and see which contenders are the right ones for you."
   };
 
   const emptyImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
@@ -55,8 +53,27 @@
       }
     });
   
-  const changeLog = settings.changes || [];
-  const changeEntries = (changeLog).concat(newDropouts);
+  const changeMap = json.topicData.reduce((changeMap, {topic}) => {
+    const topicChanges = archieml[topic] && archieml[topic].changes || [];
+
+    topicChanges.forEach(change => {
+      if (new Date(change.date).getTime() >= datePublished.getTime()) {
+        const entries = changeMap.get(change.date) || [];
+        changeMap.set(change.date, [...entries, `<em>${json.topicDisplayData[topic].label} </em>— ${change.text}`]);
+      }
+    });
+
+    return changeMap;
+  }, new Map());
+
+  const changeLog = Array.from(changeMap).map(([date, entries]) => {
+    return {
+      date, 
+      text: entries.join(" ")
+    };
+  });
+
+  const changeEntries = [...changeLog, ...newDropouts];
   const changes = changeEntries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .map(change => {
       const date = new Date(change.date);
