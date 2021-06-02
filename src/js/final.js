@@ -305,7 +305,7 @@ function responses(target, questionNodes, getView, addViewListener, addAnswerSlu
         if (getView() === gridView) {
           tooltip.show();
           tooltip.setPosition(x, y);
-          tooltip.setHTML(`<p class="tooltip-name">${position.name}${position.party ? ` (${position.party})` : ""}${position.droppedOut ? `<span class="tooltip-status">Dropped out ${position.droppedOut}</span>` : ""}</p>`
+          tooltip.setHTML(`<p class="tooltip-name"><a href="candidates/${position.slug}.html" target="_blank">${position.name}${position.party ? ` (${position.party})` : ""}${position.droppedOut ? `<span class="tooltip-status">Dropped out ${position.droppedOut}</span>` : ""}</a></p>`
             +`${position.quote 
               ? `<p class="tooltip-quote">${position.quote}</p>`
               + `<p class="tooltip-source">from ${position.url ? `<a href="${position.url}" target="_blank">${position.source}</a>` : position.source}`
@@ -439,7 +439,7 @@ function getMatches(selected) {
         + `<div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>`
       + `</div>`
       + `<div class="expandable-body">`
-        + `<p class="match-links"><a href="printable.html?view=single&candidate=${candidateSlug}">Print view</a></p>`
+        + `<p class="match-links"><a href="candidates/${candidateSlug}.html">Candidate page</a> &middot; <a href="printable.html?view=single&candidate=${candidateSlug}">Print view</a></p>`
         + Object.entries(orderedQuestionSlugs).map(([topic, questionSlugs]) => {
           const agreeCount = questionSlugs.filter(questionSlug => selectedCandidates[topic] && selectedCandidates[topic][questionSlug].indexOf(candidateSlug) > -1).length;
           return `<h4 class="match-topic">${topicDisplayData[topic].label} &middot; ${agreeCount} of ${questionSlugs.length} matched</h4><ul class="match-position-list">${questionSlugs.map(questionSlug => {

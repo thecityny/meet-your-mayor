@@ -85,7 +85,7 @@ module.exports = function (target, tooltip, color) {
         const x = pointerX - width / 2;
         const y = pointerY - height / 2;
 
-        for (i = candidates.length - 1; i >= 0; --i) {
+        for (var i = candidates.length - 1; i >= 0; --i) {
           const node = candidates[i];
           const r = node.r;
           const dx = x - node.x;
@@ -126,7 +126,7 @@ module.exports = function (target, tooltip, color) {
           tooltip.show();
           tooltip.setPosition(window.scrollX + rect.left + (node.x + width / 2),  window.scrollY + rect.top + (node.y + height / 2) + (node.r * 0.5));
 
-          const markup = `<p class="tooltip-name">${node.name}${node.party ? ` (${node.party})` : ""}${node.droppedOut ? `<span class="tooltip-status">Dropped out ${node.droppedOut}</span>` : ""}</p>`
+          const markup = `<p class="tooltip-name"><a href="candidates/${node.slug}.html" target="_blank">${node.name}${node.party ? ` (${node.party})` : ""}${node.droppedOut ? `<span class="tooltip-status">Dropped out ${node.droppedOut}</span>` : ""}</a></p>`
             +`${node.quote 
               ? `<p class="tooltip-quote">${node.quote}</p>`
               + `<p class="tooltip-source">from ${node.url ? `<a href="${node.url}" target="_blank">${node.source}</a>` : node.source}`

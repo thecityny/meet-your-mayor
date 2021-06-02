@@ -172,6 +172,7 @@
             <div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>
           </div>
           <div class="expandable-body">
+            <a class="topic-link" href="../<%= topic %>.html">View topic guide</a>
             <%
               questions.forEach((question, index) => {
                 const answerText = json.answerData[topic] && json.answerData[topic][question.slug] || {};
@@ -220,7 +221,7 @@
                               <figcaption class="circle-image-caption"><%= candidate.lastName %></figcaption>
                             </figure>
                             <div class="response-details">
-                              <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)<%= (candidate.droppedOut ? `<span class="response-status">Dropped out ${candidate.droppedOut}</span>` : "") %></p>
+                              <p class="response-name"><a href="candidates/<%= position.slug %>.html"><%= candidate.name %> (<%= candidate.party %>)<%= (candidate.droppedOut ? `<span class="response-status">Dropped out ${candidate.droppedOut}</span>` : "") %></a></p>
                               <% if (position.quote) { %>
                                 <p class="response-quote"><%= position.quote %></p>
                                 <p class="response-source">from <%= position.url ? `<a href="${position.url}" target="_blank">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>

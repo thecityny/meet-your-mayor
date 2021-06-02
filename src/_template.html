@@ -192,7 +192,7 @@
                             </div>
                           </figure>
                           <div class="response-details">
-                            <p class="response-name"><%= candidate.name %> (<%= candidate.party %>)<%= (candidate.droppedOut ? `<span class="response-status">Dropped out ${candidate.droppedOut}</span>` : "") %></p>
+                            <p class="response-name"><a href="candidates/<%= position.slug %>.html"><%= candidate.name %> (<%= candidate.party %>)<%= (candidate.droppedOut ? `<span class="response-status">Dropped out ${candidate.droppedOut}</span>` : "") %></a></p>
                             <% if (position.quote) { %>
                               <p class="response-quote"><%= position.quote %></p>
                               <p class="response-source">from <%= position.url ? `<a href="${position.url}" target="_blank">${position.source}</a>` : position.source %><%= position.date ? `, <span class="response-date">${position.date}</span>` : "" %></p>
