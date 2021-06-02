@@ -93,12 +93,12 @@ module.exports = function (target, topic) {
           context.globalAlpha = 0.3;
         }
 
-        if (!d.image || d.name === youSlug) {
+        if (!d.image.hasAttribute("src") || d.name === youSlug) {
           context.fillStyle = d.name === youSlug ? "#ffffff" : "#404040";
           context.fillText(d.label, x, y);
         }
 
-        if (d.image) {
+        if (d.image.hasAttribute("src")) {
           context.save();
           context.arc(x, y, r, 0, 2 * Math.PI);
           context.clip();
