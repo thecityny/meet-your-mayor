@@ -9,6 +9,9 @@
   const candidateData = grunt.data.json.candidateData || {};
   const topicDisplayData = grunt.data.json.topicDisplayData || {};
   const topicData = grunt.data.json.topicData || {};
+  const candidatePhotos = grunt.data.json.photos || [];
+
+  const photo = candidatePhotos.filter(d => d.slug === candidateSlug)[0];
 
   const activeTopics = topicData.reduce((activeTopics, topic) => {
     if (topic.candidates.indexOf(candidateSlug) > -1) {
@@ -24,9 +27,9 @@
 
   const project = {
     "title": `Meet Your Mayor: ${candidateData[candidateSlug].name}`,
-    "description": `Read ${candidateData[candidateSlug].name}'s positions to multiple-choice questions posed by THE CITY.`,
+    "description": `Read about ${candidateData[candidateSlug].name}'s campaign for NYC mayor and positions on multiple-choice questions posed by THE CITY.`,
     "url": `https://projects.thecity.nyc/meet-your-mayor/${candidateSlug}.html`,
-    "image": `https://projects.thecity.nyc/meet-your-mayor/assets/logo.png`,
+    "image": `${photo ? photo.url : "https://projects.thecity.nyc/meet-your-mayor/assets/logo.png"}`,
     "logo": "https://projects.thecity.nyc/meet-your-mayor/assets/logo.png",
     "author": "THE CITY",
     "datePublished": datePublished.toISOString()
@@ -44,7 +47,7 @@
   <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 
-<body>
+<body data-slug="<%= candidateSlug %>">
   <nav class="nav">
     <div class="nav-container">
       <div class="nav-logo">
@@ -70,28 +73,34 @@
     </div>
     <div class="article-body">
       <div class="article-body-content">
-        <figure class="image-hero photo" style="display: none;">
-          <img src="<%= emptyImage %>" alt="Alt text here" />
-          <span class="photo-meta">
-            <figcaption>Caption here</figcaption>
-            <cite>Credit here</cite>
-          </span>
-        </figure>
+        <% if (photo) { %>
+          <figure class="image-hero photo">
+            <img src="<%= photo.url %>" alt="<%= candidateData[candidateSlug].name %>" />
+            <span class="photo-meta">
+              <% if (photo.caption) { %>
+                <figcaption><%= photo.caption %></figcaption>
+                <cite><%= photo.credit %></cite>
+              <% } else { %>
+                <figcaption><%= photo.credit %></figcaption>
+              <% } %>
+            </span>
+          </figure>
+        <% } %>
         
         <% if (archieml["candidates"][candidateSlug]) {
           const bio = archieml["candidates"][candidateSlug].filter(entry => entry.type !== "website");
           const website = archieml["candidates"][candidateSlug].filter(entry => entry.type === "website")[0];
         %>
-          <% if (bio) { %> 
-            <%= t.include("partials/_archie.ejs", {story: bio}) %>
-          <% } %>
-          <% if (website) { %>
-            <p class="copy"><a href="<%= website.value %>">Candidate website</a></p>
-          <% } %>
+          <% if (bio.length) { %> 
+            <%= t.include("partials/_archie.ejs", {story: bio, containers: false}) %>
+          <% } else { %> 
+            <p></p>  
+          <% }%>
         <% } %>
         <div class="final-intro">
           <h2 class="subhead">Positions</h2>
-          <p class="copy">See where the candidate falls on the multiple-choice questions below.</p>
+          <p class="copy">We sent three multiple-choice surveys to every Democratic and Republican mayoral candidate on the ballot for the June 22 primary, starting in February. See how <%= candidateData[candidateSlug].name %> answered below.</p>
+          <p class="copy"><a href="https://www.thecity.nyc/22330081/meet-your-mayor-nyc">Read more about how we surveyed the candidates.</a></p>
         </div>
         <% activeTopics.forEach(topic => {
           const questions = archieml[topic] && archieml[topic].questions || [];
@@ -144,11 +153,8 @@
           <% } %>
         <% }); %>
       </div>
-      <div class="article-body-sidebar-hide">
-        <div class="sidebar-box">
-          <h3 class="sidebar-header">Coverage</h3>
-          <p><a href="https://thecity.nyc/<%= candidateSlug %>">Read THE CITY's coverage of <%= candidateData[candidateSlug].name %></a></p>
-        </div>
+      <div class="article-body-sidebar">
+        <div id="coverage" class="sidebar-box coverage loading"></div>
         <div class="sidebar-box">
           <h3 class="sidebar-header">Candidates</h3>
           <ul class="sidebar-list">

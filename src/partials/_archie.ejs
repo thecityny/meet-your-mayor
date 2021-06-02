@@ -18,6 +18,8 @@
       return items.concat(item);
     }
   }, []);
+
+  const hasContainers = typeof containers !== "undefined" ? containers : true;
 %>
 
 
@@ -27,23 +29,23 @@
 
   <%/* pulls in body text */%>
   <% if (item.type == 'markdown') { %>
-    <div class="copy copy-container">
+    <div class="copy <%= hasContainers ? 'copy-container' : '' %>">
       <%= t.renderMarkdown(item.value) %>
     </div>
   <% } %>
 
   <% if (item.type == 'text') { %>
-    <p class="copy copy-container"><%= item.value %></p>
+    <p class="copy <%= hasContainers ? 'copy-container' : '' %>"><%= item.value %></p>
   <% } %>
 
   <%/* pulls in subheads */%>
   <% if (item.type == 'subhead') { %>
-  <h3 class='subhead copy-container'><%= item.value.text %></h3>
+  <h3 class="subhead <%= hasContainers ? 'copy-container' : '' %>""><%= item.value.text %></h3>
   <% } %>
 
   <%/* pulls in photos */%>
   <% if (item.type == 'image') { %>
-  <figure class='photo photo-container'>
+  <figure class="photo <%= containers ? 'photo-container' : '' %>">
     <img src='<%= item.value.src %>' alt='<%= item.value.alt %>' />
     <figcaption><%= item.value.caption %> <em>Photo: <%= item.value.credit %></em></figcaption>
   </figure>
