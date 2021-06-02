@@ -70,7 +70,7 @@ async function main() {
       return `<li><a href="${link.url}">${link.title}</a><time datatime="%{link.updated}">${dateString}</time></li>`;
     }).join("");
 
-    coverageTarget.innerHTML = `<h3 class="sidebar-header">Coverage</h3><ul>${linkMarkup}</ul><div class="more-link"><a href="https://thecity.nyc/${candidateSlug}">Read more</a></div>`;
+    coverageTarget.innerHTML = `<h3 class="sidebar-header">THE CITY Coverage</h3><ul>${linkMarkup}</ul><div class="more-link"><a href="https://thecity.nyc/${candidateSlug}">Read more</a></div>`;
     coverageTarget.classList.remove("loading");
   } else {
     coverageTarget.classList.remove("loading");

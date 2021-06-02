@@ -27,7 +27,7 @@
 
   const project = {
     "title": `Meet Your Mayor: ${candidateData[candidateSlug].name}`,
-    "description": `Read about ${candidateData[candidateSlug].name}'s campaign for NYC mayor and positions on multiple-choice questions posed by THE CITY.`,
+    "description": `Learn more about ${candidateData[candidateSlug].name} and how they responded to tough questions facing NYC's next mayor.`,
     "url": `https://projects.thecity.nyc/meet-your-mayor/${candidateSlug}.html`,
     "image": `${photo ? photo.url : "https://projects.thecity.nyc/meet-your-mayor/assets/logo.png"}`,
     "logo": "https://projects.thecity.nyc/meet-your-mayor/assets/logo.png",
@@ -88,20 +88,30 @@
         <% } %>
         
         <% if (archieml["candidates"][candidateSlug]) {
-          const bio = archieml["candidates"][candidateSlug].filter(entry => entry.type !== "website");
+          const bio = archieml["candidates"][candidateSlug].filter(entry => entry.type === "text" || entry.type === "markdown");
           const website = archieml["candidates"][candidateSlug].filter(entry => entry.type === "website")[0];
+          const positionText = archieml["candidates"][candidateSlug].filter(entry => entry.type === "positions")[0];
         %>
           <% if (bio.length) { %> 
             <%= t.include("partials/_archie.ejs", {story: bio, containers: false}) %>
+            <% if (website) { %>
+              <p class="copy">Website: <a href="<%= website.value %>"><%= website.value %></a></p>
+            <% } %>
           <% } else { %> 
             <p></p>  
           <% }%>
+          <div class="final-intro">
+            <h2 class="subhead">Positions</h2>
+            <p class="copy">THE CITY sent three multiple-choice surveys to every Democratic and Republican mayoral candidate on the ballot for the June 22 primary, starting in February.
+              <% if (positionText) { %>
+                <%= positionText.value %>
+              <% } else { %>
+                See how <%= candidateData[candidateSlug].name %> answered below.
+              <% } %>
+            </p>
+            <p class="copy"><a href="https://www.thecity.nyc/22330081/meet-your-mayor-nyc">Read more about how we surveyed the candidates.</a></p>
+          </div>
         <% } %>
-        <div class="final-intro">
-          <h2 class="subhead">Positions</h2>
-          <p class="copy">We sent three multiple-choice surveys to every Democratic and Republican mayoral candidate on the ballot for the June 22 primary, starting in February. See how <%= candidateData[candidateSlug].name %> answered below.</p>
-          <p class="copy"><a href="https://www.thecity.nyc/22330081/meet-your-mayor-nyc">Read more about how we surveyed the candidates.</a></p>
-        </div>
         <% activeTopics.forEach(topic => {
           const questions = archieml[topic] && archieml[topic].questions || [];
         %>
