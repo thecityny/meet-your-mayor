@@ -95,7 +95,7 @@
           <% if (bio.length) { %> 
             <%= t.include("partials/_archie.ejs", {story: bio, containers: false}) %>
             <% if (website) { %>
-              <p class="copy">Website: <a href="<%= website.value %>"><%= website.value %></a></p>
+              <p class="copy">Website: <%= website.value %></p>
             <% } %>
           <% } else { %> 
             <p></p>  
