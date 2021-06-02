@@ -84,6 +84,7 @@ module.exports = function(grunt) {
         label: candidate["label"],
         image: candidate["image"],
         party: candidate["party"],
+        pronoun: candidate["pronoun"],
         droppedOut: droppedOutString,
         droppedOutDate: candidate[droppedOutColumn]
       };
