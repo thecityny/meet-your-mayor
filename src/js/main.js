@@ -358,7 +358,7 @@ function getMatches(selected) {
         + `<div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>`
       + `</div>`
       + `<div class="expandable-body">`
-        + `<p class="match-links"><a href="candidates/${candidateSlug}.html">Candidate page</a></p>`
+        + `<p class="match-links"><a href="candidates/${candidateSlug}.html">More on this candidate</a></p>`
         + `<ul class="match-position-list">${orderedQuestionSlugs.map(questionSlug => {
           const answerSlug = candidatePositions[candidateSlug] && candidatePositions[candidateSlug][questionSlug];
           return `<li class="match-position">`

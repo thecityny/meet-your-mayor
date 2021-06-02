@@ -439,7 +439,7 @@ function getMatches(selected) {
         + `<div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>`
       + `</div>`
       + `<div class="expandable-body">`
-        + `<p class="match-links"><a href="candidates/${candidateSlug}.html">Candidate page</a> &middot; <a href="printable.html?view=single&candidate=${candidateSlug}">Print view</a></p>`
+        + `<p class="match-links"><a href="candidates/${candidateSlug}.html">More on this candidate</a> &middot; <a href="printable.html?view=single&candidate=${candidateSlug}">Print view</a></p>`
         + Object.entries(orderedQuestionSlugs).map(([topic, questionSlugs]) => {
           const agreeCount = questionSlugs.filter(questionSlug => selectedCandidates[topic] && selectedCandidates[topic][questionSlug].indexOf(candidateSlug) > -1).length;
           return `<h4 class="match-topic">${topicDisplayData[topic].label} &middot; ${agreeCount} of ${questionSlugs.length} matched</h4><ul class="match-position-list">${questionSlugs.map(questionSlug => {
