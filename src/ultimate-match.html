@@ -172,7 +172,7 @@
             <div class="display-open"><i class="up-arrow"></i></div><div class="display-closed"><i class="down-arrow"></i></div>
           </div>
           <div class="expandable-body">
-            <a class="topic-link" href="../<%= topic %>.html">View topic guide</a>
+            <a class="topic-link" href="<%= topic %>.html">View topic guide</a>
             <%
               questions.forEach((question, index) => {
                 const answerText = json.answerData[topic] && json.answerData[topic][question.slug] || {};
