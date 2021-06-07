@@ -55,21 +55,14 @@
       </div>
       <div class="nav-title"></div>
       <div class="nav-links">
-        <a class="nav-link-secondary" href="https://www.thecity.nyc/civic-newsroom">Civic Newsroom</a>
-        <a href="https://www.thecity.nyc/campaign-2021">Election Coverage</a>
+        <a href="https://projects.thecity.nyc/nyc-primary-voter-guide-2021/">Voter Guide</a>
       </div>
     </div>
   </nav>
   <main>
     <div class="article-header">
       <p class="header-label"><a href="https://www.thecity.nyc/22330081/meet-your-mayor-nyc">Meet Your Mayor</a></p>
-      <h1 class="header-title"><%= candidateData[candidateSlug].name %></h1>
-      <p class="header-date"><time datetime="<%= datePublished.toISOString() %>">Last updated: <%= datePublished.toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-          year: "numeric"
-        }) %></time>
-      </p>
+      <h1 class="header-title"><%= candidateData[candidateSlug].name %> (<%= candidateData[candidateSlug].party === "D" ? "D" : candidateData[candidateSlug].party === "R" ? "R" : "" %>)</h1>
     </div>
     <div class="article-body">
       <div class="article-body-content">
@@ -183,7 +176,7 @@
               });
               sortedCandidates.forEach(([candidateSlug, candidate]) => { 
             %>
-              <li><a href="<%= candidateSlug %>.html"><%= candidate.name %></a></li>
+              <li><a href="<%= candidateSlug %>.html"><%= candidate.name %> (<%= candidateData[candidateSlug].party === "D" ? "D" : candidateData[candidateSlug].party === "R" ? "R" : "" %>)</a></li>
             <% }) %>
           </ul>
         </div>
