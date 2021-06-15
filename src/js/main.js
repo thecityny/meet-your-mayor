@@ -472,9 +472,9 @@ changeLink && changeLink.addEventListener("click", e => {
   changeList.scrollIntoView(true);
 });
 
-document.querySelector(".newsletter-link a").addEventListener("click", e => {
-  track("click:newsletter");
-});
+// document.querySelector(".newsletter-link a").addEventListener("click", e => {
+//   track("click:newsletter");
+// });
 
 Array.from(document.querySelectorAll(".topics-list a")).forEach(link => {
   link.addEventListener("click", e => {
