@@ -48,7 +48,8 @@
     "shelljs": "^0.8.3",
     "through2": "^3.0.1",
     "tinyify": "^3.0.0",
-    "typogr": "^0.6.4"
+    "typogr": "^0.6.4",
+    "xmlbuilder2": "^2.4.1"
   },
   "browser": {
     "share": "./src/js/lib/share.min.js",

@@ -24,7 +24,7 @@ module.exports = function(grunt) {
   });
 
   // Clean and build js, css, templates and copy assets
-  grunt.registerTask("default", ["clean", "static", "copy"]);
+  grunt.registerTask("default", ["clean", "static", "copy", "sitemap"]);
   // Watch essentially runs static:dev
   grunt.registerTask("start", "Build files and start live reload server", ["clean", "static:dev", "copy", "connect:dev", "watch"]);
 };
