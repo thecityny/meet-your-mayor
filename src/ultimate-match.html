@@ -131,7 +131,7 @@
         <div class="copy">
           <p>Voters of New York City: It’s time to pick your nominee for mayor, with primary day approaching on June 22. Since March, THE CITY has been presenting the candidates’ positions, issue by issue. Meet Your Mayor shows you how the contenders' stands fit with your take on what matters most to New Yorkers.</p>
           <p>Now we’ve pulled all 15 Meet Your Mayor editions into one final, supersized superquiz that will show you your ultimate match. Actually, your top matches, since voters will be ranking up to five selections at the polls.</p>
-          <p>You can answer all 61 of the questions we put to the candidates or select just the ones that interest you. Either way, Meet Your Mayor: Ultimate Match will present you with a list of your top candidate matches, which you can take with you to the polls or share on social media.</p>
+          <p>Answer the questions below and Meet Your Mayor: Ultimate Match will present you with a list of your top candidate matches, which you can take with you to the polls or share on social media.</p>
           <p>Your responses will be private, and THE CITY will not collect any information from you. <a href="https://www.thecity.nyc/e/22094122">Learn more about Meet Your Mayor’s privacy practices here</a>.</p>
         </div>
         <% if (changes.length) { %>
@@ -157,7 +157,7 @@
       <div id="questions" class="article-body-content">
         <div class="final-intro">
           <h2 class="subhead">Questions</h2>
-          <p class="copy">Answer the following questions to see which candidates for mayor most closely match the future you want to see for New York<span class="widont">&nbsp;</span>City.</p>
+          <p class="copy">Answer the following questions to see which candidates for mayor most closely match the future you want to see for New York City. You can answer all 61 questions or select just the ones that interest you. The whole quiz takes about 10 minutes to complete start to finish. If you need to leave the page, your answers will still be here when you come<span class="widont">&nbsp;</span>back.</p>
         </div>
         <% json.topicData.forEach(({topic}) => {
           const questions = archieml[topic] && archieml[topic].questions || [];
