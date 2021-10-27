@@ -200,11 +200,10 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
   }
 
   a {
-    font-family: 'Sharp Grotesk', Helvetica, sans-serif;
+    .bookface();
     width: 100%;
     max-width: 200px;
     margin: 0 auto;
-    font-weight: 400;
     font-size: 14px;
     color: #fff;
     background: #000;
@@ -1229,8 +1228,7 @@ a.twitter-link, a.facebook-link, a.email-link, a.results-link {
 }
 
 a.city-button {
-  font-family: 'Sharp Grotesk', Helvetica, sans-serif;
-  font-weight: 400;
+  .bookface();
   font-size: 14px;
   color: #fff;
   background: #000;
@@ -1245,4 +1243,78 @@ a.city-button {
   &:last-child {
     margin-right: 0;
   }
+}
+
+/* New */
+
+body {
+  background-color: #fff;
+}
+
+.splash-screen-overlay {
+  background-color: rgba(200,200,200,0.2);
+}
+
+.sidebar-box {
+  background: #f6f6f6;
+}
+
+.sidebar-login {
+  padding: 0;
+  margin: 0;
+}
+
+.question-final form button {
+  background: #f6f6f6;
+}
+
+.match {
+  border: 1px solid #404040;
+  box-shadow: none;
+  background-color: #fff;
+}
+
+.match-header {
+  background: #f9f9f9;
+}
+
+a.twitter-link, a.facebook-link, a.email-link, a.results-link {
+  border: 1px solid #999;
+  line-height: 1.6em;
+
+  &, &:focus, &:visited {
+    background: #fff;
+  }
+
+  &:hover, &:active {
+    background:#f6f6f6;
+  }
+}
+
+.section-white {
+  background-color: #f6f6f6;
+}
+
+.circle-image-caption {
+  font-size: 12px;
+}
+
+.city-credit {
+  text-align: center;
+  max-width: 400px;
+  margin: 20px auto 40px;
+  color: #000;
+  font-size: 16px;
+
+  a {
+    color: inherit;
+  }
+
+  p {
+    margin: 10px 0;
+  }
+}
+
+.city-credit-logo {
+  width: 110px;
 }
