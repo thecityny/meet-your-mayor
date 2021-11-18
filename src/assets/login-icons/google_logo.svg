@@ -2,17 +2,17 @@
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 17.64 18"
 	 style="enable-background:new 0 0 17.64 18;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#4285F4;}
-	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#34A853;}
-	.st2{fill-rule:evenodd;clip-rule:evenodd;fill:#FBBC05;}
-	.st3{fill-rule:evenodd;clip-rule:evenodd;fill:#EA4335;}
+	.g-st0{fill-rule:evenodd;clip-rule:evenodd;fill:#4285F4;}
+	.g-st1{fill-rule:evenodd;clip-rule:evenodd;fill:#34A853;}
+	.g-st2{fill-rule:evenodd;clip-rule:evenodd;fill:#FBBC05;}
+	.g-st3{fill-rule:evenodd;clip-rule:evenodd;fill:#EA4335;}
 </style>
-<path id="Shape" class="st0" d="M17.64,9.2c0-0.64-0.06-1.25-0.16-1.84H9v3.48h4.84
+<path id="Shape" class="g-st0" d="M17.64,9.2c0-0.64-0.06-1.25-0.16-1.84H9v3.48h4.84
 	c-0.21,1.12-0.84,2.08-1.8,2.72v2.26h2.91C16.66,14.25,17.64,11.95,17.64,9.2L17.64,9.2z"/>
-<path id="Shape_1_" class="st1" d="M9,18c2.43,0,4.47-0.81,5.96-2.18l-2.91-2.26
+<path id="Shape_1_" class="g-st1" d="M9,18c2.43,0,4.47-0.81,5.96-2.18l-2.91-2.26
 	c-0.81,0.54-1.84,0.86-3.05,0.86c-2.34,0-4.33-1.58-5.04-3.71H0.96v2.33C2.44,15.98,5.48,18,9,18L9,18z"/>
-<path id="Shape_2_" class="st2" d="M3.96,10.71C3.78,10.17,3.68,9.59,3.68,9s0.1-1.17,0.28-1.71V4.96
+<path id="Shape_2_" class="g-st2" d="M3.96,10.71C3.78,10.17,3.68,9.59,3.68,9s0.1-1.17,0.28-1.71V4.96
 	H0.96C0.35,6.17,0,7.55,0,9s0.35,2.83,0.96,4.04L3.96,10.71L3.96,10.71z"/>
-<path id="Shape_3_" class="st3" d="M9,3.58c1.32,0,2.51,0.45,3.44,1.35l2.58-2.58
+<path id="Shape_3_" class="g-st3" d="M9,3.58c1.32,0,2.51,0.45,3.44,1.35l2.58-2.58
 	C13.46,0.89,11.43,0,9,0C5.48,0,2.44,2.02,0.96,4.96l3.01,2.33C4.67,5.16,6.66,3.58,9,3.58L9,3.58z"/>
 </svg>
