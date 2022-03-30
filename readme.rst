@@ -1,10 +1,13 @@
-meet-your-mayor
+Meet Your Mayor
 ======================================================
 
 This news app is built on our `interactive template <https://github.com/thecityny/interactive-template>`_. Check the readme for that template for more details about the structure and mechanics of the app, as well as how to start your own project.
 
 Getting started
 ---------------
+**Please note this repo has not yet been optimized for easy customization and contains a number of hard-coded values. If you're interested in adapting the project, please send us an email at info@thecity.nyc.**
+
+Sample document structure: `https://drive.google.com/drive/folders/1YXXWptOZ0JWQnrBwVori4D_-19Eq8YJC?usp=sharing`
 
 To run this project you will need:
 
@@ -35,10 +38,3 @@ Common tasks that you may want to run include:
 
   * ``publish:live`` uploads to production
   * ``publish:simulated`` does a dry run of uploaded files and their compressed sizes
-
-Troubleshooting
----------------
-
-**Fatal error: Port 35729 is already in use by another process.**
-
-The live reload port is shared between this and other applications. If you're running another interactive-template project or Dailygraphics Next, they may collide. If that's the case, use ``--reload-port=XXXXX`` to set a different port for the live reload server. You can also specify a port for the webserver with ``--port=XXXX``, although the app will automatically find the first available port after 8000 for you.
