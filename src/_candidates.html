@@ -122,7 +122,9 @@
                       <% 
                         // Get all the candidate positions on a question, filter for the candidate slug.
                         // Return the position if it exists, otherwise undefined.
-                        const candidateAnswer = Object.entries(positionData[topic][slug]).reduce((candidateAnswer, [answerSlug, answer]) => {
+                        
+                        const questionPositions = positionData[topic][slug];
+                        const candidateAnswer = questionPositions && Object.entries(questionPositions).reduce((candidateAnswer, [answerSlug, answer]) => {
                           if (!candidateAnswer) {
                             const candidatePosition = answer.filter(position => position.slug === candidateSlug)[0];
       
