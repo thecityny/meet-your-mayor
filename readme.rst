@@ -1,4 +1,4 @@
-Looking for the most recent version? Head over to `Meet your Mayor 2025 <https://github.com/thecityny/2025-meet-your-mayor>`_
+Looking for the most recent version? Head over to `Meet Your Mayor 2025 <https://github.com/thecityny/2025-meet-your-mayor>`_
 
 Meet Your Mayor (2021)
 ======================================================
