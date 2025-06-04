@@ -1,4 +1,6 @@
-Meet Your Mayor
+Looking for the most recent version? Head over to `Meet your Mayor 2025 <https://github.com/thecityny/2025-meet-your-mayor>`_
+
+Meet Your Mayor (2021)
 ======================================================
 
 This news app is built on our `interactive template <https://github.com/thecityny/interactive-template>`_. Check the readme for that template for more details about the structure and mechanics of the app, as well as how to start your own project.
